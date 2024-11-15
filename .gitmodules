@@ -1,0 +1,3 @@
+[submodule "dit826-data"]
+	path = dit826-data
+	url = https://github.com/rokanas/dit826-data.git
