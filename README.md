@@ -1,6 +1,100 @@
 # group6
 
+## Installation & Running
 
+### Set Up Python Virtual Environment & Install Dependencies
+
+#### Windows:
+
+1. Navigate to the repository root folder in your terminal:
+    ```bash
+    cd path\to\repository
+    ```
+2. Create a Python virtual environment:
+    ```Bash
+    python -m venv venv
+    ```
+3. Activate the virtual environment:
+    ```bash
+    .\venv\Scripts\activate
+    ```
+4. Install the required dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+#### macOS/Linux:
+
+1. Navigate to the repository root folder in your terminal:
+    ```bash
+    cd /path/to/repository
+    ```
+2. Create a Python virtual environment:
+    ```bash
+    python3 -m venv venv
+    ```
+3. Activate the virtual environment:
+    ```bash
+    source venv/bin/activate
+    ```
+4. Install the required dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+
+### Create .env File in Repository Root Folder
+Make sure the .env file contains the following:
+```sh
+# Django secret key
+SECRET_KEY = <KEY_VALUE>
+
+# development / production
+DJANGO_ENV = development
+
+```
+
+
+### Run the Django Project:
+
+#### Windows:
+1. Navigate to the `SkinScan` project root folder:
+    ```bash
+    cd server\SkinScan
+    ```
+2. Run the Django development server:
+    ```bash
+    python manage.py runserver
+    ```
+3. Open browser and navigate to:
+    ```bash
+    http://127.0.0.1:8000
+    ```
+
+#### macOS/Linux:
+1. Navigate to the `SkinScan` project root folder:
+    ```bash
+    cd server/SkinScan
+    ```
+2. Run the Django development server:
+    ```bash
+    python3 manage.py runserver
+    ```
+3. Open browser and navigate to:
+    ```bash
+    http://127.0.0.1:8000
+    ```
+
+### Deactivating the Virtual Environment:
+
+Once you are done, deactivate the Python virtual environment using:
+```bash
+deactivate
+```
+
+
+
+<!--
 
 ## Getting started
 
@@ -91,3 +185,5 @@ For open source projects, say how it is licensed.
 
 ## Project status
 If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+
+-->
