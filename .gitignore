@@ -1,2 +1,11 @@
 
 /svelte@latest/node_modules
+
+# Exclude macOS binary
+*.DS_Store
+
+# Exclude IDE clutter
+.vscode
+.idea
+__pycache__
+venv
