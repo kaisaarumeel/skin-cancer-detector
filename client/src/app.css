@@ -1,3 +1,17 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
-@import 'tailwindcss/utilities'
+@import 'tailwindcss/utilities';
+
+body {
+    background-color: #F9F5F0; /* Light beige */
+}
+
+html,body {
+    font-family: "Poppins", sans-serif;
+  }
+
+:root {
+    --primary-color: #B7A9D4; /* Lighter purple */
+    --secondary-color: #7C64AD; /* Darker purple */
+    --tertiary-color: #626262; /* Brown used for text */
+}
