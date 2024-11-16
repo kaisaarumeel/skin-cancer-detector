@@ -6,9 +6,7 @@ from django.db import models
 
 class Model(models.Model):
     model_id = models.AutoField(primary_key=True)
-    # Note: This can be modified to "auto_now" or added as a new field,
-    # if we instead want a timestamp for when the model was last modified
-    created_at = models.DateTimeField(auto_now_add=True) # Sets unmodifiable timestamp at creation
+    created_at = models.IntegerField(null=False, blank=False)
     version = models.CharField(max_length=50, unique=True)
     weights = models.BinaryField(null=False)
     
@@ -33,6 +31,8 @@ class Users(models.Model):
     username = models.CharField(max_length=150, unique=True)
     password = models.TextField(null=False)
     age = models.IntegerField(blank=False, null=False)
+    session = models.TextField(null=True, blank=True)
+    session_exp = models.IntegerField(null=True, blank=True)
 
     SEX_CHOICES = [
         ('male', 'Male'),
@@ -53,19 +53,59 @@ class Users(models.Model):
 
 class Requests(models.Model):
     request_id = models.AutoField(primary_key=True)
-    created_at = models.DateTimeField(auto_now_add=True) # Sets unmodifiable timestamp at creation
-    image = models.BinaryField(blank=False, null=False)
+    created_at = models.IntegerField(null=False, blank=False)
     probability = models.IntegerField(blank=True, null=True)
+    image = models.BinaryField(blank=False, null=False)
 
-    CANCER_TYPE_CHOICES = [
-        ('benign', 'Benign'),
-        ('malignant', 'Malignant')
+    LOCALIZATION_CHOICES = [
+        # Head and Neck region
+        ('ear', 'Ear'),
+        ('face', 'Face'),
+        ('neck', 'Neck'),
+        ('scalp', 'Scalp'),
+        
+        # Trunk region
+        ('abdomen', 'Abdomen'),
+        ('back', 'Back'),
+        ('chest', 'Chest'),
+        ('trunk', 'Trunk - Other'),
+
+        # Upper limbs
+        ('acral', 'Acral (Fingers/Toes)'),
+        ('hand', 'Hand'),
+        ('upper_extremity', 'Upper Extremity (Arm)'),
+        
+        # Lower limbs
+        ('foot', 'Foot'),
+        ('lower_extremity', 'Lower Extremity (Leg)'),
+        
+        # Other locations
+        ('genital', 'Genital Area')
     ]
-    cancer_type = models.CharField(
-        max_length=9,
-        choices=CANCER_TYPE_CHOICES,
-        blank=True, 
-        null=True
+    localization = models.CharField(
+        max_length=15,
+        choices=LOCALIZATION_CHOICES,
+        blank=False,
+        null=False
+    )
+    
+    LESION_TYPE_CHOICES = [
+        # Benign lesions
+        ('nv', 'Melanocytic nevi'),
+        ('bkl', 'Benign keratosis-like lesions'),
+        ('df', 'Dermatofibroma'),
+        ('vasc', 'Vascular lesions'),
+        
+        # Malignant/Potentially Malignant lesions
+        ('mel', 'Melanoma'),
+        ('bcc', 'Basal cell carcinoma'),
+        ('akiec', 'Actinic keratoses and intraepithelial carcinoma')
+    ]
+    lesion_type = models.CharField(
+        max_length=5,
+        choices=LESION_TYPE_CHOICES,
+        blank=False, 
+        null=False
     )
 
     # Foreign Keys
