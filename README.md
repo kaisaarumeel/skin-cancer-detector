@@ -6,6 +6,9 @@
 
 #### Windows:
 
+> TODO: fix installation guide for WSL
+
+<!--
 1. Navigate to the repository root folder in your terminal:
     ```bash
     cd path\to\repository
@@ -22,6 +25,7 @@
     ```bash
     pip install -r requirements.txt
     ```
+-->
 
 #### macOS/Linux:
 
@@ -57,14 +61,14 @@ DJANGO_ENV = development
 
 ### Run the Django Project:
 
-#### Windows:
+#### Windows WSL:
 1. Navigate to the `SkinScan` project root folder:
     ```bash
-    cd server\SkinScan
+    cd server/SkinScan
     ```
 2. Run the Django development server:
     ```bash
-    python manage.py runserver
+    python3.11 manage.py runserver
     ```
 3. Open browser and navigate to:
     ```bash
