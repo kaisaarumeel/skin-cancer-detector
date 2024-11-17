@@ -21,6 +21,7 @@ code-quality:
     
     - echo "Checking code formatting..."
     - python3 -m black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
+    
     - cd server
     - python3 manage.py check || (echo "❌ Django system checks failed" && exit 1)
   rules:
