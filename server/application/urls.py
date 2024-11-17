@@ -17,11 +17,13 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
+
 from .views.change_password import ChangePassword
 from .views.login import Login
 from .views.register import Register
+
 urlpatterns = [
-    path("change-password/", ChangePassword.as_view()),
-    path("login/", Login.as_view()),
-    path("register/", Register.as_view()),
+    path('login/', Login.as_view(), name='api-login'),
+    path('register/', Register.as_view(), name='api-register'),
+    path('change-password/', ChangePassword.as_view(), name='api-change-password'),
 ]

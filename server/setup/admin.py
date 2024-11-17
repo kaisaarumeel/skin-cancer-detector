@@ -1,5 +1,7 @@
-from application.models import Users
 from django.contrib.auth.hashers import make_password
+
+from application.models import Users
+
 
 def create_admin_user(username, password, age, sex):
     try:
@@ -12,8 +14,7 @@ def create_admin_user(username, password, age, sex):
                 age=age,
                 sex=sex,
                 is_admin=True,
-                is_active=True
+                is_active=True,
             )
         except Exception as e:
             print(e)
-            

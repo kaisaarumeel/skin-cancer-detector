@@ -11,78 +11,245 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('auth', '0012_alter_user_first_name_max_length'),
+        ("auth", "0012_alter_user_first_name_max_length"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Data',
+            name="Data",
             fields=[
-                ('image_id', models.TextField(primary_key=True, serialize=False)),
-                ('image', models.BinaryField()),
-                ('age', models.IntegerField(null=True)),
-                ('sex', models.CharField(choices=[('male', 'Male'), ('female', 'Female')], max_length=6)),
-                ('localization', models.CharField(choices=[('ear', 'Ear'), ('face', 'Face'), ('neck', 'Neck'), ('scalp', 'Scalp'), ('abdomen', 'Abdomen'), ('back', 'Back'), ('chest', 'Chest'), ('trunk', 'Trunk - Other'), ('acral', 'Acral (Fingers/Toes)'), ('hand', 'Hand'), ('upper_extremity', 'Upper Extremity (Arm)'), ('foot', 'Foot'), ('lower_extremity', 'Lower Extremity (Leg)'), ('genital', 'Genital Area')], max_length=15, null=True)),
-                ('lesion_type', models.CharField(choices=[('nv', 'Melanocytic nevi'), ('bkl', 'Benign keratosis-like lesions'), ('df', 'Dermatofibroma'), ('vasc', 'Vascular lesions'), ('mel', 'Melanoma'), ('bcc', 'Basal cell carcinoma'), ('akiec', 'Actinic keratoses and intraepithelial carcinoma')], max_length=5)),
+                ("image_id", models.TextField(primary_key=True, serialize=False)),
+                ("image", models.BinaryField()),
+                ("age", models.IntegerField(null=True)),
+                (
+                    "sex",
+                    models.CharField(
+                        choices=[("male", "Male"), ("female", "Female")], max_length=6
+                    ),
+                ),
+                (
+                    "localization",
+                    models.CharField(
+                        choices=[
+                            ("ear", "Ear"),
+                            ("face", "Face"),
+                            ("neck", "Neck"),
+                            ("scalp", "Scalp"),
+                            ("abdomen", "Abdomen"),
+                            ("back", "Back"),
+                            ("chest", "Chest"),
+                            ("trunk", "Trunk - Other"),
+                            ("acral", "Acral (Fingers/Toes)"),
+                            ("hand", "Hand"),
+                            ("upper_extremity", "Upper Extremity (Arm)"),
+                            ("foot", "Foot"),
+                            ("lower_extremity", "Lower Extremity (Leg)"),
+                            ("genital", "Genital Area"),
+                        ],
+                        max_length=15,
+                        null=True,
+                    ),
+                ),
+                (
+                    "lesion_type",
+                    models.CharField(
+                        choices=[
+                            ("nv", "Melanocytic nevi"),
+                            ("bkl", "Benign keratosis-like lesions"),
+                            ("df", "Dermatofibroma"),
+                            ("vasc", "Vascular lesions"),
+                            ("mel", "Melanoma"),
+                            ("bcc", "Basal cell carcinoma"),
+                            (
+                                "akiec",
+                                "Actinic keratoses and intraepithelial carcinoma",
+                            ),
+                        ],
+                        max_length=5,
+                    ),
+                ),
             ],
             options={
-                'db_table': 'images',
-                'managed': True,
+                "db_table": "images",
+                "managed": True,
             },
         ),
         migrations.CreateModel(
-            name='Model',
+            name="Model",
             fields=[
-                ('model_id', models.AutoField(primary_key=True, serialize=False)),
-                ('created_at', models.IntegerField()),
-                ('version', models.CharField(max_length=50, unique=True)),
-                ('weights', models.BinaryField()),
-                ('status', models.CharField(choices=[('draft', 'Draft'), ('active', 'Active'), ('archived', 'Archived')], default='draft', max_length=10)),
+                ("model_id", models.AutoField(primary_key=True, serialize=False)),
+                ("created_at", models.IntegerField()),
+                ("version", models.CharField(max_length=50, unique=True)),
+                ("weights", models.BinaryField()),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("draft", "Draft"),
+                            ("active", "Active"),
+                            ("archived", "Archived"),
+                        ],
+                        default="draft",
+                        max_length=10,
+                    ),
+                ),
             ],
             options={
-                'db_table': 'model',
-                'managed': True,
+                "db_table": "model",
+                "managed": True,
             },
         ),
         migrations.CreateModel(
-            name='Users',
+            name="Users",
             fields=[
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
-                ('is_staff', models.BooleanField(default=False, help_text='Designates whether the user can log into this admin site.', verbose_name='staff status')),
-                ('is_active', models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')),
-                ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
-                ('username', models.CharField(max_length=150, primary_key=True, serialize=False, unique=True)),
-                ('is_admin', models.BooleanField(default=False)),
-                ('age', models.IntegerField()),
-                ('sex', models.CharField(choices=[('male', 'Male'), ('female', 'Female')], max_length=6)),
-                ('groups', models.ManyToManyField(blank=True, related_name='skinscan_user_set', related_query_name='skinscan_user', to='auth.group', verbose_name='groups')),
-                ('user_permissions', models.ManyToManyField(blank=True, related_name='skinscan_user_set', related_query_name='skinscan_user', to='auth.permission', verbose_name='user permissions')),
+                ("password", models.CharField(max_length=128, verbose_name="password")),
+                (
+                    "last_login",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="last login"
+                    ),
+                ),
+                (
+                    "is_superuser",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Designates that this user has all permissions without explicitly assigning them.",
+                        verbose_name="superuser status",
+                    ),
+                ),
+                (
+                    "is_staff",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Designates whether the user can log into this admin site.",
+                        verbose_name="staff status",
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Designates whether this user should be treated as active. Unselect this instead of deleting accounts.",
+                        verbose_name="active",
+                    ),
+                ),
+                (
+                    "date_joined",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, verbose_name="date joined"
+                    ),
+                ),
+                (
+                    "username",
+                    models.CharField(
+                        max_length=150, primary_key=True, serialize=False, unique=True
+                    ),
+                ),
+                ("is_admin", models.BooleanField(default=False)),
+                ("age", models.IntegerField()),
+                (
+                    "sex",
+                    models.CharField(
+                        choices=[("male", "Male"), ("female", "Female")], max_length=6
+                    ),
+                ),
+                (
+                    "groups",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="skinscan_user_set",
+                        related_query_name="skinscan_user",
+                        to="auth.group",
+                        verbose_name="groups",
+                    ),
+                ),
+                (
+                    "user_permissions",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="skinscan_user_set",
+                        related_query_name="skinscan_user",
+                        to="auth.permission",
+                        verbose_name="user permissions",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'users',
-                'managed': True,
+                "db_table": "users",
+                "managed": True,
             },
             managers=[
-                ('objects', django.contrib.auth.models.UserManager()),
+                ("objects", django.contrib.auth.models.UserManager()),
             ],
         ),
         migrations.CreateModel(
-            name='Requests',
+            name="Requests",
             fields=[
-                ('request_id', models.AutoField(primary_key=True, serialize=False)),
-                ('created_at', models.IntegerField()),
-                ('probability', models.IntegerField(blank=True, null=True)),
-                ('image', models.BinaryField()),
-                ('localization', models.CharField(choices=[('ear', 'Ear'), ('face', 'Face'), ('neck', 'Neck'), ('scalp', 'Scalp'), ('abdomen', 'Abdomen'), ('back', 'Back'), ('chest', 'Chest'), ('trunk', 'Trunk - Other'), ('acral', 'Acral (Fingers/Toes)'), ('hand', 'Hand'), ('upper_extremity', 'Upper Extremity (Arm)'), ('foot', 'Foot'), ('lower_extremity', 'Lower Extremity (Leg)'), ('genital', 'Genital Area')], max_length=15)),
-                ('lesion_type', models.CharField(choices=[('nv', 'Melanocytic nevi'), ('bkl', 'Benign keratosis-like lesions'), ('df', 'Dermatofibroma'), ('vasc', 'Vascular lesions'), ('mel', 'Melanoma'), ('bcc', 'Basal cell carcinoma'), ('akiec', 'Actinic keratoses and intraepithelial carcinoma')], max_length=5)),
-                ('model', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='application.model', to_field='version')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='application.users')),
+                ("request_id", models.AutoField(primary_key=True, serialize=False)),
+                ("created_at", models.IntegerField()),
+                ("probability", models.IntegerField(blank=True, null=True)),
+                ("image", models.BinaryField()),
+                (
+                    "localization",
+                    models.CharField(
+                        choices=[
+                            ("ear", "Ear"),
+                            ("face", "Face"),
+                            ("neck", "Neck"),
+                            ("scalp", "Scalp"),
+                            ("abdomen", "Abdomen"),
+                            ("back", "Back"),
+                            ("chest", "Chest"),
+                            ("trunk", "Trunk - Other"),
+                            ("acral", "Acral (Fingers/Toes)"),
+                            ("hand", "Hand"),
+                            ("upper_extremity", "Upper Extremity (Arm)"),
+                            ("foot", "Foot"),
+                            ("lower_extremity", "Lower Extremity (Leg)"),
+                            ("genital", "Genital Area"),
+                        ],
+                        max_length=15,
+                    ),
+                ),
+                (
+                    "lesion_type",
+                    models.CharField(
+                        choices=[
+                            ("nv", "Melanocytic nevi"),
+                            ("bkl", "Benign keratosis-like lesions"),
+                            ("df", "Dermatofibroma"),
+                            ("vasc", "Vascular lesions"),
+                            ("mel", "Melanoma"),
+                            ("bcc", "Basal cell carcinoma"),
+                            (
+                                "akiec",
+                                "Actinic keratoses and intraepithelial carcinoma",
+                            ),
+                        ],
+                        max_length=5,
+                    ),
+                ),
+                (
+                    "model",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to="application.model",
+                        to_field="version",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="application.users",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'requests',
-                'managed': True,
+                "db_table": "requests",
+                "managed": True,
             },
         ),
     ]

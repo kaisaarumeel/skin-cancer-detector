@@ -2,6 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+
 import django
 
 
@@ -20,11 +21,13 @@ def main():
     # It should not be executed in the reloader
     # We should only run it if we pass runserver
     django.setup()
-    if os.environ.get('RUN_MAIN') != 'true' and 'runserver' in sys.argv:
+    if os.environ.get("RUN_MAIN") != "true" and "runserver" in sys.argv:
         from setup import setup
+
         setup.setup()
     # Start the server
     execute_from_command_line(sys.argv)
+
 
 if __name__ == "__main__":
     main()
