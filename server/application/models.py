@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 # Documentation references:
 # https://docs.djangoproject.com/en/5.1/topics/db/models/
@@ -93,14 +94,32 @@ class Model(models.Model):
         managed = True
         db_table = 'model'
 
+# This class inherits from the AbstractUser class, which is a built-in
+# Django model that provides basic fields for user authentication
+# and authorization. We override the email, first_name, and last_name
+# fields inherited from AbstractUser, and add custom fields for our
+# application. We inherit it to reduce repetition.
+class Users(AbstractUser):
+    
+    username = models.CharField(
+        max_length=150, 
+        unique=True,
+        primary_key=True
+    )
 
-class Users(models.Model):
-    user_id = models.AutoField(primary_key=True)
-    username = models.CharField(max_length=150, unique=True)
-    password = models.TextField(null=False)
-    age = models.IntegerField(blank=False, null=False)
-    session = models.TextField(null=True, blank=True)
-    session_exp = models.IntegerField(null=True, blank=True)
+    # Overriding the email, first_name, last_name fields
+    # inherited from AbstractUser
+    email = None
+    first_name = None
+    last_name = None
+
+
+    is_admin = models.BooleanField(default=False)
+
+    age = models.IntegerField(
+        null=False,
+        blank=False
+    )
 
     SEX_CHOICES = [
         ('male', 'Male'),
@@ -109,10 +128,33 @@ class Users(models.Model):
     sex = models.CharField(
         max_length=6,
         choices=SEX_CHOICES,
-        null=False
+        null=False,
+        blank=False
     )
 
-    is_admin = models.BooleanField(default=False)
+    # Since our model is a subclass of AbstractUser, we need to
+    # relate it to the Group and Permission models but with
+    # different related names
+    groups = models.ManyToManyField(
+        'auth.Group',
+        verbose_name='groups',
+        blank=True,
+        related_name='skinscan_user_set',
+        related_query_name='skinscan_user'
+    )
+
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        verbose_name='user permissions',
+        blank=True,
+        related_name='skinscan_user_set',
+        related_query_name='skinscan_user'
+    )
+
+
+    # Specify required fields for createsuperuser command
+    REQUIRED_FIELDS = ['age', 'sex']
+    # USERNAME_FIELD is already 'username' by default
 
     class Meta:
         managed = True

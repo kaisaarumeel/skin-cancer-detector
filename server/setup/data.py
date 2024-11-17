@@ -9,9 +9,6 @@ def progress_callback(op_code, cur_count, max_count, message):
     print(f"Progress: {percentage}%")
 
 def assert_or_get_training_data():
-    # Setup django
-    django.setup()
-
     # Load relevant model
     from application.models import Data
 
