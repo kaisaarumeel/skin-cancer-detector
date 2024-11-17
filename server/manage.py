@@ -6,7 +6,7 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "SkinScan.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skinscan.settings")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -15,6 +15,12 @@ def main():
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
+    # Ensure that the setup is only run once
+    # It should not be executed in the reloader
+    # We should only run it if we pass runserver
+    if os.environ.get('RUN_MAIN') != 'true' and 'runserver' in sys.argv:
+        from setup import setup
+        setup.setup()
     execute_from_command_line(sys.argv)
 
 
