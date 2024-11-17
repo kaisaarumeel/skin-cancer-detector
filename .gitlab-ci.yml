@@ -22,8 +22,7 @@ code-quality:
     - echo "Checking code formatting..."
     - python3 -m black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
     
-    - echo "Checking Django startup..."
-    - python3 manage.py check || (echo "❌ Django system checks failed" && exit 1)
+    - python3 server/manage.py check || (echo "❌ Django system checks failed" && exit 1)
   rules:
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
@@ -40,8 +39,7 @@ api-tests:
     - cd server
 
     # Run tests
-    - echo "Running API tests..."
-    - python3 manage.py test --verbosity=2
+    - python3 server/manage.py test --verbosity=2
   rules:
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
