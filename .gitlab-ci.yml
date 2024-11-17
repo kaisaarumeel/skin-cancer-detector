@@ -30,8 +30,6 @@ code-quality:
 
 api-tests:
   stage: api-tests
-  variables:
-    DJANGO_SETTINGS_MODULE: "skinscan.settings_test"
   script:
     # Upgrade pip in user space
     - python3 -m pip install --user --upgrade pip
@@ -39,10 +37,8 @@ api-tests:
     # Install dependencies
     - python3 -m pip install --user -r requirements.txt
     
-    # Run migrations on test database
-    - echo "Setting up test database..."
-    - python3 manage.py migrate
-    
+    - cd server
+
     # Run tests
     - echo "Running API tests..."
     - python3 manage.py test --verbosity=2
