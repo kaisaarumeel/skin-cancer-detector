@@ -1,10 +1,10 @@
-<style>
-    h1 {
-        color: var(--secondary-color);
-    }
-</style>
+<script lang="ts">
+    import { goto } from '$app/navigation';
+    import { onMount } from 'svelte';
   
-<!-- Your component structure goes here -->
-<div>
-<h1>Welcome to Svelte!</h1>
-</div>
+    // Redirect to the home page when the component is mounted
+    onMount(() => {
+      goto('/home');
+    });
+  </script>
+  
