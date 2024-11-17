@@ -23,7 +23,7 @@ from .views.login import Login
 from .views.register import Register
 
 urlpatterns = [
-    path('login/', Login.as_view(), name='api-login'),
-    path('register/', Register.as_view(), name='api-register'),
-    path('change-password/', ChangePassword.as_view(), name='api-change-password'),
+    path("login/", Login.as_view(), name="api-login"),
+    path("register/", Register.as_view(), name="api-register"),
+    path("change-password/", ChangePassword.as_view(), name="api-change-password"),
 ]

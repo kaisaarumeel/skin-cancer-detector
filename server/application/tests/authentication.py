@@ -1,8 +1,11 @@
-from django.test import TestCase, Client
-from django.urls import reverse
-from django.contrib.auth.hashers import make_password, check_password
-from ..models import Users
 import json
+
+from django.contrib.auth.hashers import check_password, make_password
+from django.test import Client, TestCase
+from django.urls import reverse
+
+from ..models import Users
+
 
 class AuthenticationTests(TestCase):
     def setUp(self):
@@ -13,147 +16,138 @@ class AuthenticationTests(TestCase):
             password=make_password("testpass123"),
             age=25,
             sex="male",
-            is_active=True
+            is_active=True,
         )
-        
+
         # Test data
-        self.valid_login_data = {
-            "username": "testuser",
-            "password": "testpass123"
-        }
+        self.valid_login_data = {"username": "testuser", "password": "testpass123"}
         self.valid_register_data = {
             "username": "newuser",
             "password": "newpass123",
             "age": 30,
-            "sex": "female"
+            "sex": "female",
         }
-        self.valid_password_change = {
-            "new_password": "newpass456"
-        }
+        self.valid_password_change = {"new_password": "newpass456"}
 
     def test_login_success(self):
         """Test successful login"""
         response = self.client.post(
-            reverse('api-login'),
+            reverse("api-login"),
             json.dumps(self.valid_login_data),
-            content_type='application/json'
-        )        
+            content_type="application/json",
+        )
         self.assertEqual(response.status_code, 200)
-
 
     def test_login_missing_fields(self):
         """Test login with missing fields"""
         invalid_data = {"username": "testuser"}
         response = self.client.post(
-            reverse('api-login'),
+            reverse("api-login"),
             json.dumps(invalid_data),
-            content_type='application/json'
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
 
     def test_login_invalid_credentials(self):
         """Test login with invalid credentials"""
-        invalid_data = {
-            "username": "testuser",
-            "password": "wrongpass"
-        }
+        invalid_data = {"username": "testuser", "password": "wrongpass"}
         response = self.client.post(
-            reverse('api-login'),
+            reverse("api-login"),
             json.dumps(invalid_data),
-            content_type='application/json'
+            content_type="application/json",
         )
-        
+
         self.assertEqual(response.status_code, 401)
 
     def test_register_success(self):
         """Test successful user registration"""
         response = self.client.post(
-            reverse('api-register'),
+            reverse("api-register"),
             json.dumps(self.valid_register_data),
-            content_type='application/json'
+            content_type="application/json",
         )
-        
-        self.assertEqual(response.status_code, 201)
 
+        self.assertEqual(response.status_code, 201)
 
     def test_register_missing_fields(self):
         """Test registration with missing fields"""
         invalid_data = {
             "username": "newuser",
             "password": "newpass123",
-            "sex": "female"
+            "sex": "female",
             # missing age field
         }
-        
+
         response = self.client.post(
-            reverse('api-register'),
+            reverse("api-register"),
             json.dumps(invalid_data),
-            content_type='application/json'
+            content_type="application/json",
         )
-        
+
         self.assertEqual(response.status_code, 400)
 
     def test_register_duplicate_user(self):
         """Test registration with existing username"""
         duplicate_data = self.valid_register_data.copy()
-        duplicate_data['username'] = 'testuser'
-        
+        duplicate_data["username"] = "testuser"
+
         response = self.client.post(
-            reverse('api-register'),
+            reverse("api-register"),
             json.dumps(duplicate_data),
-            content_type='application/json'
+            content_type="application/json",
         )
-        
+
         self.assertEqual(response.status_code, 400)
 
     def test_change_password_success(self):
         """Test successful password change"""
         # Login first
         self.client.post(
-            reverse('api-login'),
+            reverse("api-login"),
             json.dumps(self.valid_login_data),
-            content_type='application/json'
+            content_type="application/json",
         )
-        
+
         response = self.client.post(
-            reverse('api-change-password'),
+            reverse("api-change-password"),
             json.dumps(self.valid_password_change),
-            content_type='application/json'
+            content_type="application/json",
         )
-        
+
         self.assertEqual(response.status_code, 200)
-        
+
         # Verify password was actually changed
-        updated_user = Users.objects.get(username='testuser')
+        updated_user = Users.objects.get(username="testuser")
         self.assertTrue(
-            check_password(self.valid_password_change['new_password'], 
-                         updated_user.password)
+            check_password(
+                self.valid_password_change["new_password"], updated_user.password
+            )
         )
 
     def test_change_password_missing_fields(self):
         """Test password change with missing fields"""
         # Login first
         self.client.post(
-            reverse('api-login'),
+            reverse("api-login"),
             json.dumps(self.valid_login_data),
-            content_type='application/json'
+            content_type="application/json",
         )
-        
+
         response = self.client.post(
-            reverse('api-change-password'),
+            reverse("api-change-password"),
             json.dumps({}),  # Empty data to test missing fields
-            content_type='application/json'
+            content_type="application/json",
         )
-        
+
         self.assertEqual(response.status_code, 400)
-        self.assertIn('err', json.loads(response.content))
+        self.assertIn("err", json.loads(response.content))
 
     def test_change_password_unauthenticated(self):
         """Test password change without login"""
         response = self.client.post(
-            reverse('api-change-password'),
+            reverse("api-change-password"),
             json.dumps(self.valid_password_change),
-            content_type='application/json'
+            content_type="application/json",
         )
-        
+
         self.assertEqual(response.status_code, 401)
