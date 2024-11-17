@@ -36,8 +36,6 @@ api-tests:
     # Install dependencies
     - python3 -m pip install --user -r requirements.txt
     
-    - cd server
-
     # Run tests
     - python3 server/manage.py test --verbosity=2
   rules:
