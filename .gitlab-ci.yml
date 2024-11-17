@@ -1,33 +1,26 @@
-image: python:3.10-slim
-
 stages:
   - code-quality
   - api-tests
 
-before_script:
-  - apt-get update
-  - apt-get install -y python3-pip git
-  - python -m pip install --upgrade pip
-
 code-quality:
   stage: code-quality
   script:
-    # Install dependencies
-    - pip install -r requirements.txt
-    - pip install black isort bandit
+    # Install dependencies using python3 -m pip
+    - python3 -m pip install --user -r requirements.txt
+    - python3 -m pip install --user black isort bandit
     
     # Code quality checks
     - echo "Checking code formatting..."
-    - black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
+    - python3 -m black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
     
     - echo "Checking import sorting..."
-    - isort . --check-only --diff || (echo "❌ Import sorting check failed. Run 'isort .' locally to fix imports" && exit 1)
+    - python3 -m isort . --check-only --diff || (echo "❌ Import sorting check failed. Run 'isort .' locally to fix imports" && exit 1)
     
     - echo "Running security checks..."
-    - bandit -r . || (echo "❌ Security checks failed. Please review the security issues" && exit 1)
+    - python3 -m bandit -r . || (echo "❌ Security checks failed. Please review the security issues" && exit 1)
 
     - echo "Checking Django startup..."
-    - python manage.py check || (echo "❌ Django system checks failed" && exit 1)
+    - python3 manage.py check || (echo "❌ Django system checks failed" && exit 1)
   rules:
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
@@ -38,15 +31,15 @@ api-tests:
     DJANGO_SETTINGS_MODULE: "skinscan.settings_test"
   script:
     # Install dependencies
-    - pip install -r requirements.txt
+    - python3 -m pip install --user -r requirements.txt
     
     # Run migrations on test database
     - echo "Setting up test database..."
-    - python manage.py migrate
+    - python3 manage.py migrate
     
     # Run tests
     - echo "Running API tests..."
-    - python manage.py test --verbosity=2
+    - python3 manage.py test --verbosity=2
   rules:
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
