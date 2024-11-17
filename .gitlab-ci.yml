@@ -6,29 +6,25 @@ stages:
 
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
+  PATH: "$PATH:/root/.local/bin"  # Add local bin to PATH
 
 cache:
   paths:
     - .pip-cache/
+    
+before_script:
+  - python -m pip install --upgrade pip setuptools wheel
 
 code-quality:
   stage: code-quality
   script:
     # Install dependencies
     - pip install -r requirements.txt
-    - pip install black isort bandit
     
     # Code quality checks
-    - echo "Checking code formatting..."
-    - black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
-    
-    - echo "Checking import sorting..."
-    - isort . --check-only --diff || (echo "❌ Import sorting check failed. Run 'isort .' locally to fix imports" && exit 1)
-    
-    - echo "Running security checks..."
-    - bandit -r . || (echo "❌ Security checks failed. Please review the security issues" && exit 1)
-
-    - echo "Checking Django startup..."
+    - python -m black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
+    - python -m isort . --check-only --diff || (echo "❌ Import sorting check failed. Run 'isort .' locally to fix imports" && exit 1)
+    - python -m bandit -r . || (echo "❌ Security checks failed. Please review the security issues" && exit 1)
     - python manage.py check || (echo "❌ Django system checks failed" && exit 1)
   rules:
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
