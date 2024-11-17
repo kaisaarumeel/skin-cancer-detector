@@ -1,30 +1,35 @@
+image: python:3.10-slim
+
 stages:
   - code-quality
   - api-tests
 
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
+
+cache:
+  paths:
+    - .pip-cache/
+
 code-quality:
   stage: code-quality
   script:
-    # Check Python version
-    - python3 --version
-    
-    # Install dependencies using python3 -m pip
-    - python3 -m pip install --user Django~=4.2.0  # Using Django 4.2 LTS which supports Python 3.8+
-    - python3 -m pip install --user -r requirements.txt
-    - python3 -m pip install --user black isort bandit
+    # Install dependencies
+    - pip install -r requirements.txt
+    - pip install black isort bandit
     
     # Code quality checks
     - echo "Checking code formatting..."
-    - python3 -m black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
+    - black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
     
     - echo "Checking import sorting..."
-    - python3 -m isort . --check-only --diff || (echo "❌ Import sorting check failed. Run 'isort .' locally to fix imports" && exit 1)
+    - isort . --check-only --diff || (echo "❌ Import sorting check failed. Run 'isort .' locally to fix imports" && exit 1)
     
     - echo "Running security checks..."
-    - python3 -m bandit -r . || (echo "❌ Security checks failed. Please review the security issues" && exit 1)
+    - bandit -r . || (echo "❌ Security checks failed. Please review the security issues" && exit 1)
 
     - echo "Checking Django startup..."
-    - python3 manage.py check || (echo "❌ Django system checks failed" && exit 1)
+    - python manage.py check || (echo "❌ Django system checks failed" && exit 1)
   rules:
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
@@ -34,20 +39,16 @@ api-tests:
   variables:
     DJANGO_SETTINGS_MODULE: "skinscan.settings_test"
   script:
-    # Check Python version
-    - python3 --version
-    
     # Install dependencies
-    - python3 -m pip install --user Django~=4.2.0  # Using Django 4.2 LTS
-    - python3 -m pip install --user -r requirements.txt
+    - pip install -r requirements.txt
     
     # Run migrations on test database
     - echo "Setting up test database..."
-    - python3 manage.py migrate
+    - python manage.py migrate
     
     # Run tests
     - echo "Running API tests..."
-    - python3 manage.py test --verbosity=2
+    - python manage.py test --verbosity=2
   rules:
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
