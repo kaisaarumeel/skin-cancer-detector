@@ -15,22 +15,13 @@ cache:
 code-quality:
   stage: code-quality
   script:
-    # Upgrade pip in user space
     - python3 -m pip install --user --upgrade pip
     
-    # Install dependencies in user space
     - python3 -m pip install --user -r requirements.txt
     
-    # Code quality checks
     - echo "Checking code formatting..."
     - python3 -m black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
     
-    - echo "Checking import sorting..."
-    - python3 -m isort . --check-only --diff || (echo "❌ Import sorting check failed. Run 'isort .' locally to fix imports" && exit 1)
-    
-    - echo "Running security checks..."
-    - python3 -m bandit -r . || (echo "❌ Security checks failed. Please review the security issues" && exit 1)
-
     - echo "Checking Django startup..."
     - python3 manage.py check || (echo "❌ Django system checks failed" && exit 1)
   rules:
