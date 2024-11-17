@@ -1,15 +1,22 @@
-image: python:3.x
+image: python:3.10-slim
 
 stages:
   - code-quality
   - api-tests
 
+before_script:
+  - apt-get update
+  - apt-get install -y python3-pip git
+  - python -m pip install --upgrade pip
+
 code-quality:
   stage: code-quality
   script:
-    - python -m pip install --upgrade pip
+    # Install dependencies
     - pip install -r requirements.txt
+    - pip install black isort bandit
     
+    # Code quality checks
     - echo "Checking code formatting..."
     - black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
     
@@ -30,7 +37,7 @@ api-tests:
   variables:
     DJANGO_SETTINGS_MODULE: "skinscan.settings_test"
   script:
-    - python -m pip install --upgrade pip
+    # Install dependencies
     - pip install -r requirements.txt
     
     # Run migrations on test database
