@@ -5,7 +5,11 @@ stages:
 code-quality:
   stage: code-quality
   script:
+    # Check Python version
+    - python3 --version
+    
     # Install dependencies using python3 -m pip
+    - python3 -m pip install --user Django~=4.2.0  # Using Django 4.2 LTS which supports Python 3.8+
     - python3 -m pip install --user -r requirements.txt
     - python3 -m pip install --user black isort bandit
     
@@ -30,7 +34,11 @@ api-tests:
   variables:
     DJANGO_SETTINGS_MODULE: "skinscan.settings_test"
   script:
+    # Check Python version
+    - python3 --version
+    
     # Install dependencies
+    - python3 -m pip install --user Django~=4.2.0  # Using Django 4.2 LTS
     - python3 -m pip install --user -r requirements.txt
     
     # Run migrations on test database
