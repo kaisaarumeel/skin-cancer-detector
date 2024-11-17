@@ -1,3 +1,11 @@
+<script>
+  import LoginForm from "../../components/LoginForm.svelte";
+  import SignupForm from "../../components/SignupForm.svelte";
+
+  // Reactive state to manage whether to show the login or signup form
+  let showSignup = false;
+</script>
+
 <div class="w-full h-screen flex justify-center items-center">
   <!-- Left Section (hidden on small screens, visible on large screens) -->
   <div class="hidden lg:flex h-1/2 w-6/12 flex-col justify-between mr-20">
@@ -19,17 +27,17 @@
     </div>
   </div>
 
-
-  <div class="flex flex-col max-w-md w-full h-full text-center justify-center">
-    <h2 class="text-3xl font-light text-secondary mb-6">Login here</h2>
-    <p class="text-tertiary mb-5">Welcome back, you’ve been missed!</p>
-    <div class="mb-4">
-      <input type="email" placeholder="Email" class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary">
-    </div>
-    <div class="mb-4">
-      <input type="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary">
-    </div>
-    <button class="w-full p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-4 transition-colors hover:bg-secondary shadow-l">Sign in</button>
-    <button class="w-full p-2 bg-white rounded-md cursor-pointer mt-4 text-tertiary text-sm font-regular border-none hover:bg-stone-200 shadow-md">Create new account</button>
+  <!-- Right Section: Conditionally display SignupForm or LoginForm -->
+  <div class="max-w-md w-full h-full flex flex-col justify-center">
+    {#if showSignup}
+      <SignupForm />
+    {:else}
+      <LoginForm />
+    {/if}
+    {#if showSignup}
+      <button on:click={() => showSignup = false} class="w-full p-2 bg-white rounded-md cursor-pointer text-tertiary text-sm font-regular border-none hover:bg-stone-200 shadow-md mt-8">Already have an account</button>
+    {:else}
+      <button on:click={() => showSignup = true} class="w-full p-2 bg-white rounded-md cursor-pointer text-tertiary text-sm font-regular border-none hover:bg-stone-200 shadow-md mt-8">Create new account</button>
+    {/if}
   </div>
 </div>
