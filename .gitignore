@@ -13,3 +13,5 @@ venv
 
 # Exclude secrets
 .env
+server/data.sqlite3
+server/data.sqlite3-journal

@@ -53,7 +53,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "SkinScan.urls"
+ROOT_URLCONF = "skinscan.urls"
 
 TEMPLATES = [
     {
@@ -71,7 +71,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "SkinScan.wsgi.application"
+WSGI_APPLICATION = "skinscan.wsgi.application"
 
 
 # Database
@@ -81,6 +81,10 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
+    },
+    "data":{
+        "ENGINE":"django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "data.sqlite3"
     }
 }
 
