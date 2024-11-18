@@ -10,8 +10,6 @@ cache:
   paths:
   # Cache pip downloads
     - .pip-cache/
-    - ~/.cache/pip
-    - ~/.local/lib/python3*/site-packages
 
 backend-code-quality:
   stage: backend-code-quality
