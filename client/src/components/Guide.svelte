@@ -20,15 +20,16 @@
   </script>
     
 
-<div class="bg-white opacity-95 rounded-lg p-8 shadow-md w-3/4 lg:w-2/4 h-1/2 flex flex-col justify-between items-center">
+<div class="bg-slate-50 text-center rounded-xl p-8 shadow-lg w-3/4 lg:w-2/4 h-1/2 flex flex-col justify-between items-center">
     <h2 class="text-2xl text-secondary font-light mb-4">{steps[currentStep - 1].title}</h2>
     <p class="text-tertiary">{steps[currentStep - 1].description}</p>
 
     <div class="flex justify-center items-center">
     <button
         on:click={nextStep}
-        class="text-2xl font-bold text-gray-500 hover:text-gray-700">
-        →
+        class="pl-4 flex items-center justify-center text-sm font-light text-secondary hover:bg-stone-200 border border-secondary rounded-2xl pt-2 pb-2 pr-4 pl-4">
+        Next
+        <img class="h-5 pl-4" src="right-arrow.png" alt="Arrow right">
     </button>
     </div>
 

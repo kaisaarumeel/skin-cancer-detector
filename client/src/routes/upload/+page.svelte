@@ -19,7 +19,7 @@
 
   <!-- Guide Component as an Overlay -->
   {#if currentStep < totalSteps} <!-- Directly check if currentStep is less than or equal to totalSteps -->
-    <div class="absolute top-0 left-0 w-full h-full bg-opacity-50 flex items-center justify-center">
+    <div class="backdrop-blur-sm absolute top-0 left-0 w-full h-full bg-opacity-50 flex items-center justify-center">
         <Guide {currentStep} on:nextStep={nextStep}></Guide>
     </div>
   {/if}
