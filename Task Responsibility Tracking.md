@@ -24,16 +24,16 @@ This document tracks all project tasks, assignees, and the status per every week
 
 
 ## Week 2 _(Nov 11 - Nov 17)_:
-| Task                                                                                                                   | Responsible  | Deadline | Delivered | Integrated | Notes |
-| :--------------------------------------------------------------------------------------------------------------------- | :----------: | :------: | :-------: | :--------: | :---: |
-| Write User Stories & System Requirements                                                                               | All Members  |  14 Nov  |    Yes    |    Yes     |   -   |
-| [Create public GitHub repository with project data set](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/1) | Konstantinos |  15 Nov  |
-| [Initalise base project structure](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/2)                      | Kaisa & Erik |  16 Nov  |
-| [Create initial database schemas](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/3)                       |  Amirpooya   |  15 Nov  |
-| [Evaluate image metadata feature relevance](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/4)             | Konstantinos |  15 Nov  |
-| [Create Figma UI-prototype](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/5)                             |    Arvin     |  15 Nov  |
-| [Create frontend project structure](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/6)                     |  Alexander   |  14 Nov  |    Yes    |    Yes     |   -   |
-| [Set up markdown task tracking document](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/19)               |     Erik     |  14 Nov  |    Yes    |    Yes     |   -   |
+| Task                                                                                                                   | Responsible  | Deadline | Delivered | Integrated |                                          Notes                                           |
+| :--------------------------------------------------------------------------------------------------------------------- | :----------: | :------: | :-------: | :--------: | :--------------------------------------------------------------------------------------: |
+| Write User Stories & System Requirements                                                                               | All Members  |  14 Nov  |    Yes    |    Yes     |                                            -                                             |
+| [Create public GitHub repository with project data set](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/1) | Konstantinos |  15 Nov  |    Yes    |    Yes     |
+| [Initalise base project structure](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/2)                      | Kaisa & Erik |  16 Nov  |    Yes    |    Yes     |
+| [Create initial database schemas](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/3)                       |  Amirpooya   |  15 Nov  |    Yes    |    Yes     |  Had to be modified by Erik and Kaisa to be to fit with the Django models.py structure   |
+| [Evaluate image metadata feature relevance](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/4)             | Konstantinos |  15 Nov  |    Yes    |    Yes     |
+| [Create Figma UI-prototype](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/5)                             |    Arvin     |  15 Nov  |    Yes    |     -      | The prototype was not ready for frontend implementation and had to be modified by Kaisa. |
+| [Create frontend project structure](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/6)                     |  Alexander   |  14 Nov  |    Yes    |    Yes     |                                            -                                             |
+| [Set up markdown task tracking document](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/19)               |     Erik     |  14 Nov  |    Yes    |    Yes     |                                            -                                             |
 
 
 
@@ -47,9 +47,9 @@ This document tracks all project tasks, assignees, and the status per every week
 | [ML Pipeline: Implement data loading and pre-processing](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/11)       |  Amirpooya   |  22 Nov  |
 | [Add unit tests](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/13)                                               |  Alexander   |  21 Nov  |
 | [Add authentication functionality](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/15)                             |  Alexander   |  22 Nov  |
-| [Add admin "training data" endpoint](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/16)                           |              |  22 Nov  |
-| [Add user "photo upload" endpoint](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/17)                             |              |  22 Nov  |
-| [Add admin "get users" & "get requests" endpoints](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/18)             |              |  22 Nov  |
+| [Add admin "training data" endpoint](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/16)                           | Konstantinos |  22 Nov  |
+| [Add user "photo upload" endpoint](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/17)                             |    Arvin     |  22 Nov  |
+| [Add admin "get users" & "get requests" endpoints](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/18)             |    Arvin     |  22 Nov  |
 | [Add additional data validation using _some_ tool](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/12)             |              |          |           |            | TBD: might change/be removed |
 
 
