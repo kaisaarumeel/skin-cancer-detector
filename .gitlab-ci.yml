@@ -15,7 +15,7 @@ backend-code-quality:
     # Upgrade pip
     - python3 -m pip install --user --upgrade pip
     # Install deps
-    - python3 -m pip install --user -r requirements.txt
+    - python3 -m pip install --user -r requirements-ci.txt
     
     # Ensure code is formatted correctly
     - python3 -m black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
@@ -35,7 +35,7 @@ backend-api-tests:
     - python3 -m pip install --user --upgrade pip
     
     # Install deps
-    - python3 -m pip install --user -r requirements.txt
+    - python3 -m pip install --user -r requirements-ci.txt
     
     # Run backend tests
     - cd server
