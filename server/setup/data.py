@@ -7,7 +7,7 @@ import pandas as pd
 
 # Progress callback for git clone
 def progress_callback(op_code, cur_count, max_count, message):
-    percentage = cur_count / max_count * 100
+    percentage = round(cur_count / max_count * 100)
     print(f"Progress: {percentage}%")
 
 
@@ -16,7 +16,7 @@ def assert_or_get_training_data():
     from application.models import Data
 
     # Get the current training data size
-    current_training_count = Data.objects.using("data").count()
+    current_training_count = Data.objects.using("db_images").count()
 
     print("Current training data size is", current_training_count)
     # get user input
@@ -29,7 +29,7 @@ def assert_or_get_training_data():
     user_input = input("Do you want to delete the current data? [y/n]: ")
     if user_input.lower() == "y":
         print("Deleting current data, this might take some time...")
-        Data.objects.using("data").all().delete()
+        Data.objects.using("db_images").all().delete()
 
     temp_dir = Path("temp")
 
@@ -62,7 +62,7 @@ def assert_or_get_training_data():
             image_binary = f.read()
             try:
                 # Check if the image already exists
-                Data.objects.using("data").get(image_id=row["image_id"])
+                Data.objects.using("db_images").get(image_id=row["image_id"])
             except Data.DoesNotExist:
                 try:
                     # If any of these rows are missing, set them to None
@@ -79,7 +79,7 @@ def assert_or_get_training_data():
                         localization = None
 
                     # Insert the datapoint
-                    Data.objects.using("data").create(
+                    Data.objects.using("db_images").create(
                         image_id=row["image_id"],
                         image=image_binary,
                         age=age,
@@ -90,8 +90,8 @@ def assert_or_get_training_data():
                 except Exception as e:
                     print("Unexpected error: ", e)
                     break
-            print("Loading training data:", index / len(df) * 100, "%")
-    print("Training data size is", Data.objects.using("data").count())
+            print(f"Loading training data: {round(index / len(df) * 100)}%")
+    print("Training data size is", Data.objects.using("db_images").count())
     # Remove the temp directory
     import shutil
 
