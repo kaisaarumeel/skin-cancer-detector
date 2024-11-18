@@ -1,7 +1,13 @@
 <script>
   import TopBar from "../../components/TopBar.svelte";
   import Guide from "../../components/Guide.svelte";
-  
+  import { goto } from '$app/navigation';
+
+  function getResults() {
+    // Add sign in endpoint/logic here
+    goto('/results');
+  }
+    
   // Track the current step and visibility of the guide
   let currentStep = 1;
   const totalSteps = 5; // Updated to match the number of steps in Guide
@@ -63,6 +69,8 @@
         <input type="file" id="myFile" name="filename">
         <input type="submit">
       </form>
+
+      <button on:click={getResults} class="w-1/2 p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-10 transition-colors hover:bg-secondary shadow-l">Analyze</button>
     </div>
   </div>
 </div>
