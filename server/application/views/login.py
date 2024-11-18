@@ -7,7 +7,7 @@ from .base.base_login import BaseLogin
 
 class Login(BaseLogin):
     @load_json
-    def post(self, request, check_admin=False):
+    def post(self, request):
         # First check if all required fields exist in request.data
         required_fields = ["username", "password"]
         if not all(field in request.data for field in required_fields):
