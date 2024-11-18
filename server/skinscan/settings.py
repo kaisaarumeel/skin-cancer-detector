@@ -66,9 +66,12 @@ WSGI_APPLICATION = "skinscan.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": BASE_DIR / "db_app.sqlite3",
     },
-    "data": {"ENGINE": "django.db.backends.sqlite3", "NAME": BASE_DIR / "data.sqlite3"},
+    "db_images": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db_images.sqlite3",
+    },
 }
 
 # Password validation
