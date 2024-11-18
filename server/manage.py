@@ -3,6 +3,8 @@
 import os
 import sys
 
+import django
+
 
 def main():
     """Run administrative tasks."""
@@ -18,9 +20,12 @@ def main():
     # Ensure that the setup is only run once
     # It should not be executed in the reloader
     # We should only run it if we pass runserver
-    if os.environ.get('RUN_MAIN') != 'true' and 'runserver' in sys.argv:
+    django.setup()
+    if os.environ.get("RUN_MAIN") != "true" and "runserver" in sys.argv:
         from setup import setup
+
         setup.setup()
+    # Start the server
     execute_from_command_line(sys.argv)
 
 
