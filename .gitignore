@@ -16,3 +16,4 @@ venv
 server/data.sqlite3
 server/data.sqlite3-journal
 data.sqlite3
+server/launch.sh
