@@ -2,10 +2,8 @@ stages:
   - backend-code-quality
   - backend-api-tests
 
-variables:
-  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
-
 cache:
+  # Cache by branch name
   key: "${CI_COMMIT_REF_SLUG}"
   paths:
   # Cache pip downloads
@@ -25,7 +23,8 @@ backend-code-quality:
     # Ensure django system checks pass
     - cd server
     - python3 manage.py check || (echo "❌ Django system checks failed" && exit 1)
-  rules:
+  rules: 
+    # Only run on main and develop branches
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
 
@@ -42,5 +41,6 @@ backend-api-tests:
     - cd server
     - python3 manage.py test --verbosity=2
   rules:
+    # Only run on main and develop branches
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
