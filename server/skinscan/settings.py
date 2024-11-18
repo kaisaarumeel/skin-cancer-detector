@@ -68,7 +68,10 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db_app.sqlite3",
     },
-    "db_images": {"ENGINE": "django.db.backends.sqlite3", "NAME": BASE_DIR / "db_images.sqlite3"},
+    "db_images": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db_images.sqlite3",
+    },
 }
 
 # Password validation
