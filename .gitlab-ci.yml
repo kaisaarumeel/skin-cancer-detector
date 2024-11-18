@@ -1,6 +1,6 @@
 stages:
-  - code-quality
-  - api-tests
+  - backend-code-quality
+  - backend-api-tests
 
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
@@ -8,36 +8,39 @@ variables:
 cache:
   key: "${CI_COMMIT_REF_SLUG}"
   paths:
+  # Cache pip downloads
     - .pip-cache/
     - ~/.cache/pip
     - ~/.local/lib/python3*/site-packages
 
-code-quality:
-  stage: code-quality
+backend-code-quality:
+  stage: backend-code-quality
   script:
+    # Upgrade pip
     - python3 -m pip install --user --upgrade pip
-    
+    # Install deps
     - python3 -m pip install --user -r requirements.txt
     
-    - echo "Checking code formatting..."
+    # Ensure code is formatted correctly
     - python3 -m black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
     
+    # Ensure django system checks pass
     - cd server
     - python3 manage.py check || (echo "❌ Django system checks failed" && exit 1)
   rules:
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
 
-api-tests:
-  stage: api-tests
+backend-api-tests:
+  stage: backend-api-tests
   script:
-    # Upgrade pip in user space
+    # Upgrade pip
     - python3 -m pip install --user --upgrade pip
     
-    # Install dependencies
+    # Install deps
     - python3 -m pip install --user -r requirements.txt
     
-    # Run tests
+    # Run backend tests
     - cd server
     - python3 manage.py test --verbosity=2
   rules:
