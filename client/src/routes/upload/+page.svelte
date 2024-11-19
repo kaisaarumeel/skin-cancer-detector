@@ -18,6 +18,17 @@
       currentStep++; // Increment currentStep
     }
   }
+
+  let fileName = "No file chosen";
+
+  function handleFileChange(event) {
+    const file = event.target.files[0];
+    if (file) {
+      fileName = file.name;
+    } else {
+      fileName = "No file chosen";
+    }
+  }
 </script>
   
 <div class="h-screen flex flex-col relative">
@@ -65,12 +76,34 @@
         </select>
       </div>
 
-      <form class="mt-10 w-full" action="/action_page.php">
-        <input type="file" id="myFile" name="filename">
-        <input type="submit">
+      <form class="mt-10 w-full">
+        <div class="flex items-center bg-slate-50 shadow-md p-3 rounded-lg justify-between">
+
+          <label for="fileInput" class="p-2 border-tertiary border rounded-2xl flex items-center text-tertiary font-light cursor-pointer mr-4 hover:bg-stone-200">
+            <img src="upload-file.png" alt="Upload a File" class="h-5 mr-4">
+            Upload File
+          </label>
+      
+          <input
+            id="fileInput"
+            type="file"
+            class="hidden"
+            on:change={handleFileChange}
+          />
+    
+          <span class="text-tertiary">{fileName}</span>
+
+          <input
+          type="submit"
+          class="pt-3 pb-3 pr-5 pl-5 bg-primary text-white font-light rounded-md cursor-pointer hover:bg-secondary "
+          value="Submit"
+        />
+        </div>
+        
+
       </form>
 
-      <button on:click={getResults} class="w-1/2 p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-10 transition-colors hover:bg-secondary shadow-l">Analyze</button>
+      <button on:click={getResults} class="w-1/2 p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-10 hover:bg-secondary shadow-l">Analyze</button>
     </div>
   </div>
 </div>

@@ -8,7 +8,7 @@
 
 <div class="w-full h-screen flex justify-center items-center">
   <!-- Left Section (hidden on small screens, visible on large screens) -->
-  <div class="hidden lg:flex h-1/2 w-6/12 flex-col justify-between mr-20">
+  <div class="hidden lg:flex h-1/2 w-6/12 flex-col justify-between mr-20 ml-10">
     <h1 class="text-secondary font-extralight text-6xl">Welcome to <br> SkinScan.</h1>
     
     <div class="flex w-full justify-between">
@@ -28,7 +28,7 @@
   </div>
 
   <!-- Right Section: Conditionally display SignupForm or LoginForm -->
-  <div class="max-w-md w-full h-full flex flex-col justify-center">
+  <div class="max-w-md w-full h-full flex flex-col justify-center md:mr-10">
     {#if showSignup}
       <SignupForm />
     {:else}
