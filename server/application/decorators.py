@@ -40,4 +40,3 @@ def admin_only(f):
             return JsonResponse({"err": "Unauthorized"}, status=401)
 
     return decorated_function
-    
