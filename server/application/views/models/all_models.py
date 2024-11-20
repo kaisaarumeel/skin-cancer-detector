@@ -1,3 +1,4 @@
+import base64
 from django.http import JsonResponse
 from django.views import View
 
@@ -11,15 +12,11 @@ class GetAllModels(View):
         # retrieve all models in the database
         models = Model.objects.all()
 
-        # check if list of models is empty
-        if not models.exists():  
-            return JsonResponse({"err": "No models found"}, status=404)
-
         models_data = [{
             "model_id": model.model_id,
             "created_at": model.created_at,
             "version": model.version,
-            "weights": model.weights,
+            "weights": base64.b64encode(model.weights).decode('utf-8'),  # convert to base64 string, which is JSON-serializable
             "status": model.status,
         } for model in models]
         
