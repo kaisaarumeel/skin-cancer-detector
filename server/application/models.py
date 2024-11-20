@@ -92,7 +92,9 @@ class Model(models.Model):
         ("selu", "SELU"),
         ("linear", "Linear"),
     ]
-    activation_function = models.CharField(max_length=20, choices=ACTIVATION_CHOICES, default="softmax")
+    activation_function = models.CharField(
+        max_length=20, choices=ACTIVATION_CHOICES, default="softmax"
+    )
 
     OPTIMIZER_CHOICES = [
         ("sgd", "Stochastic Gradient Descent"),
@@ -103,8 +105,10 @@ class Model(models.Model):
         ("adamax", "Adamax"),
         ("nadam", "Nadam"),
     ]
-    optimizer = models.CharField(max_length=20, choices=OPTIMIZER_CHOICES, default="adam")
-    
+    optimizer = models.CharField(
+        max_length=20, choices=OPTIMIZER_CHOICES, default="adam"
+    )
+
     LOSS_CHOICES = [
         ("sparse_categorical_crossentropy", "Sparse Categorical Crossentropy"),
         ("categorical_crossentropy", "Categorical Crossentropy"),
@@ -115,8 +119,10 @@ class Model(models.Model):
         ("hinge", "Hinge"),
         ("kl_divergence", "Kullback-Leibler Divergence"),
     ]
-    loss_function = models.CharField(max_length=50, choices=LOSS_CHOICES, default="sparse_categorical_crossentropy")
-    
+    loss_function = models.CharField(
+        max_length=50, choices=LOSS_CHOICES, default="sparse_categorical_crossentropy"
+    )
+
     METRIC_CHOICES = [
         ("accuracy", "Accuracy"),
         ("categorical_accuracy", "Categorical Accuracy"),
@@ -129,14 +135,17 @@ class Model(models.Model):
         ("mean_absolute_percentage_error", "Mean Absolute Percentage Error"),
         ("top_k_categorical_accuracy", "Top K Categorical Accuracy"),
     ]
-    metrics = models.CharField(max_length=50, choices=METRIC_CHOICES, default="accuracy")
-    
+    metrics = models.CharField(
+        max_length=50, choices=METRIC_CHOICES, default="accuracy"
+    )
+
     batch_size = models.IntegerField(default=1)
     epochs = models.IntegerField(default=5)
 
     class Meta:
         managed = True
         db_table = "model"
+
 
 # This class inherits from the AbstractUser class, which is a built-in
 # Django model that provides basic fields for user authentication

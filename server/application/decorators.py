@@ -29,6 +29,7 @@ def load_json(f):
 
     return decorated_function
 
+
 # Decorator to ensure that the user is an admin
 def admin_only(f):
     @wraps(f)
