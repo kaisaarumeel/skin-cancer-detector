@@ -3,7 +3,7 @@ from django.views import View
 
 from ...models import Model
 
-class getActiveModel(View):
+class GetActiveModel(View):
     def get(self, request, check_admin=True):
         try:
             active_model = Model.objects.get(status="active")
@@ -12,12 +12,9 @@ class getActiveModel(View):
                 "created_at": active_model.created_at,
                 "version": active_model.version,
                 "weights": active_model.weights,
-                # "status": active_model.status
+                # "status": active_model.status #technically redundant
             })
         
         except Model.DoesNotExist:
             return JsonResponse({"err": "No active model found"}, status=404)
         
-    def put(self, request):
-        try: 
-            new_model = Model.objects.get(request.model_id)
