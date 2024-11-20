@@ -30,6 +30,8 @@ urlpatterns = [
     path("register/", Register.as_view(), name="api-register"),
     path("change-password/", ChangePassword.as_view(), name="api-change-password"),
     path("models/all-models/", GetAllModels.as_view(), name="api-all-models"),
-    path('models/active-model/', GetActiveModel.as_view(), name="api-active-model"),
-    path('models/swap-model/<int:model_id>/', SwapModel.as_view(), name="api-swap-model")
+    path("models/active-model/", GetActiveModel.as_view(), name="api-active-model"),
+    path(
+        "models/swap-model/<int:model_id>/", SwapModel.as_view(), name="api-swap-model"
+    ),
 ]
