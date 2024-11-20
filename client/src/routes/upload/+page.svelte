@@ -1,10 +1,10 @@
-<script>
+<script lang="ts">
   import TopBar from "../../components/TopBar.svelte";
   import Guide from "../../components/Guide.svelte";
   import { goto } from '$app/navigation';
 
   function getResults() {
-    // Add sign in endpoint/logic here
+    // Add sign-in endpoint/logic here
     goto('/results');
   }
     
@@ -21,8 +21,10 @@
 
   let fileName = "No file chosen";
 
-  function handleFileChange(event) {
-    const file = event.target.files[0];
+  // Updated function with TypeScript type annotation
+  function handleFileChange(event: Event) {
+    const input = event.target as HTMLInputElement; // Type assertion
+    const file = input.files?.[0]; // Use optional chaining
     if (file) {
       fileName = file.name;
     } else {
@@ -30,14 +32,14 @@
     }
   }
 </script>
-  
+
 <div class="h-screen flex flex-col relative">
   <TopBar></TopBar>
 
   <!-- Guide Component as an Overlay -->
-  {#if currentStep < totalSteps} <!-- Directly check if currentStep is less than or equal to totalSteps -->
+  {#if currentStep < totalSteps}
     <div class="backdrop-blur-sm absolute top-0 left-0 w-full h-full bg-opacity-50 flex items-center justify-center">
-        <Guide {currentStep} on:nextStep={nextStep}></Guide>
+      <Guide {currentStep} on:nextStep={nextStep}></Guide>
     </div>
   {/if}
 
@@ -78,7 +80,6 @@
 
       <form class="mt-10 w-full">
         <div class="flex items-center bg-slate-50 shadow-md p-3 rounded-lg justify-between">
-
           <label for="fileInput" class="p-2 border-tertiary border rounded-2xl flex items-center text-tertiary font-light cursor-pointer mr-4 hover:bg-stone-200">
             <img src="upload-file.png" alt="Upload a File" class="h-5 mr-4">
             Upload File
@@ -94,13 +95,11 @@
           <span class="text-tertiary">{fileName}</span>
 
           <input
-          type="submit"
-          class="pt-3 pb-3 pr-5 pl-5 bg-primary text-white font-light rounded-md cursor-pointer hover:bg-secondary "
-          value="Submit"
-        />
+            type="submit"
+            class="pt-3 pb-3 pr-5 pl-5 bg-primary text-white font-light rounded-md cursor-pointer hover:bg-secondary "
+            value="Submit"
+          />
         </div>
-        
-
       </form>
 
       <button on:click={getResults} class="w-1/2 p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-10 hover:bg-secondary shadow-l">Analyze</button>

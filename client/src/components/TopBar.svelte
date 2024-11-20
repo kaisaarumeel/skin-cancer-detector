@@ -7,6 +7,6 @@
     }
 </script>
 
-<div class="h-16 w-full bg-primary flex flex-col items-end justify-center pr-20 font-light text-white">    
+<div class="shadow h-16 w-full bg-primary flex flex-col items-end justify-center pr-20 font-light text-white">    
     <button on:click={handleLogout}>Log out</button>
 </div>
