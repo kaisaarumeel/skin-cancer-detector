@@ -1,5 +1,6 @@
 
 /svelte@latest/node_modules
+/ML-workflow/.ipynb_checkpoints
 
 # Exclude macOS binary
 *.DS_Store
