@@ -1,14 +1,17 @@
 from django.http import JsonResponse
 from django.views import View
 
+from ...decorators import admin_only
 from ...models import Model
 
 class GetAllModels(View):
-    def get(self, request, check_admin=True):
+    @admin_only
+    def get(self, request):
 
+        # retrieve all models in the database
         models = Model.objects.all()
 
-        # Check if any models exist in database
+        # check if list of models is empty
         if not models.exists():  
             return JsonResponse({"err": "No models found"}, status=404)
 
@@ -20,5 +23,5 @@ class GetAllModels(View):
             "status": model.status,
         } for model in models]
         
-        return JsonResponse({models_data}, status=200)
+        return JsonResponse({"models": models_data}, status=200)
         
