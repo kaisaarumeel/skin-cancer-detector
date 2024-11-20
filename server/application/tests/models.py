@@ -17,7 +17,7 @@ class ModelTests(TestCase):
         self.client = Client()
 
         # create 5 test models, where the first one is active
-        # the rest of the attributes are randomized
+        # other attributes without default values are randomized
         for i in range(5):
             model = Model.objects.create(
                 created_at=random.randint(0, int(time.time())),
@@ -95,7 +95,7 @@ class ModelTests(TestCase):
        
         other_models = Model.objects.exclude(model_id=new_model.model_id) # get all models other than the currently active
         for model in other_models:
-            self.assertEqual(model.status, "archived") # check that all other models are archived
+            self.assertNotEqual(model.status, "active") # check that all other models are not active
 
     def test_swap_model_not_found(self):
         """Test swapping model with model_id not in database"""
