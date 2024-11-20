@@ -75,10 +75,68 @@ class Model(models.Model):
     ]
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="draft")
 
+    # additional CNN hyperparameters
+    input_shape = models.CharField(max_length=20, default="(28, 28, 3)")
+    num_filters = models.IntegerField(default=20)  # number of filters in Conv2D layer
+    kernel_size = models.IntegerField(default=3)  # kernel size of Conv2D layer
+    pool_size = models.IntegerField(default=2)  # pool size for MaxPooling2D
+    dropout_rate = models.FloatField(default=0.1)  # dropout rate
+    dense_units = models.IntegerField(default=10)  # units in dense layer
+
+    ACTIVATION_CHOICES = [
+        ("relu", "ReLU"),
+        ("sigmoid", "Sigmoid"),
+        ("softmax", "Softmax"),
+        ("tanh", "Tanh"),
+        ("elu", "ELU"),
+        ("selu", "SELU"),
+        ("linear", "Linear"),
+    ]
+    activation_function = models.CharField(max_length=20, choices=ACTIVATION_CHOICES, default="softmax")
+
+    OPTIMIZER_CHOICES = [
+        ("sgd", "Stochastic Gradient Descent"),
+        ("adam", "Adam"),
+        ("rmsprop", "RMSprop"),
+        ("adagrad", "Adagrad"),
+        ("adadelta", "Adadelta"),
+        ("adamax", "Adamax"),
+        ("nadam", "Nadam"),
+    ]
+    optimizer = models.CharField(max_length=20, choices=OPTIMIZER_CHOICES, default="adam")
+    
+    LOSS_CHOICES = [
+        ("sparse_categorical_crossentropy", "Sparse Categorical Crossentropy"),
+        ("categorical_crossentropy", "Categorical Crossentropy"),
+        ("binary_crossentropy", "Binary Crossentropy"),
+        ("mean_squared_error", "Mean Squared Error"),
+        ("mean_absolute_error", "Mean Absolute Error"),
+        ("huber_loss", "Huber Loss"),
+        ("hinge", "Hinge"),
+        ("kl_divergence", "Kullback-Leibler Divergence"),
+    ]
+    loss_function = models.CharField(max_length=50, choices=LOSS_CHOICES, default="sparse_categorical_crossentropy")
+    
+    METRIC_CHOICES = [
+        ("accuracy", "Accuracy"),
+        ("categorical_accuracy", "Categorical Accuracy"),
+        ("sparse_categorical_accuracy", "Sparse Categorical Accuracy"),
+        ("AUC", "AUC"),
+        ("Precision", "Precision"),
+        ("Recall", "Recall"),
+        ("mean_squared_error", "Mean Squared Error"),
+        ("mean_absolute_error", "Mean Absolute Error"),
+        ("mean_absolute_percentage_error", "Mean Absolute Percentage Error"),
+        ("top_k_categorical_accuracy", "Top K Categorical Accuracy"),
+    ]
+    metrics = models.CharField(max_length=50, choices=METRIC_CHOICES, default="accuracy")
+    
+    batch_size = models.IntegerField(default=1)
+    epochs = models.IntegerField(default=5)
+
     class Meta:
         managed = True
         db_table = "model"
-
 
 # This class inherits from the AbstractUser class, which is a built-in
 # Django model that provides basic fields for user authentication
