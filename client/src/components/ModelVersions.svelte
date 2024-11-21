@@ -8,6 +8,14 @@
     { name: 'v1.0', dateAdded: '2024-01-15' },
     { name: 'v1.1', dateAdded: '2024-02-10' },
     { name: 'v2.0', dateAdded: '2024-03-05' },
+    { name: 'v3.0', dateAdded: '2024-05-20' },
+    { name: 'v1.0', dateAdded: '2024-01-15' },
+    { name: 'v1.1', dateAdded: '2024-02-10' },
+    { name: 'v2.0', dateAdded: '2024-03-05' },
+    { name: 'v3.0', dateAdded: '2024-05-20' },
+    { name: 'v1.0', dateAdded: '2024-01-15' },
+    { name: 'v1.1', dateAdded: '2024-02-10' },
+    { name: 'v2.0', dateAdded: '2024-03-05' },
     { name: 'v3.0', dateAdded: '2024-05-20' }
   ];
     
