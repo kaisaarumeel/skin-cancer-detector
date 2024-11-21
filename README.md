@@ -1,6 +1,26 @@
 # group6
 
-## Installation & Running
+### Table of Contents
+- [group6](#group6)
+    - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+    - [macOS/Linux:](#macoslinux)
+      - [Set Up Python Virtual Environment \& Install Dependencies](#set-up-python-virtual-environment--install-dependencies)
+    - [Windows WSL:](#windows-wsl)
+      - [Installing Python 3.11 on Ubuntu WSL](#installing-python-311-on-ubuntu-wsl)
+      - [Set Up Python Virtual Environment \& Install Dependencies](#set-up-python-virtual-environment--install-dependencies-1)
+    - [Optional: Enable Nvidia CUDA GPU Support \[WSL\]](#optional-enable-nvidia-cuda-gpu-support-wsl)
+      - [Step 1: Update Nvidia Drivers](#step-1-update-nvidia-drivers)
+      - [Step 2: Install CUDA Toolkit](#step-2-install-cuda-toolkit)
+      - [Step 3: Install cuDNN](#step-3-install-cudnn)
+      - [Step 4: Run Test Script to Verify GPU Utilization:](#step-4-run-test-script-to-verify-gpu-utilization)
+  - [Running the Django Project:](#running-the-django-project)
+    - [Create .env File in Repository Root Folder](#create-env-file-in-repository-root-folder)
+    - [macOS/Linux:](#macoslinux-1)
+    - [Windows WSL:](#windows-wsl-1)
+    - [Deactivating the Virtual Environment:](#deactivating-the-virtual-environment)
+
+## Installation
 
 ### macOS/Linux:
 
@@ -59,7 +79,7 @@
 </details>
 
 
-#### Set Up Python Virtual Environment
+#### Set Up Python Virtual Environment & Install Dependencies 
 1. Navigate to the repository root folder in your terminal:
     ```bash
     cd /path/to/repository
@@ -82,7 +102,7 @@
     ```
 
 
-### Optional: Enable Nvidia CUDA GPU Support (WSL)
+### Optional: Enable Nvidia CUDA GPU Support [WSL]
 > In order to utilize the GPU for TensorFlow operations, additional setup is needed.
 
 <details>
@@ -193,9 +213,9 @@ tf.debugging.set_log_device_placement(False)
 </details>
 
 
-### Running the Django Project:
+## Running the Django Project:
 
-#### Create .env File in Repository Root Folder
+### Create .env File in Repository Root Folder
 Make sure the .env file contains the following:
 ```sh
 # Django secret key
@@ -206,7 +226,7 @@ DJANGO_ENV = development
 
 ```
 
-#### macOS/Linux:
+### macOS/Linux:
 1. Navigate to the `SkinScan` project root folder:
     ```bash
     cd server/SkinScan
@@ -220,7 +240,7 @@ DJANGO_ENV = development
     http://127.0.0.1:8000
     ```
 
-#### Windows WSL:
+### Windows WSL:
 1. Navigate to the `SkinScan` project root folder:
     ```bash
     cd server/SkinScan
@@ -235,7 +255,7 @@ DJANGO_ENV = development
     ```
 
 
-#### Deactivating the Virtual Environment:
+### Deactivating the Virtual Environment:
 
 Once you are done, deactivate the Python virtual environment using:
 ```bash
