@@ -18,6 +18,7 @@
     - [Create .env File in Repository Root Folder](#create-env-file-in-repository-root-folder)
     - [macOS/Linux:](#macoslinux-1)
     - [Windows WSL:](#windows-wsl-1)
+    - [Database Migrations](#database-migrations)
     - [Deactivating the Virtual Environment:](#deactivating-the-virtual-environment)
 
 ## Installation
@@ -247,13 +248,23 @@ DJANGO_ENV = development
     ```
 2. Run the Django development server:
     ```bash
-    python3.11 manage.py runserver
+    python manage.py runserver
     ```
 3. Open browser and navigate to:
     ```bash
     http://127.0.0.1:8000
     ```
 
+### Database Migrations
+> TODO: update this after adding a DB router.
+
+If any changes are made to the Django models (database schemas) we need to run the following commands to update the table definitions. 
+
+```bash
+python3 manage.py makemigrations
+python3 manage.py migrate
+python3 manage.py migrate --database=db_images
+```
 
 ### Deactivating the Virtual Environment:
 
