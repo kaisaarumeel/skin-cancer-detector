@@ -68,13 +68,6 @@ class Model(models.Model):
     weights = models.BinaryField(null=False)
     hyperparameters = models.CharField(null=False, blank=False)
 
-    STATUS_CHOICES = [
-        ("draft", "Draft"),
-        ("active", "Active"),
-        ("archived", "Archived"),
-    ]
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="draft")
-
     class Meta:
         managed = True
         db_table = "model"
@@ -84,17 +77,27 @@ class ActiveModel(models.Model):
     model = models.OneToOneField(
         Model,
         on_delete=models.CASCADE,
-        limit_choices_to={"status": "active"},
     )
     updated_at = models.IntegerField(null=False, blank=False)
 
     class Meta:
         managed = True
         db_table = "model_active"
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(id=1), # ensure primary key is always 1
+                name="single_active_model_constraint",
+            )
+        ]
 
-    class Meta:
-        managed = True
-        db_table = "model_active"
+    # override default save method to prevent multiple active models
+    # supplements the 1-row constraint to ensure data integrity
+    def save(self, *args, **kwargs):
+        # prevents creation of a second row if it doesn't exist yet
+        # allows updating existing model by checking primary keys
+        if not self.pk and ActiveModel.objects.exists():
+            raise ValueError("Only one active model entry is allowed.")
+        super().save(*args, **kwargs)
 
 
 # This class inherits from the AbstractUser class, which is a built-in
