@@ -32,6 +32,6 @@ urlpatterns = [
     path("models/all-models/", GetAllModels.as_view(), name="api-all-models"),
     path("models/active-model/", GetActiveModel.as_view(), name="api-active-model"),
     path(
-        "models/swap-model/<int:model_id>/", SwapModel.as_view(), name="api-swap-model"
+        "models/swap-model/<int:version>/", SwapModel.as_view(), name="api-swap-model"
     ),
 ]

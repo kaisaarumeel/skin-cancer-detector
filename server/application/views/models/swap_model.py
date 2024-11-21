@@ -1,29 +1,30 @@
 from django.http import JsonResponse
 from django.views import View
+from django.db import transaction
 
 from ...decorators import admin_only
+from ...models import ActiveModel
 from ...models import Model
 
 
 class SwapModel(View):
     @admin_only
-    def put(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         try:
-            # find requested model based on model_id query parameter
-            model_id = kwargs.get("model_id")
-            new_model = Model.objects.get(model_id=model_id)
+            version = kwargs.get("version")
 
-            # deactivate currently active model(s)
-            Model.objects.filter(status="active").update(status="archived")
+            # groups all db operations within this block in a single operation
+            # if exception occurs, all db queries are rolled back
+            with transaction.atomic():
+                # find requested model based on version query parameter
+                new_model = Model.objects.get(version=version)
 
-            # activate the new model
-            new_model.status = "active"
-            new_model.save()
+                # if entry exists, update it to reference new model
+                # if table is empty, create the row
+                ActiveModel.objects.update_or_create(defaults={"model": new_model})
 
             return JsonResponse(
-                {
-                    "message": f"Active model swapped to model {new_model.model_id} version {new_model.version}"
-                }
+                {"message": f"Active model changed to version {new_model.version}"}
             )
 
         except Model.DoesNotExist:
