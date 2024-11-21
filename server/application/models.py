@@ -8,6 +8,7 @@ from django.db import models
 
 class Data(models.Model):
     image_id = models.TextField(primary_key=True)
+    created_at = models.IntegerField(null=False, blank=False)
     image = models.BinaryField(blank=False, null=False)
     age = models.IntegerField(null=True)
 
