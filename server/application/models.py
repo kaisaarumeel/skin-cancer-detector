@@ -63,10 +63,10 @@ class Data(models.Model):
 
 
 class Model(models.Model):
-    version = models.Autofield(primary_key=True)
+    version = models.AutoField(primary_key=True)
     created_at = models.IntegerField(null=False, blank=False)
     weights = models.BinaryField(null=False)
-    hyperparameters = models.CharField(null=False, blank=False)
+    hyperparameters = models.TextField(default="default", null=False, blank=False)
 
     class Meta:
         managed = True
@@ -85,7 +85,7 @@ class ActiveModel(models.Model):
         db_table = "model_active"
         constraints = [
             models.CheckConstraint(
-                check=models.Q(id=1), # ensure primary key is always 1
+                check=models.Q(id=1),  # ensure primary key is always 1
                 name="single_active_model_constraint",
             )
         ]
