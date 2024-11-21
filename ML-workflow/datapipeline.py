@@ -1,22 +1,27 @@
 import pandas as pd
 import numpy as np 
-import matplotlib.pyplot as plt
 import sqlite3
-from PIL import Image, ImageOps, ImageEnhance
+from PIL import Image
 from io import BytesIO
-import random
-from sklearn.preprocessing import StandardScaler, LabelEncoder
-from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
 
 db_path = 'db_images.sqlite3'
 table_name = 'images'
+row_limit = None # Replace None with a specific value if needed
+start_row = 0 # default is 0
 
 def load_data():
     # DB connection
     connection = sqlite3.connect(db_path)
 
     # Load images
-    query = f"SELECT * FROM {table_name};"
+    query = f"SELECT * FROM {table_name}" 
+    if row_limit:
+        query += f" LIMIT {row_limit}"
+    if start_row:
+        query += f" OFFSET {start_row}"
+    query += ";"
+
 
     # Load Data into Pandas DataFrame
     df = pd.read_sql_query(query, connection)
@@ -56,14 +61,6 @@ def preprocess_images(binary_data):
     
     # Resize the image to 224x224
     image = image.resize((224, 224), Image.Resampling.LANCZOS)
-    
-    # Random horizontal flip
-    if random.random() > 0.5:
-        image = ImageOps.mirror(image)
-    
-    # Random brightness adjustment
-    brightness_factor = random.uniform(0.8, 1.2)  # Range of brightness adjustment
-    image = ImageEnhance.Brightness(image).enhance(brightness_factor)
     
     # Normalize to [0, 1]
     image_array = np.array(image) / 255.0
