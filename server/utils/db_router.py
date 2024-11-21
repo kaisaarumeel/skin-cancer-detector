@@ -1,6 +1,8 @@
 from django.conf import settings
 from utils.db_lookup import get_secondary_db_name
 
+# Documentation reference: https://docs.djangoproject.com/en/5.1/topics/db/multi-db/#allow_migrate 
+
 class MigrationRouter:
     '''A router to control which models can be migrated to each database.
     \nUses the list of models defined in settings.py under IMAGE_DB_MODELS'''
