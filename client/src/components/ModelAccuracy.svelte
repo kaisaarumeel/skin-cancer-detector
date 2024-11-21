@@ -9,7 +9,7 @@
     ];
   </script>
   
-  <div class="bg-white w-full max-w-md mx-auto p-4 rounded-lg shadow-md">
+  <div class="bg-white w-full p-4 rounded-lg shadow-md">
     <h2 class="text-lg font-regular text-secondary">Model Accuracy</h2>
     <div class="relative h-40 mt-10 mb-10">
         <!-- SVG Chart -->
