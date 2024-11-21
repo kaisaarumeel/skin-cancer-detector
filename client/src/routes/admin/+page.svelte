@@ -4,6 +4,7 @@
     import AdminUpload from '../../components/AdminUpload.svelte';
     import ModelVersions from '../../components/ModelVersions.svelte';
     import ModelAccuracy from '../../components/ModelAccuracy.svelte';
+    import Retrain from '../../components/Retrain.svelte';
 
     function handleLogout() {
       // Add logout endpoint/logic here later
@@ -19,7 +20,10 @@
     </header>
   
     <div class="p-6 flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <AdminUpload></AdminUpload>
+      <div class="flex flex-col grid gap-6">
+        <AdminUpload></AdminUpload>
+        <Retrain></Retrain>
+      </div>
       <UserList></UserList>
       <ModelVersions></ModelVersions>
       <ModelAccuracy></ModelAccuracy>
