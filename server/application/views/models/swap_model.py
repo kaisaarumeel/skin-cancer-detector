@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.views import View
 from django.db import transaction
 
+from time import time
 from ...decorators import admin_only
 from ...models import ActiveModel
 from ...models import Model
@@ -9,7 +10,7 @@ from ...models import Model
 
 class SwapModel(View):
     @admin_only
-    def patch(self, request, *args, **kwargs):
+    def put(self, request, *args, **kwargs):
         try:
             version = kwargs.get("version")
 
@@ -21,15 +22,19 @@ class SwapModel(View):
 
                 # if entry exists, update it to reference new model
                 # if table is empty, create the row
-                ActiveModel.objects.update_or_create(defaults={"model": new_model})
+                ActiveModel.objects.update_or_create(
+                    id=1,
+                    defaults={
+                        "model": new_model,
+                        "updated_at": int(time()),
+                    },
+                )
 
             return JsonResponse(
                 {"message": f"Active model changed to version {new_model.version}"}
             )
 
         except Model.DoesNotExist:
-            return JsonResponse({"error": "Model not found."}, status=404)
+            return JsonResponse({"err": "Model not found"}, status=404)
         except Exception as e:
-            return JsonResponse(
-                {"error": f"Failed to swap models: {str(e)}"}, status=500
-            )
+            return JsonResponse({"err": f"Failed to swap models: {str(e)}"}, status=500)

@@ -17,7 +17,6 @@ class GetAllModels(View):
                 "version": model.version,
                 "created_at": model.created_at,
                 "hyperparameters": model.hyperparameters,
-                "status": model.status,
             }
             for model in models
         ]

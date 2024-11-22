@@ -21,7 +21,6 @@ class GetActiveModel(View):
                     "version": active_model.version,
                     "created_at": active_model.created_at,
                     "hyperparameters": active_model.hyperparameters,
-                    "status": active_model.status,
                 }
             )
 
