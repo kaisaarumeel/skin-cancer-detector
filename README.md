@@ -1,8 +1,8 @@
 # group6
 
-### Table of Contents
+<h3> Table of Contents </h3>
+
 - [group6](#group6)
-    - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
     - [macOS/Linux:](#macoslinux)
       - [Set Up Python Virtual Environment \& Install Dependencies](#set-up-python-virtual-environment--install-dependencies)
@@ -16,10 +16,13 @@
       - [Step 4: Run Test Script to Verify GPU Utilization:](#step-4-run-test-script-to-verify-gpu-utilization)
   - [Running the Django Project:](#running-the-django-project)
     - [Create .env File in Repository Root Folder](#create-env-file-in-repository-root-folder)
-    - [macOS/Linux:](#macoslinux-1)
-    - [Windows WSL:](#windows-wsl-1)
+    - [Run development server:](#run-development-server)
+      - [macOS/Linux:](#macoslinux-1)
+      - [Windows WSL:](#windows-wsl-1)
     - [Database Migrations](#database-migrations)
+    - [Unit Tests](#unit-tests)
     - [Deactivating the Virtual Environment:](#deactivating-the-virtual-environment)
+
 
 ## Installation
 
@@ -226,13 +229,14 @@ SECRET_KEY = <KEY_VALUE>
 DJANGO_ENV = development
 
 ```
+### Run development server:
 
-### macOS/Linux:
-1. Navigate to the `SkinScan` project root folder:
+#### macOS/Linux:
+1. Navigate to the `Django` project root folder:
     ```bash
-    cd server/SkinScan
+    cd server
     ```
-2. Run the Django development server:
+2. Run the `Django` development server:
     ```bash
     python3 manage.py runserver
     ```
@@ -241,12 +245,12 @@ DJANGO_ENV = development
     http://127.0.0.1:8000
     ```
 
-### Windows WSL:
-1. Navigate to the `SkinScan` project root folder:
+#### Windows WSL:
+1. Navigate to the `Django` project root folder:
     ```bash
-    cd server/SkinScan
+    cd server
     ```
-2. Run the Django development server:
+2. Run the `Django` development server:
     ```bash
     python manage.py runserver
     ```
@@ -255,10 +259,10 @@ DJANGO_ENV = development
     http://127.0.0.1:8000
     ```
 
-### Database Migrations
-> TODO: update this after adding a DB router.
 
-If any changes are made to the Django models (database schemas) we need to run the following commands to update the table definitions. 
+### Database Migrations
+
+If any changes are made to the `Django` models (database schemas), the changes need to be migrated to the database(s). Execute the following commands from the `Django` project root folder: 
 
 ```bash
 python3 manage.py makemigrations
@@ -266,13 +270,21 @@ python3 manage.py migrate
 python3 manage.py migrate --database=db_images
 ```
 
+
+### Unit Tests
+
+To run the `Django` unit tests, execute the following commands from the `Django` project root folder:
+```bash
+python3 manage.py test    
+```
+
+
 ### Deactivating the Virtual Environment:
 
 Once you are done, deactivate the Python virtual environment using:
 ```bash
 deactivate
 ```
-
 
 
 <!--
