@@ -8,9 +8,6 @@ from ..models import Requests
 
 class UploadPhoto(View):
     def post(self, request):
-        # Checks if the user is authenticated
-        if not request.user.is_authenticated:
-            return JsonResponse({"err": "User not authenticated"}, status=403)
 
         # Checks if 'image' is in request.FILES
         if "image" not in request.FILES:
