@@ -75,9 +75,7 @@ DATABASES = {
 }
 
 # Path to database router that restricts migrations to the two databases
-DATABASE_ROUTERS = {
-    "utils.db_router.MigrationRouter"
-}
+DATABASE_ROUTERS = {"utils.db_router.MigrationRouter"}
 
 # List of models that should only be added as tables to the image DB
 # The database router will restrict migrations to the DBs using this list
