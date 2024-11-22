@@ -21,6 +21,7 @@ from django.urls import path
 from .views.change_password import ChangePassword
 from .views.login import Login
 from .views.register import Register
+from .views.add_data import AddData
 from .views.models.all_models import GetAllModels
 from .views.models.active_model import GetActiveModel
 from .views.models.swap_model import SwapModel
@@ -29,6 +30,7 @@ urlpatterns = [
     path("login/", Login.as_view(), name="api-login"),
     path("register/", Register.as_view(), name="api-register"),
     path("change-password/", ChangePassword.as_view(), name="api-change-password"),
+    path("add_data/", AddData.as_view(), name="add-data"),
     path("models/all-models/", GetAllModels.as_view(), name="api-all-models"),
     path("models/active-model/", GetActiveModel.as_view(), name="api-active-model"),
     path(
