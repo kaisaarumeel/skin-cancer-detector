@@ -30,7 +30,7 @@ urlpatterns = [
     path("login/", Login.as_view(), name="api-login"),
     path("register/", Register.as_view(), name="api-register"),
     path("change-password/", ChangePassword.as_view(), name="api-change-password"),
-    path("add_data/", AddData.as_view(), name="add-data"),
+    path("add-data/", AddData.as_view(), name="add-data"),
     path("models/all-models/", GetAllModels.as_view(), name="api-all-models"),
     path("models/active-model/", GetActiveModel.as_view(), name="api-active-model"),
     path(

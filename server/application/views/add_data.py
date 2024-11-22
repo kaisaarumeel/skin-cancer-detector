@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.views import View
 from django.conf import settings 
 from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
+from django.core.files.base import File
 from ..decorators import admin_only
 from ..models import Data
 
@@ -27,11 +27,15 @@ class AddData(View):
                 return JsonResponse({'err': 'File is not a zip file'}, status=400)
             
             # create temp folder for extracting zip contents using django storage backend
-            temp_dir = Path(default_storage.save(f"temp/{data_file.name}", ContentFile(data_file.read()))).parent
+            temp_zip_path = default_storage.save(f"temp/{data_file.name}", File(data_file))
+            temp_dir = Path(temp_zip_path).parent
 
-            # extract zip file
-            with zipfile.ZipFile(temp_dir / data_file.name, 'r') as zipdata:
-                zipdata.extractall(temp_dir)
+            try:
+                # extract zip file
+                with zipfile.ZipFile(temp_dir / data_file.name, 'r') as zipdata:
+                    zipdata.extractall(temp_dir)
+            except Exception as e:
+                return JsonResponse({"err": str(e)}, status=500)
 
             # check that CSV file exists
             metadata_path = temp_dir / "metadata.csv"
