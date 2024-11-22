@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
                 "managed": True,
                 "constraints": [
                     models.CheckConstraint(
-                        condition=models.Q(("id", 1)),
+                        check=models.Q(("id", 1)),
                         name="single_active_model_constraint",
                     )
                 ],
