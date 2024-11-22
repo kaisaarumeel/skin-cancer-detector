@@ -73,7 +73,35 @@ class ModelTests(TestCase):
         """Test successfully swapping active model"""
         self.client.force_login(self.test_user_admin)
         new_model = Model.objects.first()  # get the first inactive model
-        response = self.client.put(
+        response = self.client.post(
+            reverse("api-swap-model", kwargs={"version": new_model.version}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        response_data = json.loads(response.content)
+        self.assertIn("message", response_data)
+        self.assertIn(
+            f"Active model changed to version {new_model.version}",
+            response_data["message"],
+        )  # check whether the response contains the correct success message
+
+        # check that the ActiveModel table shows correct active model
+        active_model = ActiveModel.objects.first()
+        self.assertIsNotNone(active_model)  # check that a row exists
+        self.assertEqual(
+            ActiveModel.objects.count(), 1
+        )  # check that ONLY one row exists
+        self.assertEqual(
+            active_model.model, new_model
+        )  # check that it points to the correct model
+
+    def test_swap_model_with_itself(self):
+        """Test swapping active model with already active model"""
+        self.client.force_login(self.test_user_admin)
+        new_model = ActiveModel.objects.first().model  # get the active model
+        response = self.client.post(
             reverse("api-swap-model", kwargs={"version": new_model.version}),
             content_type="application/json",
         )
@@ -100,7 +128,7 @@ class ModelTests(TestCase):
     def test_swap_model_not_found(self):
         """Test swapping model with version not in database"""
         self.client.force_login(self.test_user_admin)
-        response = self.client.put(
+        response = self.client.post(
             reverse("api-swap-model", kwargs={"version": self.invalid_version}),
             content_type="application/json",
         )
@@ -120,7 +148,7 @@ class ModelTests(TestCase):
         # create an exception during the update by providing no version
         # django's url resolver raises error because the URL pattern expects a numeric value
         with self.assertRaises(Exception):
-            self.client.put(
+            self.client.post(
                 reverse("api-swap-model", kwargs={"version": None}),
                 content_type="application/json",
             )
@@ -134,7 +162,7 @@ class ModelTests(TestCase):
         """Test swapping model with a mock internal server error"""
         self.client.force_login(self.test_user_admin)
         new_model = Model.objects.first()  # get the first archived model
-        response = self.client.put(
+        response = self.client.post(
             reverse("api-swap-model", kwargs={"version": new_model.version}),
             content_type="application/json",
         )
@@ -166,7 +194,7 @@ class ModelTests(TestCase):
         self.client.force_login(self.test_user_admin)
         ActiveModel.objects.all().delete()  # ensure active model is deleted
         new_model = Model.objects.first()  # get the first inactive model
-        response = self.client.put(
+        response = self.client.post(
             reverse("api-swap-model", kwargs={"version": new_model.version}),
             content_type="application/json",
         )

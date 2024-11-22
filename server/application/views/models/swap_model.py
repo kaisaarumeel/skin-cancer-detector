@@ -10,7 +10,7 @@ from ...models import Model
 
 class SwapModel(View):
     @admin_only
-    def put(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         try:
             version = kwargs.get("version")
 
