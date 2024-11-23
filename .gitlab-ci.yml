@@ -7,7 +7,6 @@ stages:
   - backend-api-tests
 
 variables:
-  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
   DOCKER_IMAGE: python:3.12
 
 cache:
@@ -16,7 +15,6 @@ cache:
   paths:
   # Cache pip downloads
     - .pip-cache/
-
 
 .setup:
   image: $DOCKER_IMAGE
@@ -28,25 +26,26 @@ cache:
     - python -m pip install -r requirements-ci.txt
 
 backend-code-quality:
-  extends: .setup
   stage: backend-code-quality
   script:
     # Ensure code is formatted correctly
-    - python -m black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
+    - python3 -m black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
     
     # Ensure django system checks pass
     - cd server
-    - python manage.py check || (echo "❌ Django system checks failed" && exit 1)
+    - python3 manage.py check || (echo "❌ Django system checks failed" && exit 1)
   rules: 
+    # Only run on main and develop branches
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
 
 backend-api-tests:
-  extends: .setup
   stage: backend-api-tests
   script:
+    # Run backend tests
     - cd server
-    - python manage.py test --verbosity=2
+    - python3 manage.py test --verbosity=2
   rules:
+    # Only run on main and develop branches
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
