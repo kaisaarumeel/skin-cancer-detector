@@ -1,22 +1,32 @@
 default:
   tags:
-    - docker  # Use the Docker runner
-
-image: python:3.12  # Use official Python 3.12 image
-
-stages:
-  - backend-code-quality
-  - backend-api-tests
-
-cache:
-  key: "${CI_COMMIT_REF_SLUG}"
-  paths:
-    - .pip-cache/
+    - docker
 
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
+  DOCKER_IMAGE: python:3.12
+
+cache:
+  # Cache by branch name and python image version
+  key: "${CI_COMMIT_REF_SLUG}-py3.12"
+  paths:
+    - .pip-cache/
+    - ~/.cache/pip
+  policy: pull-push
+
+.docker-cache:
+  image: $DOCKER_IMAGE
+  before_script:
+    # Pull the image and cache it
+    - docker pull $DOCKER_IMAGE
+    # For verbosity show the docker image
+    - docker images
+    # Install system dependencies for OpenCV
+    - apt-get update
+    - apt-get install -y libgl1-mesa-glx libglib2.0-0 libsm6 libxext6 libxrender-dev
 
 backend-code-quality:
+  extends: .docker-cache
   stage: backend-code-quality
   script:
     # Upgrade pip
@@ -35,11 +45,9 @@ backend-code-quality:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
 
 backend-api-tests:
+  extends: .docker-cache
   stage: backend-api-tests
   script:
-    - python -m pip cache purge
-    # Upgrade pip
-    - python -m pip install --upgrade pip
     # Install deps
     - python -m pip install -r requirements-ci.txt
     
