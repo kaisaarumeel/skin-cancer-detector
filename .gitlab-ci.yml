@@ -2,6 +2,10 @@ default:
   tags:
     - docker
 
+stages:
+  - code-quality
+  - api-tests
+
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
   DOCKER_IMAGE: python:3.12
@@ -14,20 +18,16 @@ cache:
     - ~/.cache/pip
   policy: pull-push
 
-.docker-cache:
+.setup:
   image: $DOCKER_IMAGE
   before_script:
-    # Pull the image and cache it
-    - docker pull $DOCKER_IMAGE
-    # For verbosity show the docker image
-    - docker images
     # Install system dependencies for OpenCV
     - apt-get update
     - apt-get install -y libgl1-mesa-glx libglib2.0-0 libsm6 libxext6 libxrender-dev
 
 backend-code-quality:
-  extends: .docker-cache
-  stage: backend-code-quality
+  extends: .setup
+  stage: code-quality
   script:
     # Upgrade pip
     - python -m pip install --upgrade pip
@@ -45,8 +45,8 @@ backend-code-quality:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
 
 backend-api-tests:
-  extends: .docker-cache
-  stage: backend-api-tests
+  extends: .setup
+  stage: api-tests
   script:
     # Install deps
     - python -m pip install -r requirements-ci.txt
