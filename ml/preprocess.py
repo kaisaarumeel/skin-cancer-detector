@@ -69,27 +69,28 @@ def clean_data(df):
 
     return df
 
+
 def preprocess_images(binary_data, requested_size):
     # Convert binary to numpy array
     img = np.frombuffer(binary_data, np.uint8)
-    
+
     # Use cv2 to decode the image
     img = cv2.imdecode(img, cv2.IMREAD_COLOR)
-    
+
     # Convert BGR to RGB using array indexing
     # We do this by targeting all rows and cols
     # and then reversing only the last axis, which are
     # the color channels
     img = img[..., ::-1]
-    
+
     # Get current dimensions
     h, w = img.shape[:2]
     target_h, target_w = requested_size
-    
+
     # If the dimensions are not the same, resize
     if (h, w) != requested_size:
         img = cv2.resize(img, (target_w, target_h), interpolation=cv2.INTER_AREA)
-    
+
     # Normalize to [-1, 1] range, so that we dont
     # have to do it later and have compatibility with
     # pre-trained models
@@ -100,41 +101,44 @@ def preprocess_images(binary_data, requested_size):
     img = img.astype(np.float16)
 
     return img
-    
-def feature_preprocessing(df,requested_size):
+
+
+def feature_preprocessing(df, requested_size):
     """Feature preprocessing with memory optimizations"""
     # Drop columns in-place to save memory
     df.drop(columns=["image_id"], inplace=True)
-    
+
     # Process images and store as 4D array directly
     # The reason why it is a 4D array is because it we have n images,
     # each image has a height, width and 3 channels (RGB)
     # which results in a 4D array of shape (n, height, width, 3)
     print("Processing images...")
-    
+
     # Add a progress bar using tqdm for visual feedback
     tqdm.pandas(desc="Processing images")
 
     # Pre-allocate array with the correct shape and data type
     # We use float16 to save memory
-    images = np.zeros((len(df), requested_size[0],requested_size[1], 3), dtype=np.float16)  # Pre-allocate array
-    
+    images = np.zeros(
+        (len(df), requested_size[0], requested_size[1], 3), dtype=np.float16
+    )  # Pre-allocate array
+
     # For each image, preprocess and store in the pre-allocated array
     # we use enumerate to get the index and image data
     # tqdm is wrapped around the loop and shows the progress
     # of the loop
-    for i, img_data in enumerate(tqdm(df['image'])):
+    for i, img_data in enumerate(tqdm(df["image"])):
         images[i] = preprocess_images(img_data, requested_size)
-    
+
     # Remove image column from df since we have it in separate array
-    df = df.drop(columns=['image'])
-    
+    df = df.drop(columns=["image"])
+
     # Encode categorical features
     # we need to have two separate encoders for the two features
     # as they are different types of features
     localization_encoder = LabelEncoder()
     lesion_type_encoder = LabelEncoder()
-    
+
     # Label encoding the localization feature
     localization_encoder = LabelEncoder()
     df["localization"] = localization_encoder.fit_transform(df["localization"])
@@ -148,6 +152,6 @@ def feature_preprocessing(df,requested_size):
 
     # Free up memory
     gc.collect()
-    
+
     # We only need the lesion_type_encoder for training
     return df_encoded, lesion_type_encoder, images

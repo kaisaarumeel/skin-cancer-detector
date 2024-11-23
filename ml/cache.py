@@ -19,7 +19,7 @@ def query_db_or_cache(
 ):
     # We need to know where this script is located
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    
+
     # Create cache dir. We dont need to do this for test data as it will be present in repo for CI
     cache_dir = os.path.join(script_dir, cache_dir)
     os.makedirs(cache_dir, exist_ok=True)
@@ -39,7 +39,11 @@ def query_db_or_cache(
     db_name = os.path.join(script_dir, db_name)
 
     # Try to load cached data (if it exists) and this is not a test run
-    if not test and os.path.exists(PROCESSED_DATA_PATH) and os.path.exists(ENCODER_PATH):
+    if (
+        not test
+        and os.path.exists(PROCESSED_DATA_PATH)
+        and os.path.exists(ENCODER_PATH)
+    ):
         print("Loading cached processed data...")
         with open(PROCESSED_DATA_PATH, "rb") as f:
             processed_data = pickle.load(f)
@@ -51,7 +55,11 @@ def query_db_or_cache(
         return processed_data, lesion_type_encoder, images
 
     # Try to load cached test data (if it exists) and this is a test run
-    if test and os.path.exists(TEST_PROCESSED_DATA_PATH) and os.path.exists(TEST_ENCODER_PATH):
+    if (
+        test
+        and os.path.exists(TEST_PROCESSED_DATA_PATH)
+        and os.path.exists(TEST_ENCODER_PATH)
+    ):
         print("Loading cached test data...")
         with open(TEST_PROCESSED_DATA_PATH, "rb") as f:
             processed_data = pickle.load(f)
@@ -67,7 +75,10 @@ def query_db_or_cache(
     # Load and process data
     print("Loading data...")
     image_data_df = load_data(
-        db_path=db_name, table_name=images_table_name, row_limit=row_limit, start_row=start_row
+        db_path=db_name,
+        table_name=images_table_name,
+        row_limit=row_limit,
+        start_row=start_row,
     )
     print("Cleaning data...")
 
@@ -80,7 +91,9 @@ def query_db_or_cache(
 
     print("Processing features...")
     # Process the data
-    processed_data, lesion_type_encoder, images = feature_preprocessing(cleaned_data, requested_size)
+    processed_data, lesion_type_encoder, images = feature_preprocessing(
+        cleaned_data, requested_size
+    )
 
     # Drop the cleaned_data DataFrame to free up memory
     del cleaned_data

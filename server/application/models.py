@@ -17,7 +17,7 @@ class Data(models.Model):
         ("female", "Female"),
     ]
     sex = models.CharField(max_length=6, choices=SEX_CHOICES, null=False)
-    
+
     LOCALIZATION_CHOICES = [
         # Head and Neck region
         ("ear", "Ear"),

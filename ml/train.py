@@ -258,6 +258,3 @@ def train(
         history.history["val_accuracy"][-1],
     )
     print("Model saved successfully to database")
-
-
-
