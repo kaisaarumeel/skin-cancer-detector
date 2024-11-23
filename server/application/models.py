@@ -84,9 +84,7 @@ class ActiveModel(models.Model):
     class Meta:
         managed = True
         db_table = "model_active"
-        constraints = [
-            
-        ]
+        constraints = []
 
     # override default save method to prevent multiple active models
     # supplements the 1-row constraint to ensure data integrity
