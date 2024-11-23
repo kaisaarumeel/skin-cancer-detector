@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-
+import time
 import django
 import pandas as pd
 
@@ -86,6 +86,7 @@ def assert_or_get_training_data():
                         sex=sex,
                         localization=localization,
                         lesion_type=row["dx"],
+                        created_at=time.time(),
                     )
                 except Exception as e:
                     print("Unexpected error: ", e)
