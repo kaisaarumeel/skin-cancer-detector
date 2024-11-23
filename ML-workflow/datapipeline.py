@@ -7,11 +7,8 @@ from sklearn.preprocessing import LabelEncoder
 
 db_path = "db_images.sqlite3"
 table_name = "images"
-row_limit = None  # Replace None with a specific value if needed
-start_row = 0  # default is 0
 
-
-def load_data():
+def load_data(db_path, table_name, row_limit=None, start_row=0):
     # DB connection
     connection = sqlite3.connect(db_path)
 
@@ -106,12 +103,12 @@ def feature_preprocessing(df):
 
 
 #### Data preprocess pipeline (Includin all steps) ####
-def pre_process_data():
-    data = load_data()
+def pre_process_data(db_path, table_name, row_limit=None, start_row=0):
+    data = load_data(db_path, table_name, row_limit, start_row)
     cleaned_data = clean_data(data)
     pre_processessed_data = feature_preprocessing(cleaned_data)
     return pre_processessed_data
 
-
-preprocessed_data = pre_process_data()
+# Example 
+preprocessed_data = pre_process_data(db_path, table_name)
 print(preprocessed_data)
