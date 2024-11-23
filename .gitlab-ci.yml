@@ -31,6 +31,8 @@ backend-code-quality:
 backend-api-tests:
   stage: backend-api-tests
   script:
+    - python3 -m pip cache purge
+
     # Upgrade pip
     - python3 -m pip install --user --upgrade pip
     
