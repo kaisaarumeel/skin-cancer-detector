@@ -3,20 +3,20 @@ default:
     - docker
 
 stages:
-  - code-quality
-  - api-tests
+  - backend-code-quality
+  - backend-api-tests
 
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
   DOCKER_IMAGE: python:3.12
 
 cache:
-  # Cache by branch name and python image version
-  key: "${CI_COMMIT_REF_SLUG}-py3.12"
+  # Cache by branch name
+  key: "${CI_COMMIT_REF_SLUG}"
   paths:
+  # Cache pip downloads
     - .pip-cache/
-    - ~/.cache/pip
-  policy: pull-push
+
 
 .setup:
   image: $DOCKER_IMAGE
@@ -29,7 +29,7 @@ cache:
 
 backend-code-quality:
   extends: .setup
-  stage: code-quality
+  stage: backend-code-quality
   script:
     # Ensure code is formatted correctly
     - python -m black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
@@ -43,7 +43,7 @@ backend-code-quality:
 
 backend-api-tests:
   extends: .setup
-  stage: api-tests
+  stage: backend-api-tests
   script:
     - cd server
     - python manage.py test --verbosity=2
