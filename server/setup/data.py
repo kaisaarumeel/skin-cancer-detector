@@ -86,7 +86,7 @@ def assert_or_get_training_data():
                         sex=sex,
                         localization=localization,
                         lesion_type=row["dx"],
-                        created_at=time.time(),
+                        created_at=int(time.time()),
                     )
                 except Exception as e:
                     print("Unexpected error: ", e)
