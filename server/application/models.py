@@ -85,10 +85,7 @@ class ActiveModel(models.Model):
         managed = True
         db_table = "model_active"
         constraints = [
-            models.CheckConstraint(
-                check=models.Q(id=1),  # ensure primary key is always 1
-                name="single_active_model_constraint",
-            )
+            
         ]
 
     # override default save method to prevent multiple active models
