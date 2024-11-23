@@ -1,48 +1,47 @@
+image: python:3.12  # Use official Python 3.12 image
+
 stages:
   - backend-code-quality
   - backend-api-tests
 
 cache:
-  # Cache by branch name
   key: "${CI_COMMIT_REF_SLUG}"
   paths:
-  # Cache pip downloads
     - .pip-cache/
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
 
 backend-code-quality:
   stage: backend-code-quality
   script:
     # Upgrade pip
-    - python3 -m pip install --user --upgrade pip
+    - python -m pip install --upgrade pip
     # Install deps
-    - python3 -m pip install --user -r requirements-ci.txt
+    - python -m pip install -r requirements-ci.txt
     
     # Ensure code is formatted correctly
-    - python3 -m black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
+    - python -m black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
     
     # Ensure django system checks pass
     - cd server
-    - python3 manage.py check || (echo "❌ Django system checks failed" && exit 1)
+    - python manage.py check || (echo "❌ Django system checks failed" && exit 1)
   rules: 
-    # Only run on main and develop branches
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
 
 backend-api-tests:
   stage: backend-api-tests
   script:
-    - python3 -m pip cache purge
-
+    - python -m pip cache purge
     # Upgrade pip
-    - python3 -m pip install --user --upgrade pip
-    
+    - python -m pip install --upgrade pip
     # Install deps
-    - python3 -m pip install --user -r requirements-ci.txt
+    - python -m pip install -r requirements-ci.txt
     
     # Run backend tests
     - cd server
-    - python3 manage.py test --verbosity=2
+    - python manage.py test --verbosity=2
   rules:
-    # Only run on main and develop branches
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
