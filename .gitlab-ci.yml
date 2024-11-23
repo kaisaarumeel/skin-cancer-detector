@@ -29,11 +29,11 @@ backend-code-quality:
   stage: backend-code-quality
   script:
     # Ensure code is formatted correctly
-    - python3 -m black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
+    - python -m black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
     
     # Ensure django system checks pass
     - cd server
-    - python3 manage.py check || (echo "❌ Django system checks failed" && exit 1)
+    - python manage.py check || (echo "❌ Django system checks failed" && exit 1)
   rules: 
     # Only run on main and develop branches
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
@@ -44,7 +44,7 @@ backend-api-tests:
   script:
     # Run backend tests
     - cd server
-    - python3 manage.py test --verbosity=2
+    - python manage.py test --verbosity=2
   rules:
     # Only run on main and develop branches
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
