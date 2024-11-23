@@ -26,6 +26,7 @@ cache:
     - python -m pip install -r requirements-ci.txt
 
 backend-code-quality:
+  extends: .setup
   stage: backend-code-quality
   script:
     # Ensure code is formatted correctly
@@ -40,6 +41,7 @@ backend-code-quality:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
 
 backend-api-tests:
+  extends: .setup
   stage: backend-api-tests
   script:
     # Run backend tests
