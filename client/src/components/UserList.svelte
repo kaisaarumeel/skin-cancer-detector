@@ -20,7 +20,7 @@
   };
 </script>
 
-<div class="bg-white rounded-lg shadow-md p-4 flex flex-col items-start">
+<div class="h-fit bg-white rounded-lg shadow-md p-4 flex flex-col items-start">
     <h2 class="text-lg font-regular text-secondary">Manage Users</h2>
     <p class="text-sm text-tertiary mt-2">View and manage user accounts.</p>
     <ul class="mt-4 w-full space-y-2 max-h-96 overflow-y-auto"> 

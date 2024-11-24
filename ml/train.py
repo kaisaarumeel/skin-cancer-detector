@@ -28,6 +28,10 @@ from .tests import (
     validate_split_data,
     validate_model_output,
 )
+from .callbacks import StatusUpdateCallback
+import time
+
+
 
 # Check if the current environment has a display
 # If not, use the Agg backend for matplotlib
@@ -35,7 +39,16 @@ backend = "TkAgg" if os.environ.get("DISPLAY") else "Agg"
 matplotlib.use(backend)
 
 
+def set_status(job, status):
+    if job != None:
+        job.status = status
+    else:
+        print(status)
+
+
 def train(
+    job=None,
+    clear_cache=False,
     force_gpu=False,
     test=False,
     db_images_name="../db_images.sqlite3",
@@ -54,6 +67,8 @@ def train(
     batch_size=16,
     learning_rate=1e-5,
 ):
+    # Custom status callback for job status update
+    status_callback = StatusUpdateCallback(job, set_status)
 
     if test:
         # Some testers might want to utilize their GPU
@@ -70,8 +85,11 @@ def train(
         # due to pooling layers
         input_size = (32, 32, 3)
 
+    set_status(job, "Retrieving processed data, lesion_type_encoder, and images")
+    
     # Retrieve processed data, lesion_type_encoder, and images
     processed_data, lesion_type_encoder, images = query_db_or_cache(
+        clear_cache=clear_cache,
         test=test,
         db_name=db_images_name,
         images_table_name=images_table_name,
@@ -79,7 +97,7 @@ def train(
         start_row=start_row,
         requested_size=input_size[:2],
     )
-
+    set_status(job, "Validating input data")
     validate_input_data(processed_data, images, input_size)
 
     # Constants used throughout the training process
@@ -92,6 +110,8 @@ def train(
     NUM_EPOCHS = num_epochs
     BATCH_SIZE = batch_size
     LEARNING_RATE = learning_rate
+
+    set_status(job, "Creating tabular features and labels")
 
     # Define the optimizer
     optimizer = Adam(learning_rate=LEARNING_RATE)
@@ -126,13 +146,14 @@ def train(
     # Convert labels to categorical
     labels_cat = to_categorical(labels, num_classes=NUM_CLASSES)
 
+    set_status(job, "Validating preprocessed data")
     validate_preprocessed_data(tabular_features_scaled, labels_cat, NUM_CLASSES)
 
     # Free up memory by deleting tabular_features
     del tabular_features
     gc.collect()
 
-    print("Splitting data into train, validation, and test sets...")
+    set_status(job, "Splitting data into train and validation sets")
     # Create the split by splitting the data into train and validation sets
     # For now, we will only use the train and validation sets as we do not
     # have a broader dataset to split into train, validation, and test sets
@@ -151,6 +172,8 @@ def train(
     # Define the input layers for the model
     image_input = Input(shape=INPUT_SIZE)
     tabular_input = Input(shape=(N_TABULAR_FEATURES,))
+
+    set_status(job, "Creating model")
 
     # Utilize a pre-trained model for abstract feature extraction
     pretrained = DenseNet121(
@@ -205,6 +228,7 @@ def train(
     # for layer in pretrained.layers[-10:]:
     #     layer.trainable = True
 
+    set_status(job, "Compiling model")
     # Compile model
     model.compile(
         optimizer=optimizer,
@@ -215,6 +239,8 @@ def train(
     if test:
         print("Stopping early due to test mode")
         return
+
+    set_status(job, "Training model")
     # Train the model on prepared data
     history = model.fit(
         x=[X_img_train, X_tab_train],  # Specify image and tabular training data
@@ -226,6 +252,7 @@ def train(
             y_val,
         ),  # Specify image and tabular validation data
         class_weight=class_weights,
+        callbacks=[status_callback],
     )
 
     # Make predictions on the test set
@@ -240,9 +267,12 @@ def train(
     # Get actual class labels from lesion_type_encoder
     class_names = lesion_type_encoder.inverse_transform(range(NUM_CLASSES))
 
-    # Plot classification report, confusion matrix, and training history
-    plot(history, true_classes, predicted_classes, class_names)
+    if job == None:
+        # Dont plot if this is a server job
+        # Plot classification report, confusion matrix, and training history
+        plot(history, true_classes, predicted_classes, class_names)
 
+    set_status(job, "Saving model")
     # Save model
     save_model(
         db_app_name,

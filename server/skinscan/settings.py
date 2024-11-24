@@ -17,6 +17,7 @@ SECRET_KEY = str(os.getenv("SECRET_KEY"))
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
+
 # Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -25,6 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
     "application",
 ]
 
@@ -33,6 +35,7 @@ AUTH_USER_MODEL = "application.Users"
 
 # Middleware
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -153,4 +156,7 @@ if not DEBUG:
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://localhost:5173", 
+    "http://127.0.0.1:5173",
 ]
+CORS_ALLOW_CREDENTIALS = True
