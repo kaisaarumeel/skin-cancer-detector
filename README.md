@@ -66,9 +66,9 @@
     ```bash
     sudo apt update
     ```
-3. Install Python 3.11:
+3. Install Python 3.11 and tk dependencies:
     ```bash
-    sudo apt install python3.11
+    sudo apt install python3.11 python3-tk tk-dev
     ```
 4. Verify installation & base Python installation intact:
     ```bash
