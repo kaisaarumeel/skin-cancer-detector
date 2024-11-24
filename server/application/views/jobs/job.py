@@ -16,4 +16,3 @@ class Job:
             "status": self.status,
             "error": self.error,
         }
-

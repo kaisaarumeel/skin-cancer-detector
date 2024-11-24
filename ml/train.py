@@ -32,7 +32,6 @@ from .callbacks import StatusUpdateCallback
 import time
 
 
-
 # Check if the current environment has a display
 # If not, use the Agg backend for matplotlib
 backend = "TkAgg" if os.environ.get("DISPLAY") else "Agg"
@@ -86,7 +85,7 @@ def train(
         input_size = (32, 32, 3)
 
     set_status(job, "Retrieving processed data, lesion_type_encoder, and images")
-    
+
     # Retrieve processed data, lesion_type_encoder, and images
     processed_data, lesion_type_encoder, images = query_db_or_cache(
         clear_cache=clear_cache,

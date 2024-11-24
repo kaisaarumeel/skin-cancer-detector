@@ -7,12 +7,11 @@ from ...mlsym.train import train
 from django.views import View
 from inspect import signature
 from .job import Job
+
 train_sig = signature(train)
 
 # Global array to store training jobs
 TRAINING_JOBS = []
-
-
 
 
 # Wrapper function to train the model
@@ -21,7 +20,7 @@ def train_wrapper(job, train_args):
         # Train the model with the given arguments
         modified_args = {
             **train_args,  # Unpack all original arguments
-            "job": job  # Add the job container
+            "job": job,  # Add the job container
         }
         train(**modified_args)
         # Update job status to completed when training is done
@@ -107,10 +106,10 @@ class Retrain(View):
         try:
             # Generate a unique job ID
             job_id = str(uuid.uuid4())
-            
+
             # Add the job ID to the arguments
             merged_args["job"] = job_id
-            
+
             # Create a new Job object and add it to the global array
             job = Job(
                 job_id=job_id, start_time=int(time.time()), parameters=merged_args
@@ -121,7 +120,7 @@ class Retrain(View):
             train_thread = threading.Thread(
                 target=train_wrapper, args=(job, merged_args)
             )
-            # Daemonize the thread as it does not need graceful shutdown 
+            # Daemonize the thread as it does not need graceful shutdown
             # in most cases
             train_thread.daemon = True
             train_thread.start()
