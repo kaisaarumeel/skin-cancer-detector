@@ -19,14 +19,31 @@
       <button class="pr-20 font-light text-white" on:click={handleLogout}>Log out</button>
     </header>
   
-    <div class="p-6 flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div class="flex flex-col grid gap-6">
-        <AdminUpload></AdminUpload>
-        <Retrain></Retrain>
+    <div class="p-6 flex flex-row gap-2 flex-wrap">
+      <div class="gap-6">
+        <div>
+          <AdminUpload></AdminUpload>
+
+        </div>
+        <div class="mt-2">
+          <Retrain></Retrain>
+
+        </div>
       </div>
-      <UserList></UserList>
-      <ModelVersions></ModelVersions>
-      <ModelAccuracy></ModelAccuracy>
+      <div class="h-fit grow">
+        <div class="w-full">
+          <ModelVersions></ModelVersions>
+
+        </div>
+        <div class="mt-2">
+          <ModelAccuracy></ModelAccuracy>
+
+        </div>
+
+      </div>
+
     </div>
+    <UserList></UserList>
+
   </div>
   

@@ -71,7 +71,7 @@ class Model(models.Model):
 
     class Meta:
         managed = True
-        db_table = "model"
+        db_table = "models"
 
 
 class ActiveModel(models.Model):

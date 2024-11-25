@@ -20,3 +20,5 @@ server/data.sqlite3-journal
 data.sqlite3
 db_images.sqlite3
 server/launch.sh
+server/db.test.sqlite3
+/ml/cache
