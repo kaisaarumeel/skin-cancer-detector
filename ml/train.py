@@ -256,7 +256,7 @@ def train(
         ),  # Specify image and tabular validation data
         class_weight=class_weights,
         callbacks=[status_callback],
-        verbose=is_verbose
+        verbose=is_verbose,
     )
 
     # Make predictions on the test set
