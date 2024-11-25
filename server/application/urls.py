@@ -25,6 +25,7 @@ from .views.add_data import AddData
 from .views.models.all_models import GetAllModels
 from .views.models.active_model import GetActiveModel
 from .views.models.swap_model import SwapModel
+from .views.get_all_requests import GetAllRequests
 
 urlpatterns = [
     path("login/", Login.as_view(), name="api-login"),
@@ -36,4 +37,5 @@ urlpatterns = [
     path(
         "models/swap-model/<int:version>/", SwapModel.as_view(), name="api-swap-model"
     ),
+    path("get-all-requests/", GetAllRequests.as_view(), name="api-get-all-requests"),
 ]
