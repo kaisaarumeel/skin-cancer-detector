@@ -39,4 +39,3 @@ urlpatterns = [
         "models/swap-model/<int:version>/", SwapModel.as_view(), name="api-swap-model"
     ),
 ]
-
