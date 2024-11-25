@@ -4,7 +4,6 @@ This is the layout component. It will be used to wrap all the routes in the appl
 
 <script lang="ts">
 	import '../app.css';
-	let { children } = $props();
-</script>
-
-{@render children()}
+  </script>
+  
+<slot />

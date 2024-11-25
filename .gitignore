@@ -1,8 +1,10 @@
 
 /svelte@latest/node_modules
+/ML-workflow/.ipynb_checkpoints
 
 # Exclude macOS binary
 *.DS_Store
+.DS_Store
 
 # Exclude IDE clutter
 .vscode
@@ -16,4 +18,5 @@ venv
 server/data.sqlite3
 server/data.sqlite3-journal
 data.sqlite3
+db_images.sqlite3
 server/launch.sh
