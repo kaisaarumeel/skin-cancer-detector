@@ -240,6 +240,10 @@ def train(
         return
 
     set_status(job, "Training model")
+
+    # If job is not None then set verbose to 0
+    is_verbose = 1 if job == None else 0
+
     # Train the model on prepared data
     history = model.fit(
         x=[X_img_train, X_tab_train],  # Specify image and tabular training data
@@ -252,6 +256,7 @@ def train(
         ),  # Specify image and tabular validation data
         class_weight=class_weights,
         callbacks=[status_callback],
+        verbose=is_verbose
     )
 
     # Make predictions on the test set

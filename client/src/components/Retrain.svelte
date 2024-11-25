@@ -323,7 +323,7 @@
   <div
     class="w-full mt-4 max-h-96 overflow-y-auto border border-gray-200 rounded-md p-4"
   >
-    {#each FIELDS as { label, id, value, isNumber, isCheckbox, min, max, step }}
+    {#each FIELDS as { label, id, value, isNumber, isCheckbox,isDropdown, min, max, step,dropdown_options }}
       <div class="flex flex-col mb-2">
         {#if isNumber}
           <label for={id}>{label}</label>
@@ -346,6 +346,14 @@
             />
             <label for={id}>{label}</label>
           </div>
+
+        {:else if isDropdown}
+          <label for={id}>{label}</label>
+          <select {id} bind:value class="border rounded-md p-2">
+            {#each (dropdown_options as string[]) as option}
+              <option value={option}>{option}</option>
+            {/each}
+          </select>
         {:else}
           <label for={id}>{label}</label>
 
