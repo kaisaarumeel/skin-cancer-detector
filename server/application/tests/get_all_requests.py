@@ -9,6 +9,16 @@ class GetAllRequestsTests(TestCase):
         """Set up test data and client"""
         self.client = Client()
 
+        # create a user with admin privileges to test admin-restricted model endpoints
+        self.test_user_admin = Users.objects.create(
+            username="testadmin",
+            password="testadminpassword",
+            age=30,
+            sex="male",
+            is_active=True,
+            is_admin=True,
+        )
+
         # Create a test user
         self.test_user = Users.objects.create(
             username="testuser",
@@ -57,6 +67,7 @@ class GetAllRequestsTests(TestCase):
 
     def test_get_all_requests(self):
         """Test retrieving all requests"""
+        self.client.force_login(self.test_user_admin)
         response = self.client.get(reverse("api-get-all-requests"))
         self.assertEqual(response.status_code, 200)
 
