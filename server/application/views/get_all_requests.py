@@ -1,10 +1,12 @@
 from django.http import JsonResponse
 from ..models import Requests
 from django.views import View
+from ..decorators import admin_only
 
 
 # Creating a class-based view for getting all requests
 class GetAllRequests(View):
+    @admin_only
     def get(self, request):
         try:
             # Fetching all requests from the Requests model
