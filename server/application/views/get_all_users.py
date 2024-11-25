@@ -1,9 +1,11 @@
 from django.http import JsonResponse
 from django.views import View
 from ..models import Users
+from ..decorators import admin_only
 
 
 class GetAllUsers(View):
+    @admin_only
     def get(self, request):
         try:
             # Get all users using the custom Users model
