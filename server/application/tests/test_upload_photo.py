@@ -1,5 +1,6 @@
 import os
 import json
+import base64
 from django.contrib.auth.hashers import make_password
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -28,21 +29,26 @@ class UploadPhotoTests(TestCase):
             os.path.dirname(__file__), "test_data", "invalid_test_image_format.pdf"
         )
 
+    def encode_image_to_base64(self, file_path):
+        """Helper method to encode image to Base64"""
+        with open(file_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode("utf-8")
+
     def test_upload_photo_success(self):
         """Test successful photo upload"""
         self.client.force_login(self.test_user)
 
-        # Prepare JSON data and valid image file
-        json_data = {"localization": "face", "lesion_type": "nv"}
-        with open(self.valid_image_path, "rb") as img_file:
-            response = self.client.post(
-                reverse("api-upload-photo"),
-                {
-                    "image": img_file,
-                    "data": json.dumps(json_data),
-                },
-                format="multipart",
-            )
+        # Prepare JSON data and valid Base64 image
+        json_data = {
+            "localization": "face",
+            "lesion_type": "nv",
+            "image": self.encode_image_to_base64(self.valid_image_path),
+        }
+        response = self.client.post(
+            reverse("api-upload-photo"),
+            json.dumps(json_data),
+            content_type="application/json",
+        )
 
         # Verify response
         self.assertEqual(response.status_code, 201)
@@ -56,10 +62,8 @@ class UploadPhotoTests(TestCase):
         json_data = {"localization": "face", "lesion_type": "nv"}
         response = self.client.post(
             reverse("api-upload-photo"),
-            {
-                "data": json.dumps(json_data),
-            },
-            format="multipart",
+            json.dumps(json_data),
+            content_type="application/json",
         )
 
         # Verify response
@@ -70,17 +74,13 @@ class UploadPhotoTests(TestCase):
         """Test upload with invalid JSON"""
         self.client.force_login(self.test_user)
 
-        # Prepare invalid JSON data and valid image file
+        # Prepare invalid JSON data
         invalid_json = "invalid_json"
-        with open(self.valid_image_path, "rb") as img_file:
-            response = self.client.post(
-                reverse("api-upload-photo"),
-                {
-                    "image": img_file,
-                    "data": invalid_json,
-                },
-                format="multipart",
-            )
+        response = self.client.post(
+            reverse("api-upload-photo"),
+            invalid_json,
+            content_type="application/json",
+        )
 
         # Verify response
         self.assertEqual(response.status_code, 400)
@@ -90,15 +90,11 @@ class UploadPhotoTests(TestCase):
         """Test upload with missing JSON data"""
         self.client.force_login(self.test_user)
 
-        # Prepare only image file
-        with open(self.valid_image_path, "rb") as img_file:
-            response = self.client.post(
-                reverse("api-upload-photo"),
-                {
-                    "image": img_file,
-                },
-                format="multipart",
-            )
+        # Send an empty body
+        response = self.client.post(
+            reverse("api-upload-photo"),
+            content_type="application/json",
+        )
 
         # Verify response
         self.assertEqual(response.status_code, 400)
@@ -108,17 +104,15 @@ class UploadPhotoTests(TestCase):
         """Test upload with JSON missing required fields"""
         self.client.force_login(self.test_user)
 
-        # Prepare incomplete JSON data and valid image file
-        incomplete_json = {"localization": "face"}  # Missing 'lesion_type'
-        with open(self.valid_image_path, "rb") as img_file:
-            response = self.client.post(
-                reverse("api-upload-photo"),
-                {
-                    "image": img_file,
-                    "data": json.dumps(incomplete_json),
-                },
-                format="multipart",
-            )
+        # Prepare incomplete JSON data
+        incomplete_json = {
+            "localization": "face"
+        }  # Missing 'lesion_type' and 'image'
+        response = self.client.post(
+            reverse("api-upload-photo"),
+            json.dumps(incomplete_json),
+            content_type="application/json",
+        )
 
         # Verify response
         self.assertEqual(response.status_code, 400)
