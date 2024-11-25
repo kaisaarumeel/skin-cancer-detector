@@ -1,22 +1,18 @@
-from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from django.views import View
+from ..models import Users
 
 
-# Creating a class-based view for getting all users
-class GetAllUsersView(View):
+class GetAllUsers(View):
     def get(self, request):
         try:
-            # Getting all users using Django's get_user_model
-            users = get_user_model().objects.all()
+            # Get all users using the custom Users model
+            users = Users.objects.all()
 
-            # Preparing a list of user data to return
+            # Prepare user data for response
             users_data = [
                 {
                     "username": user.username,
-                    "email": user.email,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
                     "is_admin": user.is_admin,
                     "age": user.age,
                     "sex": user.sex,
