@@ -19,7 +19,18 @@ class AuthenticationTests(TestCase):
             is_active=True,
         )
 
+        self.test_admin_user= Users.objects.create(
+            username="admin",
+            password=make_password("admin"),
+            age=25,
+            sex="male",
+            is_admin=True,
+            is_active=True,
+        )
+
+
         # Test data
+        self.admin_login_data = {"username": "admin","password": "admin",}
         self.valid_login_data = {"username": "testuser", "password": "testpass123"}
         self.valid_register_data = {
             "username": "newuser",
@@ -98,6 +109,65 @@ class AuthenticationTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 400)
+
+    def test_logout_success(self):
+        """Test successful logout"""
+        # First, log in
+        self.client.post(
+            reverse("api-login"),
+            json.dumps(self.valid_login_data),
+            content_type="application/json",
+        )
+
+        # Now log out
+        response = self.client.post(reverse("api-logout"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content)["msg"], "Successfully logged out")
+
+        # Verify that the session is cleared
+        response = self.client.get(reverse("api-is-logged-in"))
+        self.assertEqual(response.status_code, 401)
+
+
+    def test_is_logged_in_authenticated(self):
+        """Test if the user is logged in"""
+        # Log in first
+        self.client.post(
+            reverse("api-login"),
+            json.dumps(self.valid_login_data),
+            content_type="application/json",
+        )
+
+        response = self.client.get(reverse("api-is-logged-in"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(json.loads(response.content)["is_logged_in"])
+
+    def test_is_logged_in_unauthenticated(self):
+        """Test if the user is not logged in"""
+        response = self.client.get(reverse("api-is-logged-in"))
+        self.assertEqual(response.status_code, 401)
+        self.assertFalse(json.loads(response.content)["is_logged_in"])
+
+    def test_is_admin_authenticated_admin(self):
+        """Test if an admin user is correctly identified as an admin"""
+        # Log in as the admin user
+        login_response = self.client.post(
+            reverse("api-login"),
+            json.dumps(self.admin_login_data),
+            content_type="application/json",
+        )
+        self.assertEqual(login_response.status_code, 200)  # Ensure login was successful
+
+        # Now check if the logged-in user is identified as an admin
+        response = self.client.get(reverse("api-is-admin"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(json.loads(response.content)["is_admin"])
+
+    def test_is_admin_unauthenticated(self):
+        """Test if a user who is not logged in is denied access to admin check"""
+        response = self.client.get(reverse("api-is-admin"))
+        self.assertEqual(response.status_code, 401)
+        self.assertFalse(json.loads(response.content)["is_logged_in"])
 
     def test_change_password_success(self):
         """Test successful password change"""
