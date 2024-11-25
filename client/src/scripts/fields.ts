@@ -1,12 +1,14 @@
 interface Field {
     label: string;
     id: string;
-    value: string | number | boolean | null;
+    value: string | number | boolean | string[] | null;
     isNumber?: boolean;
     isCheckbox?: boolean;
+    isDropdown?: boolean;
     min?: number;
     max?: number;
     step?: number;
+    dropdown_options?: string | number | boolean | string[] | null;
 }
 
 // Default field values for the model
@@ -120,6 +122,8 @@ export let FIELDS: Field[] = [
         label: "Loss Function",
         id: "loss_function",
         value: "categorical_crossentropy",
+        isDropdown: true,
+        dropdown_options: ["categorical_crossentropy", "mean_squared_error","binary_crossentropy"],
     },
     {
         label: "Number of Epochs",
