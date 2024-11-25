@@ -17,19 +17,29 @@
   async function Signup() {
     errorMessage = ''; // Reset error message
     try {
-      // Make POST request using Axios
-      const response = await API.post('/api/register/', {
+      const signupResponse = await API.post('/api/register/', {
         username: username,
         password: password,
         age: age,
         sex: sex,
       });
 
-      // Handle successful response
-      console.log('Signup successful:', response.data);
-      goto('/upload'); // Redirect to /upload
+      // After signup, automatically log the user in
+      const signinResponse = await API.post('/api/login/', {
+        username: username,
+        password: password,
+      });
+
+      // Check if the user is an admin
+      const adminResponse = await API.get('api/is_admin/');
+      if (adminResponse.data.is_admin) {
+        goto('/admin'); // If the user is an admin, redirect to the admin page
+      } else {
+        goto('/upload'); // Otherwise, redirect to the upload page
+      }
+
     } catch (err) {
-      console.error('Error occurred during signup:', err);
+      console.error('Error occurred during signup or signin:', err);
 
       // Cast error to AxiosError
       const axiosError = err as AxiosError<ErrorResponse>;

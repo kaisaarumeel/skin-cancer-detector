@@ -15,7 +15,7 @@
   async function Signin() {
     errorMessage = ''; // Reset error message
     try {
-      // Make POST request using Axios
+      // Make POST request to the login endpoint
       const response = await API.post('/api/login/', {
         username: username,
         password: password,
@@ -23,7 +23,14 @@
 
       // Handle successful response
       console.log('Login successful:', response.data);
-      goto('/upload'); // Redirect to /upload
+
+      // Check if the user is an admin and redirect accordingly
+      const adminResponse = await API.get('api/is_admin/');
+            if (adminResponse.data.is_admin) {
+                goto('/admin'); // If the user is an admin, redirect to the admin page
+            } else {
+              goto('/upload');
+            }
     } catch (err) {
       console.error('Error occurred during signup:', err);
 
