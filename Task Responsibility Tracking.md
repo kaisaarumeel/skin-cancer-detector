@@ -48,13 +48,13 @@ This document tracks all project tasks, assignees, and the status per every week
 | [ML Pipeline: Implement data loading and pre-processing](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/11)          |  Amirpooya   |  22 Nov  |    yes    |    yes     |
 | [Add unit tests](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/13)                                                  |  Alexander   |  21 Nov  |    yes    |    yes     |
 | [Add authentication functionality](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/15)                                |  Alexander   |  22 Nov  |    yes    |    yes     |
-| [Add admin "training data" endpoint](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/16)                              | Konstantinos |  22 Nov  |
+| [Add admin "training data" endpoint](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/16)                              | Konstantinos |  22 Nov  | yes | yes |
 | [Add user "photo upload" endpoint](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/17)                                |    Arvin     |  22 Nov  |
 | [Add admin "get users" & "get requests" endpoints](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/18)                |    Arvin     |  22 Nov  |
 | [Change name of database and truncate decimals when loading data](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/21) |  Alexander   |  18 Nov  |    yes    |    yes     |
 | [Add versioning to training data](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/24)                                 |  Alexander   |  20 Nov  |    yes    |    yes     |
 | [Update WSL installation instructions](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/25)                            |     Erik     |  21 Nov  |    yes    |    yes     |
-| [Create train method](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/26)                                             |  Alexander   |  22 Nov  |
+| [Create train method](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/26)                                             |  Alexander   |  22 Nov  | yes | yes |
 | [Update model schema](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/28)                                             | Konstantinos |  21 Nov  |    yes    |    yes     |
 | [Fill in section 2 (Data) in the final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/35)                    | Konstantinos |  21 Nov  |    yes    |    yes     |
 | [Assignment 1 report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/37)                                             |    Kaisa     |  22 Nov  |    yes    |    yes     |
