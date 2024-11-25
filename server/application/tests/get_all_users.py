@@ -8,6 +8,16 @@ class GetAllUsersTests(TestCase):
         """Set up test data and client"""
         self.client = Client()
 
+        # create a user with admin privileges to test admin-restricted model endpoints
+        self.test_user_admin = Users.objects.create(
+            username="testadmin",
+            password="testadminpassword",
+            age=30,
+            sex="male",
+            is_active=True,
+            is_admin=True,
+        )
+
         # Create test users using Users.objects.create instead of create_user
         self.user1 = Users.objects.create(
             username="user1",
@@ -27,6 +37,7 @@ class GetAllUsersTests(TestCase):
 
     def test_get_all_users_success(self):
         """Test retrieving all users successfully"""
+        self.client.force_login(self.test_user_admin)
         response = self.client.get(reverse("api-get-all-users"))
 
         # Verify response status
@@ -38,7 +49,7 @@ class GetAllUsersTests(TestCase):
 
         # Validate the number of users returned
         users = response_data["users"]
-        self.assertEqual(len(users), 2)
+        self.assertEqual(len(users), 3)
 
         # Validate user1 data
         user1_data = next(user for user in users if user["username"] == "user1")
@@ -56,8 +67,9 @@ class GetAllUsersTests(TestCase):
 
     def test_get_all_users_empty(self):
         """Test retrieving users when no users exist"""
+        self.client.force_login(self.test_user_admin)
         # Clear all users
-        Users.objects.all().delete()
+        Users.objects.exclude(username=self.test_user_admin.username).all().delete()
 
         response = self.client.get(reverse("api-get-all-users"))
 
@@ -69,10 +81,11 @@ class GetAllUsersTests(TestCase):
         self.assertIn("users", response_data)
 
         # Validate empty users list
-        self.assertEqual(len(response_data["users"]), 0)
+        self.assertEqual(len(response_data["users"]), 1)
 
     def test_get_all_users_server_error(self):
         """Test handling of server error"""
+        self.client.force_login(self.test_user_admin)
         # Simulate an exception by overriding the Users model query
         original_objects = Users.objects
 
