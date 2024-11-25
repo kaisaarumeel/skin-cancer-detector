@@ -19,7 +19,7 @@ class AuthenticationTests(TestCase):
             is_active=True,
         )
 
-        self.test_admin_user= Users.objects.create(
+        self.test_admin_user = Users.objects.create(
             username="admin",
             password=make_password("admin"),
             age=25,
@@ -28,9 +28,11 @@ class AuthenticationTests(TestCase):
             is_active=True,
         )
 
-
         # Test data
-        self.admin_login_data = {"username": "admin","password": "admin",}
+        self.admin_login_data = {
+            "username": "admin",
+            "password": "admin",
+        }
         self.valid_login_data = {"username": "testuser", "password": "testpass123"}
         self.valid_register_data = {
             "username": "newuser",
@@ -127,7 +129,6 @@ class AuthenticationTests(TestCase):
         # Verify that the session is cleared
         response = self.client.get(reverse("api-is-logged-in"))
         self.assertEqual(response.status_code, 401)
-
 
     def test_is_logged_in_authenticated(self):
         """Test if the user is logged in"""

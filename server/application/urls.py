@@ -42,6 +42,6 @@ urlpatterns = [
     ),
     path("retrain/", Retrain.as_view(), name="api-retrain-model"),
     path("is_logged_in/", IsLoggedIn.as_view(), name="api-is-logged-in"),
-    path("logout/", Logout.as_view(), name="api-logout"), 
-    path('is_admin/', IsAdmin.as_view(), name='api-is-admin'),
+    path("logout/", Logout.as_view(), name="api-logout"),
+    path("is_admin/", IsAdmin.as_view(), name="api-is-admin"),
 ]
