@@ -5,6 +5,7 @@ from .preprocess import clean_data, load_data, feature_preprocessing
 
 
 def query_db_or_cache(
+    clear_cache=False,
     test=False,
     db_name="db_images.sqlite3",
     images_table_name="images",
@@ -40,7 +41,8 @@ def query_db_or_cache(
 
     # Try to load cached data (if it exists) and this is not a test run
     if (
-        not test
+        not clear_cache
+        and not test
         and os.path.exists(PROCESSED_DATA_PATH)
         and os.path.exists(ENCODER_PATH)
     ):
@@ -56,7 +58,8 @@ def query_db_or_cache(
 
     # Try to load cached test data (if it exists) and this is a test run
     if (
-        test
+        not clear_cache
+        and test
         and os.path.exists(TEST_PROCESSED_DATA_PATH)
         and os.path.exists(TEST_ENCODER_PATH)
     ):
