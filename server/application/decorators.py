@@ -28,3 +28,15 @@ def load_json(f):
         return f(self, request, *args, **kwargs)
 
     return decorated_function
+
+
+# Decorator to ensure that the user is an admin
+def admin_only(f):
+    @wraps(f)
+    def decorated_function(self, request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.is_admin:
+            return f(self, request, *args, **kwargs)
+        else:
+            return JsonResponse({"err": "Unauthorized"}, status=401)
+
+    return decorated_function

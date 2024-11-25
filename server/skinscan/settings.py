@@ -74,6 +74,17 @@ DATABASES = {
     },
 }
 
+# Path to database router that restricts migrations to the two databases
+DATABASE_ROUTERS = {"utils.db_router.MigrationRouter"}
+
+# List of models that should only be added as tables to the image DB
+# The database router will restrict migrations to the DBs using this list
+# NOTE: Django handles model names as lowercase hence listed names should be lowercase
+# Source: https://github.com/django/django/blob/main/django/db/models/options.py#L179
+IMAGE_DB_MODELS = [
+    "data",
+]
+
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {

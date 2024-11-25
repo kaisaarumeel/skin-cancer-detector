@@ -22,10 +22,21 @@ from .views.change_password import ChangePassword
 from .views.login import Login
 from .views.register import Register
 from .views.upload_photo import UploadPhoto
+from .views.add_data import AddData
+from .views.models.all_models import GetAllModels
+from .views.models.active_model import GetActiveModel
+from .views.models.swap_model import SwapModel
 
 urlpatterns = [
     path("login/", Login.as_view(), name="api-login"),
     path("register/", Register.as_view(), name="api-register"),
     path("change-password/", ChangePassword.as_view(), name="api-change-password"),
     path("upload-photo/", UploadPhoto.as_view(), name="api-upload-photo"),
+    path("add-data/", AddData.as_view(), name="add-data"),
+    path("models/all-models/", GetAllModels.as_view(), name="api-all-models"),
+    path("models/active-model/", GetActiveModel.as_view(), name="api-active-model"),
+    path(
+        "models/swap-model/<int:version>/", SwapModel.as_view(), name="api-swap-model"
+    ),
 ]
+

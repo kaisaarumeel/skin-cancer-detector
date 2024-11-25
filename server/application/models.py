@@ -64,21 +64,41 @@ class Data(models.Model):
 
 
 class Model(models.Model):
-    model_id = models.AutoField(primary_key=True)
+    version = models.AutoField(primary_key=True)
     created_at = models.IntegerField(null=False, blank=False)
-    version = models.CharField(max_length=50, unique=True)
     weights = models.BinaryField(null=False)
-
-    STATUS_CHOICES = [
-        ("draft", "Draft"),
-        ("active", "Active"),
-        ("archived", "Archived"),
-    ]
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="draft")
+    hyperparameters = models.TextField(default="default", null=False, blank=False)
 
     class Meta:
         managed = True
         db_table = "model"
+
+
+class ActiveModel(models.Model):
+    model = models.OneToOneField(
+        Model,
+        on_delete=models.CASCADE,
+    )
+    updated_at = models.IntegerField(null=False, blank=False)
+
+    class Meta:
+        managed = True
+        db_table = "model_active"
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(id=1),  # ensure primary key is always 1
+                name="single_active_model_constraint",
+            )
+        ]
+
+    # override default save method to prevent multiple active models
+    # supplements the 1-row constraint to ensure data integrity
+    def save(self, *args, **kwargs):
+        # prevents creation of a second row if it doesn't exist yet
+        # allows updating existing model by checking primary keys
+        if not self.pk and ActiveModel.objects.exists():
+            raise ValueError("Only one active model entry is allowed.")
+        super().save(*args, **kwargs)
 
 
 # This class inherits from the AbstractUser class, which is a built-in
@@ -192,7 +212,7 @@ class Requests(models.Model):
     # Sets the foreign key to be the Model version column, so that the model version
     # used for the prediction can be found even if the Model itself is deleted
     model = models.ForeignKey(
-        Model, to_field="version", on_delete=models.DO_NOTHING, blank=True, null=True
+        Model, on_delete=models.DO_NOTHING, blank=False, null=False
     )
 
     class Meta:
