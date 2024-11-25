@@ -3,3 +3,5 @@ from .models import ModelTests
 from .add_data import AddDataTests
 from .get_all_requests import GetAllRequestsTests
 from .get_all_users import GetAllUsersTests
+from .ml import MLTests
+from .retrain import RetrainTests
