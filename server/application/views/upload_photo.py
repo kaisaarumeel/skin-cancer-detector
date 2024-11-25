@@ -1,50 +1,61 @@
 import os
 import time
+import json
 from django.http import JsonResponse
 from django.views import View
-
+from django.core.files.storage import default_storage
 from ..models import Requests
+from ..decorators import login_required
 
 
 class UploadPhoto(View):
+    @login_required
     def post(self, request):
 
-        # Checks if 'image' is in request.FILES
-        if "image" not in request.FILES:
-            return JsonResponse({"err": "No image provided"}, status=400)
+        # Check for the image file
+        uploaded_image = request.FILES.get("image")
+        if not uploaded_image:
+            return JsonResponse({"err": "No image file provided"}, status=400)
 
-        image = request.FILES["image"]
-        file_extension = os.path.splitext(image.name)[1].lower()
+        # Check for JSON data
+        json_data = request.POST.get("data")
+        if not json_data:
+            return JsonResponse({"err": "No JSON data provided"}, status=400)
 
-        # Validating file extensions (accepts JPEG, PNG, JPG only)
-        if file_extension not in [".jpeg", ".jpg", ".png"]:
-            return JsonResponse(
-                {"err": "Invalid file type. Only JPEG, JPG, and PNG are allowed."},
-                status=400,
-            )
+        # Parse JSON data
+        try:
+            json_data = json.loads(json_data)
+        except json.JSONDecodeError:
+            return JsonResponse({"err": "Invalid JSON format"}, status=400)
 
-        # Checks if localization or lesion type are present
-        localization = request.data.get("localization")
-        lesion_type = request.data.get("lesion_type")
-
+        # Validate JSON fields
+        localization = json_data.get("localization")
+        lesion_type = json_data.get("lesion_type")
         if not localization or not lesion_type:
             return JsonResponse(
-                {"err": "Missing localization or lesion_type"}, status=400
+                {"err": "Missing or empty required JSON fields"}, status=400
             )
 
         try:
-            # Saves the image data as binary to the Requests model
-            image_data = image.read()
+            # Save the image temporarily
+            temp_image_path = default_storage.save(
+                f"temp/{time.time()}_{uploaded_image.name}", uploaded_image
+            )
 
-            # Creates the Request entry in the database
+            # Read the image data
+            with open(temp_image_path, "rb") as img_file:
+                image_data = img_file.read()
+
+            # Create a new entry in the Requests model
             request_entry = Requests.objects.create(
-                user=request.user,  # Associates the image with the logged-in user
-                image=image_data,  # Stores the image as binary data
+                user=request.user,
+                image=image_data,
                 localization=localization,
                 lesion_type=lesion_type,
-                created_at=int(time.time()),  # Set the current timestamp
+                created_at=int(time.time()),
             )
-            # Prepare the response data to return
+
+            # Prepare the response data
             response_data = {
                 "msg": "Image uploaded successfully!",
                 "request_id": request_entry.request_id,
@@ -57,6 +68,9 @@ class UploadPhoto(View):
             return JsonResponse(response_data, status=201)
 
         except Exception as e:
-            return JsonResponse(
-                {"err": f"Error processing image: {str(e)}"}, status=500
-            )
+            return JsonResponse({"err": f"Unexpected error: {str(e)}"}, status=500)
+
+        finally:
+            # Clean up the temporary image file
+            if os.path.exists(temp_image_path):
+                os.remove(temp_image_path)
