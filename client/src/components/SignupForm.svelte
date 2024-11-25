@@ -1,9 +1,46 @@
-<script>
+<script lang="ts">
   import { goto } from '$app/navigation';
+  import { API } from '../api'; // Import the API instance
+  import type { AxiosError } from 'axios'; // Import AxiosError type
 
-  function Signup() {
-  // Add signup endpoint/logic here
-    goto('/upload');
+  let username = '';
+  let password = '';
+  let age = '';
+  let sex = '';
+  let errorMessage = '';
+
+  // Define the type for the error response
+  type ErrorResponse = {
+    err?: string;
+  };
+
+  async function Signup() {
+    errorMessage = ''; // Reset error message
+    try {
+      // Make POST request using Axios
+      const response = await API.post('/api/register/', {
+        username: username,
+        password: password,
+        age: age,
+        sex: sex,
+      });
+
+      // Handle successful response
+      console.log('Signup successful:', response.data);
+      goto('/upload'); // Redirect to /upload
+    } catch (err) {
+      console.error('Error occurred during signup:', err);
+
+      // Cast error to AxiosError
+      const axiosError = err as AxiosError<ErrorResponse>;
+
+      // Check if it has a response and extract the error message
+      if (axiosError.response) {
+        errorMessage = axiosError.response.data?.err || 'Signup failed. Please try again.';
+      } else {
+        errorMessage = 'An error occurred. Please try again.';
+      }
+    }
   }
 </script>
 
@@ -12,21 +49,24 @@
   <h2 class="text-3xl font-light text-secondary mb-6 hidden lg:block"> Sign up </h2>
     <p class="text-tertiary mb-5">Create an account.</p>
     <div class="mb-4">
-      <input type="email" placeholder="Email" class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary">
+      <input type="username" placeholder="Username" bind:value={username} class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary">
     </div>
     <div class="mb-4">
-      <input type="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary">
+      <input type="password" bind:value={password} placeholder="Password" class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary">
     </div>
     <div class="mb-4">
-        <select class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary text-gray-500 focus:text-black" aria-label="Sex">
+        <select bind:value={sex} class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary text-gray-500 focus:text-black" aria-label="Sex">
           <option value="" disabled selected class="text-gray-400">Select Sex</option>
           <option value="male">Male</option>
           <option value="female">Female</option>
         </select>
     </div>
     <div class="mb-4">
-        <input type="number" placeholder="Age" class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary" min="0" max="100" step="1">
+        <input bind:value={age} type="number" placeholder="Age" class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary" min="0" max="100" step="1">
       </div>
       
+    {#if errorMessage}
+      <p class="text-red-500 text-xs font-light">{errorMessage}</p>
+    {/if}
     <button on:click={Signup} class="w-full p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-4 transition-colors hover:bg-secondary shadow-l">Sign up</button>
 </div>
