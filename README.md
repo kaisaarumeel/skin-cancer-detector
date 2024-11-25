@@ -66,9 +66,9 @@
     ```bash
     sudo apt update
     ```
-3. Install Python 3.11:
+3. Install Python 3.11 and tk dependencies:
     ```bash
-    sudo apt install python3.11
+    sudo apt install python3.11 python3-tk tk-dev
     ```
 4. Verify installation & base Python installation intact:
     ```bash
@@ -207,7 +207,7 @@ Open `WSL` in terminal and navigate to the directory you saved the installer - r
     ```
 3. Run the GPU test script
     ```bash
-    python3.11 test_gpu.py
+    python3.11 dev_utils/test_gpu.py
     ```
 > **Note**: TensorFlow will silently default to using the CPU if it can't utilize the GPU. If you suspect that this is happening you can enable explicit device logging by editing the script and changing the parameter in the following line to `True`:
 ```Python
