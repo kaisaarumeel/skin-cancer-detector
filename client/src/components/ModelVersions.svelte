@@ -85,7 +85,7 @@
                             >{new Date(model.created_at * 1000).toLocaleDateString()}</span
                         >
                     </div>
-                    {#if model === activeModel}
+                    {#if activeModel && activeModel.version === model.version }
                         <span class="text-green-600 text-xs font-regular"
                             >(Current)</span
                         >
