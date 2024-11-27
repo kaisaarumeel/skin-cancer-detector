@@ -1,4 +1,3 @@
-<<<<<<< server/application/urls.py
 """
 URL configuration for SkinScan project.
 
@@ -48,4 +47,3 @@ urlpatterns = [
     path("logout/", Logout.as_view(), name="api-logout"),
     path("is_admin/", IsAdmin.as_view(), name="api-is-admin"),
 ]
-
