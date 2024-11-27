@@ -1,6 +1,14 @@
 <script>
     import TopBar from "../../components/TopBar.svelte";
     import { goto } from '$app/navigation';
+    import { routeGuard } from '../../routeGuard'; 
+    import { onMount } from "svelte";
+
+    // Check if the user is logged in
+    onMount(() => {
+      routeGuard();  // This will check if the user is logged in, and redirect if not
+    });
+  
 
     function reScan() {
     // Add sign in endpoint/logic here
