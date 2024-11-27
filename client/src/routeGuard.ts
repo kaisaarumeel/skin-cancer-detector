@@ -25,3 +25,16 @@ export async function routeGuard(adminCheck = false) {
     }
 }
 
+
+export async function loggedInRedirect() {
+    try {
+        // Check if the user is logged in and redirect to upload page
+        const response = await API.get('api/is_logged_in/');
+        if (response.data.is_logged_in) {
+            goto('/upload'); 
+        }
+    } catch (err) {
+        console.error('Error checking login status:', err);
+    }
+}
+
