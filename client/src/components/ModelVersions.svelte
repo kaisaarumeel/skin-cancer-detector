@@ -2,40 +2,22 @@
     import { onMount } from "svelte";
     import type { AxiosResponse } from "axios";
     import { API } from "../api";
+    import { models, activeModel, type Model, type Hyperparameters } from "../stores/modelStore";
 
-    type Hyperparameters = {
-        "Test size": number;
-        "Input size": number[];
-        "Dropout rate": number;
-        "Loss function": string;
-        "Number of epochs": number;
-        "Batch size": number;
-        "Learning rate": number;
-        "Validation Accuracy": number;
-    };
-
-    type Model = {
-        version: string;
-        created_at: number;
-        hyperparameters: Hyperparameters;
-    };
-
-    let models: Model[] = [];
-    let activeModel: Model | null = null;
     let expandedModelVersion: string | null = null;
 
     async function getAllModels(): Promise<void> {
         try {
             const response: AxiosResponse<{models: any[]}> = await API.get("api/models/all-models/");
-            models = response.data.models.map((model) => {
-                const rawHyperparameters = JSON.parse(model.hyperparameters);
-
-                return {
-                    ...model,
-                    hyperparameters: parseHyperparameters(rawHyperparameters),
-                };
-            });
-
+            models.set(
+                response.data.models.map((model) => {
+                    const rawHyperparameters = JSON.parse(model.hyperparameters);
+                    return {
+                        ...model,
+                        hyperparameters: parseHyperparameters(rawHyperparameters),
+                    };
+                })
+            );
         } catch (error) {
             console.error("Getting all models failed:", error);
         }
@@ -44,7 +26,7 @@
     async function getActivemodel(): Promise<void> {
         try {
             const response: AxiosResponse<Model> = await API.get("api/models/active-model/");
-            activeModel = response.data;
+            activeModel.set(response.data);
 
         } catch (error) {
             console.error("Getting active model failed:", error);
@@ -54,13 +36,10 @@
     async function setActiveModel(model: Model): Promise<void> {
         try {
             const response: AxiosResponse<{ message: string }> = await API.post(`api/models/swap-model/${model.version}/`);
-            console.log(response.data.message);
-            activeModel = model;
+            activeModel.set(model);
         } catch (error) {
             console.error("Setting active model failed:", error);
         }
-        activeModel = model;
-
     }
 
     function toggleExpandModel(model: Model): void {
@@ -93,8 +72,8 @@
     <div class="mt-4 w-full">
         <p class="text-sm font-medium text-tertiary">Active Model Version:</p>
         <div class="py-2 px-3 bg-green-100 text-green-800 rounded mt-1 text-md">
-            {#if activeModel}
-                v{activeModel.version}.0
+            {#if $activeModel}
+                v{$activeModel.version}.0
             {:else}
                 <em>No active model</em>
             {/if}
@@ -107,8 +86,8 @@
 
     <!-- model versions list -->
     <ul class="mt-1 w-full space-y-2 text-gray-700 max-h-80 overflow-y-auto pr-2">
-        {#if models.length > 0}
-            {#each models as model (model.version)}
+        {#if $models.length > 0}
+            {#each $models as model (model.version)}
                 <li class="relative">
                     <div class="w-full">
                         <button
@@ -123,7 +102,7 @@
                                     {new Date(model.created_at * 1000).toLocaleDateString()}
                                 </span>
                             </div>
-                            {#if activeModel && activeModel.version === model.version}
+                            {#if $activeModel && $activeModel.version === model.version}
                                 <span class="text-green-600 text-xs font-regular">(Current)</span>
                             {/if}
                         </button>
