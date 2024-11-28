@@ -5,12 +5,26 @@
     import ModelVersions from '../../components/ModelVersions.svelte';
     import ModelAccuracy from '../../components/ModelAccuracy.svelte';
     import Retrain from '../../components/Retrain.svelte';
+    import { onMount } from "svelte";
+    import { routeGuard } from '../../routeGuard';
+    import { API } from '../../api'; 
 
-    function handleLogout() {
-      // Add logout endpoint/logic here later
-      goto('/home');
+    onMount(() => {
+        routeGuard(true); // Enable admin check in the routeguard
+    });
+
+    async function handleLogout() {
+      try {
+        const response = await API.post('api/logout/');
+        if (response.status === 200) {
+          console.log('User logged out successfully');
+         goto('/home');
+        }
+      } catch (err) {
+        console.error('Error logging out:', err);
+      }
     }
-  
+
   </script>
   
   <div class="h-screen flex flex-col">

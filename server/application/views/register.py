@@ -24,7 +24,7 @@ class Register(View):
             .filter(username=request.data["username"])
             .exists()
         ):
-            return JsonResponse({"err": "User already exists"}, status=400)
+            return JsonResponse({"err": "Username already exists"}, status=400)
 
         # Create the user
         user = Users.objects.using("default").create(

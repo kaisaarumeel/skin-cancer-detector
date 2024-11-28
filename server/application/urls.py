@@ -29,6 +29,9 @@ from .views.models.swap_model import SwapModel
 from .views.get_all_requests import GetAllRequests
 from .views.get_all_users import GetAllUsers
 from .views.jobs.retrain import Retrain
+from .views.is_logged_in import IsLoggedIn
+from .views.logout import Logout
+from .views.is_admin import IsAdmin
 
 
 urlpatterns = [
@@ -45,4 +48,7 @@ urlpatterns = [
     path("get-all-requests/", GetAllRequests.as_view(), name="api-get-all-requests"),
     path("get-all-users/", GetAllUsers.as_view(), name="api-get-all-users"),
     path("retrain/", Retrain.as_view(), name="api-retrain-model"),
+    path("is_logged_in/", IsLoggedIn.as_view(), name="api-is-logged-in"),
+    path("logout/", Logout.as_view(), name="api-logout"),
+    path("is_admin/", IsAdmin.as_view(), name="api-is-admin"),
 ]
