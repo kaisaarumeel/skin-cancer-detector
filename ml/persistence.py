@@ -5,6 +5,7 @@ from datetime import datetime
 import numpy as np
 import base64
 import io
+import tensorflow as tf
 
 
 def serialize_weights(weights):
@@ -117,14 +118,28 @@ def load_active_model_from_db(db_path):
 
         serialized_weights, hyperparameters_json = row
 
-        # Deserialize weights using the improved method
+        # Parse the hyperparameters
+        hyperparameters = json.loads(hyperparameters_json)
+
+        # Ensure model architecture is in the hyperparameters
+        if "model_architecture" not in hyperparameters:
+            raise ValueError("Model architecture is missing in hyperparameters")
+
+        # Load model architecture from the hyperparameters
+        architecture_json = hyperparameters["model_architecture"]
+
+        # Reconstruct the model's structure using the architecture JSON
+        model = tf.keras.models.model_from_json(architecture_json)
+
+        # Deserialize the weights from the serialized format
         weights = deserialize_weights(serialized_weights)
 
-        # Parse hyperparameters
-        hyperparameters = json.loads(hyperparameters_json)
+        # PROBABLY NEED TO UNCOMMENT, TRY WITHOUT FIRST
+        # model.set_weights(weights)
+
         conn.close()
 
-        return weights, hyperparameters
+        return model
 
     except Exception as e:
         print(f"Error loading model: {str(e)}")

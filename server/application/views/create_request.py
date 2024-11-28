@@ -64,7 +64,7 @@ class CreateRequest(View):
             "age": user.age,
             "sex": user.sex,
             "localization": localization,
-            "image":image,
+            "image": image,
         }
 
         job = Job(
