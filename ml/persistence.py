@@ -105,7 +105,7 @@ def load_active_model_from_db(db_path):
         cursor.execute(
             """
             SELECT models.weights, models.hyperparameters 
-            FROM model models
+            FROM models
             JOIN model_active activemodels ON models.version = activemodels.model_id
             WHERE activemodels.id = 1
         """
