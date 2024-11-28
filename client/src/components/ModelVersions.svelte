@@ -26,8 +26,11 @@
     async function getActivemodel(): Promise<void> {
         try {
             const response: AxiosResponse<Model> = await API.get("api/models/active-model/");
-            activeModel.set(response.data);
-
+            const storedActiveModel = {
+                ...response.data,
+                hyperparameters: parseHyperparameters(response.data.hyperparameters),
+            };
+            activeModel.set(storedActiveModel);
         } catch (error) {
             console.error("Getting active model failed:", error);
         }
@@ -55,7 +58,7 @@
         "Number of epochs": rawHyperparameters.num_epochs,
         "Batch size": rawHyperparameters.batch_size,
         "Learning rate": rawHyperparameters.learning_rate,
-        "Validation Accuracy": Math.round(rawHyperparameters.validation_accuracy * 100),
+        "Validation Accuracy": Math.round(Number(rawHyperparameters.validation_accuracy) * 100),
     };
 }
 
@@ -113,7 +116,11 @@
                                 <p><strong>Hyperparameters:</strong></p>
                                 <ul>
                                     {#each Object.entries(model.hyperparameters) as [key, value]}
-                                        <li>{key}: {value}</li>
+                                        {#if key === "Validation Accuracy"}
+                                            <li>{key}: {value}%</li>
+                                        {:else}
+                                            <li>{key}: {value}</li>
+                                        {/if}
                                     {/each}
                                 </ul>
                                 <!-- swap model button -->
