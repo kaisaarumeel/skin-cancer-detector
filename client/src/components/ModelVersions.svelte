@@ -28,7 +28,7 @@
             const response: AxiosResponse<Model> = await API.get("api/models/active-model/");
             const storedActiveModel = {
                 ...response.data,
-                hyperparameters: parseHyperparameters(response.data.hyperparameters),
+                hyperparameters: parseHyperparameters(JSON.parse(response.data.hyperparameters)),
             };
             activeModel.set(storedActiveModel);
         } catch (error) {

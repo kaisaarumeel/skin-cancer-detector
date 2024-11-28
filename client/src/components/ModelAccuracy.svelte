@@ -88,7 +88,7 @@
       <p class="text-sm text-tertiary font-regular">Training set size: 16Gb</p>
       <p class="text-sm text-tertiary font-regular">Validation set size: 2Gb</p>
       <p class="text-sm text-tertiary font-regular">Test set size: 2Gb</p>
-      <p class="text-sm text-tertiary font-regular">Accuracy rate: {$activeModel.hyperparameters["Validation Accuracy"]}</p>
+      <p class="text-sm text-tertiary font-regular">Accuracy rate: {$activeModel.hyperparameters["Validation Accuracy"]}%</p>
       <p class="text-sm text-tertiary font-regular">Model version: {$activeModel.version}.0</p>
     {:else}
       <p class="text-sm text-tertiary font-regular">No active model</p>
