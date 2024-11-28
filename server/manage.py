@@ -29,6 +29,7 @@ def main():
         setup.setup()
         # Start prediction manager in a separate thread
         start_prediction_manager()
+
     # Start the server
     execute_from_command_line(sys.argv)
 
