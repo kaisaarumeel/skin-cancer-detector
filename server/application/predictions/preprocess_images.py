@@ -2,10 +2,7 @@ import cv2
 import numpy as np
 import os
 
-
-# Function to resize a batch of images
 def preprocess_images(image_list, model):
-
     """
     Preprocesses a batch of images for model prediction.
     
@@ -34,12 +31,18 @@ def preprocess_images(image_list, model):
                 raise ValueError(f"Failed to load image from path: {image_data}")
         else:
             image = image_data  # Assume it's already a raw image array
+        
+        # Convert BGR to RGB 
+        image = image[..., ::-1]
 
         # Resize the image to the model's input dimensions
         resized_image = cv2.resize(image, (target_width, target_height))
 
-        # Normalize pixel values (optional, depends on model training)
-        normalized_image = resized_image / 255.0
+        # Normalize pixel values to [-1, 1] range 
+        normalized_image = resized_image / 127.5 - 1.0
+
+        # Ensure the image is in float16 format 
+        normalized_image = normalized_image.astype(np.float16)
 
         preprocessed_images.append(normalized_image)
 

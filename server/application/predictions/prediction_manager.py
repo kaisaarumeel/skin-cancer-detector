@@ -8,7 +8,7 @@ import tensorflow as tf
 # Custom modules
 from application.views.jobs.state import PREDICTION_JOBS
 from application.mlsym.persistence import load_active_model_from_db
-from .resize_images import preprocess_images
+from .preprocess_images import preprocess_images
 
 
 # Find the path to the database
