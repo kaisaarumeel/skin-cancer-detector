@@ -20,10 +20,10 @@ class AddData(View):
             if "file" not in request.FILES:
                 return JsonResponse({"err": "No file provided"}, status=400)
 
-            # check that file is a zip file
+            # check that zip file is valid
             data_file = request.FILES["file"]
             if not zipfile.is_zipfile(data_file):
-                return JsonResponse({"err": "File is not a zip file"}, status=400)
+                return JsonResponse({"err": "Zip file is invalid"}, status=400)
 
             # create temp folder for extracting zip contents using django storage backend
             temp_zip_path = default_storage.save(
