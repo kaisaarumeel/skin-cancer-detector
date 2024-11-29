@@ -8,7 +8,8 @@ export type Hyperparameters = {
     "Number of epochs": number;
     "Batch size": number;
     "Learning rate": number;
-    "Validation Accuracy": number;
+    "Validation accuracy": number;
+    "Custom recall": number;
 };
 
 export type Model = {

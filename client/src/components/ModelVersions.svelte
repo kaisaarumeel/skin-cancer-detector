@@ -58,7 +58,8 @@
         "Number of epochs": rawHyperparameters.num_epochs,
         "Batch size": rawHyperparameters.batch_size,
         "Learning rate": rawHyperparameters.learning_rate,
-        "Validation Accuracy": Math.round(Number(rawHyperparameters.validation_accuracy) * 100),
+        "Validation accuracy": Math.round(Number(rawHyperparameters.validation_accuracy) * 100),
+        "Custom recall": Math.round(Number(rawHyperparameters.custom_recall) * 100)
     };
 }
 
@@ -116,7 +117,7 @@
                                 <p><strong>Hyperparameters:</strong></p>
                                 <ul>
                                     {#each Object.entries(model.hyperparameters) as [key, value]}
-                                        {#if key === "Validation Accuracy"}
+                                        {#if key === "Validation accuracy" || key === "Custom recall"}
                                             <li>{key}: {value}%</li>
                                         {:else}
                                             <li>{key}: {value}</li>
