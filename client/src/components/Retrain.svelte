@@ -37,7 +37,7 @@
 
   interface LoginResponse {
     token?: string;
-    success: boolean;
+    is_admin: boolean;
   }
 
   interface JobsResponse {
@@ -52,23 +52,19 @@
   let selectedJobId: string | null = null; // Changed to store just the ID
   let isDialogOpen = false;
 
-  // This is a placeholder function that will be replaced with a proper login system
-  // FIXME
-  async function login(): Promise<boolean> {
-    const loginData = {
-      username: "admin",
-      password: "admin",
-    };
 
+  // Check that the user is a logged in admin
+  async function checkAuthentication(): Promise<boolean> {
     try {
-      const response: AxiosResponse<LoginResponse> = await API.post(
-        "/api/login/",
-        loginData,
-      );
-      console.log("Login successful:", response);
+      // Check if the user is an admin and logged in
+      const adminResponse: AxiosResponse<LoginResponse> = await API.get('/api/is_admin/');
+      if (!adminResponse.data.is_admin) {
+        console.log("User is not an admin.");
+        return false;
+      }
       return true;
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Authentication check failed:", error);
       return false;
     }
   }
@@ -80,7 +76,7 @@
   async function initialize(): Promise<void> {
     // This will be removed as the admin page is a protected route
     // however at this stage there is no functional login system
-    let isAuthenticated = await login();
+    let isAuthenticated = await checkAuthentication();
     if (isAuthenticated) {
       await fetchJobs();
       startPolling();

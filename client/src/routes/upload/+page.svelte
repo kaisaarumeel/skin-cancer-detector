@@ -2,9 +2,16 @@
   import TopBar from "../../components/TopBar.svelte";
   import Guide from "../../components/Guide.svelte";
   import { goto } from '$app/navigation';
+  import { routeGuard } from '../../routeGuard';  // Import the route guard
+  import { onMount } from "svelte";
 
+  // Check if the user is logged in when the page is loaded
+  onMount(() => {
+    routeGuard();
+  });
+  
   function getResults() {
-    // Add sign-in endpoint/logic here
+    // Add get results endpoint/logic here
     goto('/results');
   }
     
