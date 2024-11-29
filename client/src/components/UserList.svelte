@@ -1,23 +1,45 @@
-<script  lang="ts">
-    let users = [
-    { id: 1, name: "User 1" },
-    { id: 2, name: "User 2" },
-    { id: 3, name: "User 3" },
-    { id: 4, name: "User 4" },
-    { id: 5, name: "User 5" },
-    { id: 6, name: "User 6" },
-    { id: 7, name: "User 7" },
-    { id: 8, name: "User 8" },
-    { id: 9, name: "User 9" },
-    { id: 10, name: "User 10" },
-    { id: 11, name: "User 9" },
-    { id: 12, name: "User 10" },
-  ];
+<script lang="ts">
+  import { onMount } from "svelte";
 
-  const deleteUser = (id: number) => {
-    // Remove the user with the given id from the list
-    users = users.filter(user => user.id !== id);
+  interface User {
+    id: string;
+    name: string;
+  }
+
+  let users: User[] = []
+  let errorMessage: string | null = null; // To store any error messages
+
+  // Fetch users from the backend API
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch("/api/get-all-users/");
+      if (!response.ok) {
+        // Parse the error message from the backend
+        const errorData = await response.json();
+        throw new Error(errorData.err || `Failed to fetch users: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      users = data.users.map((user: { username: string }) => ({
+        id: user.username,
+        name: user.username,
+      }));
+    } catch (error) {
+      // Display error message
+      errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+      console.error("Error fetching users:", errorMessage);
+    }
   };
+
+  const deleteUser = (username: string) => {
+    // Remove the user with the given username from the list
+    users = users.filter(user => user.id !== username);
+  };
+
+  // Fetch users when the component is mounted
+  onMount(() => {
+    fetchUsers();
+  });
 </script>
 
 <div class="h-fit bg-white rounded-lg shadow-md p-4 flex flex-col items-start">
