@@ -5,6 +5,7 @@
   type GraphDataPoint = {
     version: string;
     accuracy: number;
+    recall: number;
   }
 
   let graphData: GraphDataPoint[] = [];
@@ -14,17 +15,19 @@
   const storedModels = $models;
   graphData = storedModels.map((model) => ({
     version: `v${model.version}.0`,
-    accuracy: model.hyperparameters["Validation Accuracy"],
+    accuracy: model.hyperparameters["Validation accuracy"],
+    recall: model.hyperparameters["Custom recall"],
   }));
 }
 </script>
 
 <div class="h-fit bg-white p-4 rounded-lg shadow-md">
-  <h2 class="text-lg font-regular text-secondary">Model Accuracy</h2>
-  <div class="relative h-40 mt-10 mb-10">
+  <h2 class="text-lg font-regular text-secondary">Model Accuracy and Recall</h2>
+  
+  <div class="relative h-40 mt-10">
     <div class="absolute left-8 top-0 h-full w-[calc(100%-2rem)] overflow-x-auto">
       <svg class="h-full" viewBox="0 0 300 50" preserveAspectRatio="none">
-        <!-- Lines connecting points -->
+        <!-- Lines for Accuracy -->
         {#each graphData as { version, accuracy }, index}
           {#if index < graphData.length - 1}
             <line
@@ -32,19 +35,43 @@
               y1={(100 - accuracy) / 2}
               x2={((index + 1.5) / graphData.length) * 300}
               y2={(100 - graphData[index + 1].accuracy) / 2}
-              stroke="#626262"
+              stroke="#b7a9d4"
               stroke-width="0.5"
             />
           {/if}
         {/each}
 
-        <!-- Points -->
+        <!-- Lines for Recall -->
+        {#each graphData as { version, recall }, index}
+          {#if index < graphData.length - 1}
+            <line
+              x1={((index + 0.5) / graphData.length) * 300}
+              y1={(100 - recall) / 2}
+              x2={((index + 1.5) / graphData.length) * 300}
+              y2={(100 - graphData[index + 1].recall) / 2}
+              stroke="#85ffaf"
+              stroke-width="0.5"
+            />
+          {/if}
+        {/each}
+
+        <!-- Points for Accuracy -->
         {#each graphData as { version, accuracy }, index}
           <circle
             cx={((index + 0.5) / graphData.length) * 300}
             cy={(100 - accuracy) / 2}
             r="2"
-            fill="#626262"
+            fill="#b7a9d4"
+          />
+        {/each}
+
+        <!-- Points for Recall -->
+        {#each graphData as { version, recall }, index}
+          <circle
+            cx={((index + 0.5) / graphData.length) * 300}
+            cy={(100 - recall) / 2}
+            r="2"
+            fill="#85ffaf"
           />
         {/each}
 
@@ -83,15 +110,29 @@
     </div>
   </div>
 
+<!-- Legend Below the Graph -->
+<div class="flex items-center justify-center space-x-4 mt-4 mb-4">
+  <div class="flex items-center">
+    <span class="w-4 h-4 inline-block bg-[#b7a9d4] rounded-full"></span>
+    <span class="ml-2 text-sm text-secondary">Accuracy</span>
+  </div>
+  <div class="flex items-center">
+    <span class="w-4 h-4 inline-block bg-[#85ffaf] rounded-full"></span>
+    <span class="ml-2 text-sm text-secondary">Recall</span>
+  </div>
+</div>
+
   <div class="bg-gray-100 p-4 rounded-md">
     {#if $activeModel}
       <p class="text-sm text-tertiary font-regular">Training set size: 16Gb</p>
       <p class="text-sm text-tertiary font-regular">Validation set size: 2Gb</p>
       <p class="text-sm text-tertiary font-regular">Test set size: 2Gb</p>
-      <p class="text-sm text-tertiary font-regular">Accuracy rate: {$activeModel.hyperparameters["Validation Accuracy"]}%</p>
+      <p class="text-sm text-tertiary font-regular">Accuracy rate: {$activeModel.hyperparameters["Validation accuracy"]}%</p>
+      <p class="text-sm text-tertiary font-regular">Custom recall rate: {$activeModel.hyperparameters["Custom recall"]}%</p>
       <p class="text-sm text-tertiary font-regular">Model version: {$activeModel.version}.0</p>
     {:else}
       <p class="text-sm text-tertiary font-regular">No active model</p>
     {/if}
   </div>
 </div>
+
