@@ -47,6 +47,7 @@ def save_model(
     batch_size,
     learning_rate,
     validation_accuracy,
+    custom_recall,
 ):
     try:
         # Serialize weights layer by layer
@@ -63,6 +64,7 @@ def save_model(
             "learning_rate": float(learning_rate),
             "model_architecture": model.to_json(),
             "validation_accuracy": float(validation_accuracy),
+            "custom_recall": float(custom_recall),
         }
 
         # Convert hyperparameters to JSON string
