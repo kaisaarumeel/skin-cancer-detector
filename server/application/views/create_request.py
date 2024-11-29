@@ -1,6 +1,7 @@
 import time
 import base64
 import uuid
+import numpy as np
 from django.http import JsonResponse
 from django.views import View
 from ..models import Users
@@ -57,6 +58,10 @@ class CreateRequest(View):
                 return JsonResponse({"err": "Unsupported image format"}, status=400)
         except Exception as e:
             return JsonResponse({"err": "Invalid Base64"}, status=400)
+
+        # Convert image from pillow format to np.uint8,
+        # for consistency with the rest of the program
+        image = np.array(image, np.uint8)
 
         user = Users.objects.get(username=request.user.username)
         parameters = {

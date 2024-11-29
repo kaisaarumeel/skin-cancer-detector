@@ -8,7 +8,7 @@ import tensorflow as tf
 # Custom modules
 from application.views.jobs.state import PREDICTION_JOBS
 from application.mlsym.persistence import load_active_model_from_db
-from .preprocess_images import preprocess_images
+from .preprocess_user_images import preprocess_images
 
 
 # Find the path to the database
@@ -19,10 +19,11 @@ model_reload_event = threading.Event()
 
 
 def manage_predictions():
-    global PREDICTION_JOBS  # Prediction Job queue
-    INTERVAL = 1  # TODO decide actual time / dynamic?
+    global PREDICTION_JOBS  # Global Job queue
+    BATCH_SIZE = 64  # Max number of jobs to process in one batch
+    INTERVAL = 3  # TODO decide actual time / make dynamic?
 
-    # Enable repeated warnings (otherwise matching warnings are silenced)
+    # Enable repeated warnings (otherwise subsequent matching warnings are silenced)
     warnings.simplefilter("always", UserWarning)
 
     # Load the active model from the database
@@ -30,7 +31,7 @@ def manage_predictions():
 
     # Predictions loop
     while True:
-        # Sleep thread to periodically check queue and not block app execution
+        # Sleep thread to periodically check Job queue and not block app execution
         time.sleep(INTERVAL)
 
         # Check if the model should be reloaded
@@ -41,22 +42,27 @@ def manage_predictions():
             # Clear the event for reuse
             model_reload_event.clear()
 
-        # If there was no active model,
+        # Check if there was an active model in the database
+        # and that it was successfully loaded
         if model == None:
             warnings.warn(
                 "Active model could not be loaded from database", category=UserWarning
             )
-            # Skip this iteration to attempt to reload the model
+            # Skip this loop iteration to attempt to reload the model
             continue
 
-        # TODO read queue and prepare batch
+        # Store the Jobs to be processed in a new array
+        jobs_batch = PREDICTION_JOBS[:BATCH_SIZE]
 
-        # Preprocess image data 
-        # TODO replace the hardcoded image paths with image list
-        image_path = Path(__file__).resolve().parent / "image.jpg"
-        image2_path = Path(__file__).resolve().parent / "image2.png"
-        preprocess_images([str(image_path), str(image2_path)], model)
+        # Remove the Jobs from the global queue
+        PREDICTION_JOBS = PREDICTION_JOBS[BATCH_SIZE:]
 
+        # Prepare a list of resized images that fit the model input size
+        resized_images = preprocess_images(
+            extract_images(jobs_batch), get_model_input_shape(model)
+        )
+
+        # TODO Prepare input batch function call
 
         # TODO call predict() on batch
 
@@ -65,8 +71,12 @@ def manage_predictions():
         print("Processing predictions...")
 
 
+############################### HELPER FUNCTIONS ###############################
+
+
 def start_prediction_manager():
     # Create separate thread that will manage predictions
+    # daemon=True ensure thread is terminated alongside main thread
     prediction_thread = threading.Thread(daemon=True, target=manage_predictions)
 
     # Initialise thread
@@ -74,6 +84,26 @@ def start_prediction_manager():
 
 
 def signal_model_reload():
-
-    # Set Event to True to signal model reload
+    # Set event to signal model reload
     model_reload_event.set()
+
+
+def extract_images(jobs):
+    images = []
+    for job in jobs:
+        parameters = job.parameters
+        image = parameters.get("image")
+        images.append(image)
+
+    return images
+
+
+def get_model_input_shape(model):
+    # Extract the input shape from the model
+    target_input_shape = model.input_shape[0]
+
+    # Extract target height and width from input shape tuple
+    target_height, target_width = target_input_shape[1:3]
+
+    # Return target height and width
+    return (target_height, target_width)
