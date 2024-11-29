@@ -76,8 +76,6 @@ def train(
         if not force_gpu:
             # Disable GPU for testing
             os.environ["CUDA_VISIBLE_DEVICES"] = ""
-        # Set some test parameters that can be executed on light clients
-        row_limit = 1500
         # Pass the entire dataset
         batch_size = row_limit
         num_epochs = 1
@@ -222,6 +220,7 @@ def train(
 
     # Create initial mapping of class indices to class weights
     class_weights = dict(enumerate(class_weights))
+
     class_names = lesion_type_encoder.inverse_transform(range(NUM_CLASSES))
     malignant_classes = ["akiec", "bcc", "mel"]
 
