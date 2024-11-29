@@ -114,7 +114,7 @@ def load_active_model_from_db(db_path):
         row = cursor.fetchone()
         if row is None:
             print("No active model found in database")
-            return None, None
+            return None
 
         serialized_weights, hyperparameters_json = row
 
@@ -135,7 +135,7 @@ def load_active_model_from_db(db_path):
         weights = deserialize_weights(serialized_weights)
 
         # PROBABLY NEED TO UNCOMMENT, TRY WITHOUT FIRST
-        # model.set_weights(weights)
+        #model.set_weights(weights)
 
         conn.close()
 
