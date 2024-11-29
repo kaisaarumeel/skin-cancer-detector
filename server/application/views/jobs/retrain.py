@@ -56,7 +56,7 @@ class Retrain(View):
             "num_epochs",
             "batch_size",
             "learning_rate",
-            "malignant_multiplier"
+            "malignant_multiplier",
         ]
         # Check if all required fields exist in request.data
         if not all(field in request.data for field in required_fields):
@@ -82,7 +82,7 @@ class Retrain(View):
             "num_epochs": request.data["num_epochs"],
             "batch_size": request.data["batch_size"],
             "learning_rate": request.data["learning_rate"],
-            "malignant_multiplier": request.data["malignant_multiplier"]
+            "malignant_multiplier": request.data["malignant_multiplier"],
         }
 
         # Get non-None values from request
