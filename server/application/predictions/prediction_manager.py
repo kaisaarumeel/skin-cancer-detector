@@ -8,6 +8,7 @@ import tensorflow as tf
 # Custom modules
 from application.views.jobs.state import PREDICTION_JOBS
 from application.mlsym.persistence import load_active_model_from_db
+from .resize_images import preprocess_images
 
 
 # Find the path to the database
@@ -50,8 +51,12 @@ def manage_predictions():
 
         # TODO read queue and prepare batch
 
-        # TODO preprocess image data function
-        # read model input dimensions and pass images + dim as params
+        # Preprocess image data 
+        # TODO replace the hardcoded image paths with image list
+        image_path = Path(__file__).resolve().parent / "image.jpg"
+        image2_path = Path(__file__).resolve().parent / "image2.png"
+        preprocess_images([str(image_path), str(image2_path)], model)
+
 
         # TODO call predict() on batch
 
