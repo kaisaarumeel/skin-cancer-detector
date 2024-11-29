@@ -1,6 +1,14 @@
 <script>
   import LoginForm from "../../components/LoginForm.svelte";
   import SignupForm from "../../components/SignupForm.svelte";
+  import { loggedInRedirect } from '../../routeGuard'; 
+  import { onMount } from "svelte";
+
+    // Check if the user is logged in
+    onMount(() => {
+    // Redirect logged-in users away from this page
+    loggedInRedirect(); // `redirectIfLoggedIn` is set to true
+  });
 
   // Reactive state to manage whether to show the login or signup form
   let showSignup = false;

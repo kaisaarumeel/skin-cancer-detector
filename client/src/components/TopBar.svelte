@@ -1,9 +1,18 @@
 <script>
     import { goto } from '$app/navigation';
-  
-    function handleLogout() {
-    // Add logout endpoint/logic here
-      goto('/home');
+    import { API } from '../api'; 
+
+
+    async function handleLogout() {
+      try {
+        const response = await API.post('api/logout/');
+        if (response.status === 200) {
+          console.log('User logged out successfully');
+         goto('/home');
+        }
+      } catch (err) {
+        console.error('Error logging out:', err);
+      }
     }
 </script>
 
