@@ -17,6 +17,7 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.metrics import Recall, Precision
 from tensorflow.keras.applications import DenseNet121
 from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.losses import categorical_crossentropy
 
 # Custom modules
 from .cache import query_db_or_cache
@@ -62,9 +63,10 @@ def train(
     num_classes=7,
     dropout_rate=0.0,
     loss_function="categorical_crossentropy",
-    num_epochs=7,
+    num_epochs=10,
     batch_size=16,
     learning_rate=1e-5,
+    malignant_multiplier=20.0,
 ):
     # Custom status callback for job status update
     status_callback = StatusUpdateCallback(job, set_status)
@@ -211,21 +213,26 @@ def train(
 
     validate_model_output(model, INPUT_SIZE, NUM_CLASSES)
 
-    # Compute class weights to account for unbalanced classes
+    # Compute class weights to account for unbalanced classes and prioritize malignant conditions
     class_weights = class_weight.compute_class_weight(
         class_weight="balanced",  # Use balanced class weights
         classes=np.unique(labels),  # Extract the unique classes
         y=labels,  # Use the labels
     )
 
-    # Create a mapping of class indices to class weights
-    # and store it in a dictionary for the model
+    # Create initial mapping of class indices to class weights
     class_weights = dict(enumerate(class_weights))
+    class_names = lesion_type_encoder.inverse_transform(range(NUM_CLASSES))
+    malignant_classes = ["akiec", "bcc", "mel"]
 
-    # Todo: Impose freezing on the pre-trained model
-    # Unfreeze the last 10 layers for fine-tuning
-    # for layer in pretrained.layers[-10:]:
-    #     layer.trainable = True
+    MALIGNANT_MULTIPLIER = malignant_multiplier
+
+    # Loop through class names
+    for idx, class_name in enumerate(class_names):
+        # Check if class name is in malignant classes
+        if class_name in malignant_classes:
+            # Multiply class weight by malignant multiplier
+            class_weights[idx] *= MALIGNANT_MULTIPLIER
 
     set_status(job, "Compiling model")
     # Compile model
@@ -271,6 +278,28 @@ def train(
     # Get actual class labels from lesion_type_encoder
     class_names = lesion_type_encoder.inverse_transform(range(NUM_CLASSES))
 
+    # Define malignant and benign class indices. These will unlikely change.
+    malignant_classes = ["akiec", "bcc", "mel"]
+
+    # Get true and predicted class names
+    true_class_names = lesion_type_encoder.inverse_transform(true_classes)
+    predicted_class_names = lesion_type_encoder.inverse_transform(predicted_classes)
+
+    # Create boolean masks for malignant classes by checking if class names are in malignant_classes
+    is_true_malignant = np.isin(true_class_names, malignant_classes)
+    is_predicted_malignant = np.isin(predicted_class_names, malignant_classes)
+
+    # Calculate true positives and false negatives
+    TP = np.sum(np.logical_and(is_true_malignant, is_predicted_malignant))
+    FN = np.sum(
+        np.logical_and(is_true_malignant, np.logical_not(is_predicted_malignant))
+    )
+
+    # Calculate Custom Recall
+    custom_recall = TP / (TP + FN) if (TP + FN) > 0 else 0.0
+
+    print(f"Recall for malignant classes: {custom_recall:.4f}%")
+
     if job == None:
         # Dont plot if this is a server job
         # Plot classification report, confusion matrix, and training history
@@ -290,5 +319,6 @@ def train(
         BATCH_SIZE,
         LEARNING_RATE,
         history.history["val_accuracy"][-1],
+        custom_recall,
     )
     print("Model saved successfully to database")
