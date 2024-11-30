@@ -57,7 +57,9 @@
       </div>
 
     </div>
-    <UserList></UserList>
+    <div class="px-6 pb-6">
+      <UserList></UserList>
+    </div>
 
   </div>
   
