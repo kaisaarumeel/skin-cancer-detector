@@ -154,5 +154,5 @@ def feature_preprocessing(df, requested_size):
     gc.collect()
 
     # We need the lesion_type_encoder for training
-    # We need to store the localization_encoder with the model to preprocess user data 
+    # We need to store the localization_encoder with the model to preprocess user data
     return df_encoded, lesion_type_encoder, localization_encoder, images

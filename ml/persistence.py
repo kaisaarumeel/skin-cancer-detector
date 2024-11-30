@@ -49,7 +49,8 @@ def save_model(
     batch_size,
     learning_rate,
     validation_accuracy,
-    tabular_scaler
+    tabular_scaler,
+    localization_encoder,
 ):
     try:
         # Serialize weights layer by layer
@@ -58,6 +59,10 @@ def save_model(
         # Serialize and encode the scaler
         pickled_scaler = pickle.dumps(tabular_scaler)
         encoded_scaler = base64.b64encode(pickled_scaler).decode("utf-8")
+
+        # Serialize and encode the encoder
+        pickled_encoder = pickle.dumps(localization_encoder)
+        encoded_encoder = base64.b64encode(pickled_encoder).decode("utf-8")
 
         # Prepare hyperparameters dict
         hyperparameters = {
@@ -70,7 +75,8 @@ def save_model(
             "learning_rate": float(learning_rate),
             "model_architecture": model.to_json(),
             "validation_accuracy": float(validation_accuracy),
-            "tabular_scaler": encoded_scaler
+            "tabular_scaler": encoded_scaler,
+            "localization_encoder": encoded_encoder,
         }
 
         # Convert hyperparameters to JSON string
@@ -142,7 +148,7 @@ def load_active_model_from_db(db_path):
         weights = deserialize_weights(serialized_weights)
 
         # PROBABLY NEED TO UNCOMMENT, TRY WITHOUT FIRST
-        #model.set_weights(weights)
+        # model.set_weights(weights)
 
         conn.close()
 
