@@ -22,7 +22,7 @@
 </script>
 
 <div class="h-fit bg-white p-4 rounded-lg shadow-md">
-  <h2 class="text-lg font-regular text-secondary">Model Accuracy and Recall</h2>
+  <h2 class="text-lg font-regular text-secondary">Model Predictive Performance</h2>
   
   <div class="relative h-40 mt-10">
     <div class="absolute left-8 top-0 h-full w-[calc(100%-2rem)] overflow-x-auto">
