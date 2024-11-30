@@ -51,11 +51,11 @@ def manage_predictions():
             # Skip this loop iteration to attempt to reload the model
             continue
 
-        # Store the Jobs to be processed in a new array
-        jobs_batch = PREDICTION_JOBS[:BATCH_SIZE]
-
-        # Remove the Jobs from the global queue
-        PREDICTION_JOBS = PREDICTION_JOBS[BATCH_SIZE:]
+        # Dequeue the Jobs to be processed, up to the max limit
+        jobs_batch = [
+            PREDICTION_JOBS.get()
+            for _ in range(min(BATCH_SIZE, PREDICTION_JOBS.qsize()))
+        ]
 
         # Prepare a list of resized images that fit the model input size
         resized_images = preprocess_images(

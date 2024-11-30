@@ -75,7 +75,9 @@ class CreateRequest(View):
         job = Job(
             job_id=str(uuid.uuid4()), start_time=int(time.time()), parameters=parameters
         )
-        PREDICTION_JOBS.append(job)
+        # Enqueue the Job to the global queue
+        PREDICTION_JOBS.put(job)
+        
         return JsonResponse(
             {
                 "msg": "Image uploaded successfully!",
