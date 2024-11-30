@@ -11,7 +11,11 @@ import numpy as np
 # Custom modules
 from application.views.jobs.state import PREDICTION_JOBS
 from application.mlsym.persistence import load_active_model_from_db
-from .preprocess_user_images import preprocess_images
+from .preprocess_user_data import (
+    preprocess_images,
+    extract_images,
+    extract_tabular_features,
+)
 
 
 # Find the path to the database
@@ -134,33 +138,3 @@ def getEncoder(hyperparameters):
 
     # Return Encoder object
     return pickle.loads(pickled_encoder)
-
-
-def extract_images(jobs):
-    # Extract images using list comprehension
-    images = [job.parameters.get("image") for job in jobs]
-
-    # Stack images in 2D array
-    images = np.column_stack((images))
-
-    return images
-
-
-def extract_tabular_features(jobs, scaler, localization_encoder):
-    # Extract features using list comprehension
-    ages = [job.parameters.get("age") for job in jobs]
-    localizations = [job.parameters.get("localization") for job in jobs]
-    sexes = [job.parameters.get("sex").lower() == "male" for job in jobs]
-
-    # Encode the localization labels
-    localizations = localization_encoder.transform(localizations)
-
-    # TODO one-hot encode localization
-
-    # Stack features in 2D array
-    tabular_features = np.column_stack((ages, localizations, sexes))
-
-    # Standardize the distribution using the scaler
-    tabular_features = scaler.transform(tabular_features)
-
-    return tabular_features

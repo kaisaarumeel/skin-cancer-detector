@@ -3,6 +3,16 @@ import numpy as np
 import os
 
 
+def extract_images(jobs):
+    # Extract images using list comprehension
+    images = [job.parameters.get("image") for job in jobs]
+
+    # Stack images in 2D array
+    images = np.column_stack((images))
+
+    return images
+
+
 def preprocess_images(image_list, target_input_shape):
     """
     Preprocesses a batch of images for model prediction.
@@ -35,3 +45,23 @@ def preprocess_images(image_list, target_input_shape):
 
     # Convert to a numpy array and return the images
     return np.array(preprocessed_images)
+
+
+def extract_tabular_features(jobs, scaler, localization_encoder):
+    # Extract features using list comprehension
+    ages = [job.parameters.get("age") for job in jobs]
+    localizations = [job.parameters.get("localization") for job in jobs]
+    sexes = [job.parameters.get("sex").lower() == "male" for job in jobs]
+
+    # Encode the localization labels
+    localizations = localization_encoder.transform(localizations)
+
+    # TODO one-hot encode localization
+
+    # Stack features in 2D array
+    tabular_features = np.column_stack((ages, localizations, sexes))
+
+    # Standardize the distribution using the scaler
+    tabular_features = scaler.transform(tabular_features)
+
+    return tabular_features
