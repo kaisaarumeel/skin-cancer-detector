@@ -97,8 +97,8 @@
 
 <div class="bg-white rounded-lg shadow-md p-4 flex flex-col items-start relative">
   <h2 class="text-lg font-regular text-secondary">Upload New Training Data</h2>
-  <p class="text-sm text-tertiary mt-2">Drag and drop a .zip file or use the button below to upload new training data. <br>
-  Zip file must contain "metadata.cv" and an "images" folder.</p>
+  <p class="text-sm text-tertiary mt-2">Drag and drop a .zip file or use the button below to upload new training data. 
+    Zip file must contain "metadata.cv" and an "images" folder.</p>
 
   <div
     role="button"
