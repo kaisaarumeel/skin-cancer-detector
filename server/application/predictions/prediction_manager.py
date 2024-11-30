@@ -32,32 +32,35 @@ def manage_predictions():
     # Load the active model from the database
     model, hyperparameters = load_active_model_from_db(abs_db_path)
 
-    # Load the feature scaler
-    tabular_scaler = getScaler(hyperparameters)
+    if model != None:
+        # Load the feature scaler and localization decoder
+        tabular_scaler = getScaler(hyperparameters)
+        localization_encoder = getEncoder(hyperparameters)
 
     # Predictions loop
     while True:
         # Sleep thread to periodically check Job queue and not block app execution
         time.sleep(INTERVAL)
 
-        # Check if the model should be reloaded
+        # Check if the active model should be reloaded
         if model_reload_event.is_set() or model == None:
             print("Reloading model...")
             model, hyperparameters = load_active_model_from_db(abs_db_path)
-            # Reload the feature scaler
-            tabular_scaler = getScaler(hyperparameters)
-
             # Clear the event for reuse
             model_reload_event.clear()
 
-        # Check if there was an active model in the database
-        # and that it was successfully loaded
-        if model == None:
-            warnings.warn(
-                "Active model could not be loaded from database", category=UserWarning
-            )
-            # Skip this loop iteration to attempt to reload the model
-            continue
+            # Verify that the model was successfully loaded
+            if model == None:
+                warnings.warn(
+                    "Active model could not be loaded from database",
+                    category=UserWarning,
+                )
+                # Skip this loop iteration to attempt to reload the model
+                continue
+
+            # Reload the feature scaler and localization encoder
+            tabular_scaler = getScaler(hyperparameters)
+            localization_encoder = getEncoder(hyperparameters)
 
         # Dequeue the Jobs to be processed, up to the max limit
         jobs_batch = [
@@ -69,13 +72,15 @@ def manage_predictions():
         if not jobs_batch:
             continue
 
-        # Prepare a list of resized images that fit the model input size
+        # Prepare resized images that fit the model input size
         resized_images = preprocess_images(
             extract_images(jobs_batch), get_model_input_shape(model)
         )
 
         # Extract the tabular features
-        tabular_features = extract_tabular_features(jobs_batch, tabular_scaler)
+        tabular_features = extract_tabular_features(
+            jobs_batch, tabular_scaler, localization_encoder
+        )
 
         # TODO call predict() on batch
         ### NOTE: if prediction doesn't work, uncomment weights statement inside ml/persistence.py
@@ -122,12 +127,18 @@ def getScaler(hyperparameters):
     return pickle.loads(pickled_scaler)
 
 
+def getEncoder(hyperparameters):
+    # Decode and unpickle the encoder
+    encoded_encoder = hyperparameters["localization_encoder"]
+    pickled_encoder = base64.b64decode(encoded_encoder)
+
+    # Return Encoder object
+    return pickle.loads(pickled_encoder)
+
+
 def extract_images(jobs):
-    images = []
-    for job in jobs:
-        parameters = job.parameters
-        image = parameters.get("image")
-        images.append(image)
+    # Extract images using list comprehension
+    images = [job.parameters.get("image") for job in jobs]
 
     # Stack images in 2D array
     images = np.column_stack((images))
@@ -135,27 +146,16 @@ def extract_images(jobs):
     return images
 
 
-def extract_tabular_features(jobs, scaler):
-    # Temp lists to hold the features before stacking in 2D array
-    ages = []
-    localizations = []
-    sexes = []
+def extract_tabular_features(jobs, scaler, localization_encoder):
+    # Extract features using list comprehension
+    ages = [job.parameters.get("age") for job in jobs]
+    localizations = [job.parameters.get("localization") for job in jobs]
+    sexes = [job.parameters.get("sex").lower() == "male" for job in jobs]
 
-    for job in jobs:
-        # Extract feature fields
-        age = job.parameters.get("age")
-        localization = job.parameters.get("localization")
-        sex = job.parameters.get("sex")
+    # Encode the localization labels
+    localizations = localization_encoder.transform(localizations)
 
-        # TODO one-hot encode localization
-
-        # Convert sex to a boolean
-        is_male = sex.lower() == "male"
-
-        # Append to temp lists
-        ages.append(age)
-        localizations.append(localization)
-        sexes.append(is_male)
+    # TODO one-hot encode localization
 
     # Stack features in 2D array
     tabular_features = np.column_stack((ages, localizations, sexes))
