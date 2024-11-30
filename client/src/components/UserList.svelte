@@ -1,33 +1,36 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { API } from '../api';
+  import type { AxiosError } from 'axios';
 
   interface User {
     id: string;
     name: string;
   }
+  type ErrorResponse = {
+    err?: string;
+  };
 
   let users: User[] = []
   let errorMessage: string | null = null; // To store any error messages
 
   // Fetch users from the backend API
-  const fetchUsers = async () => {
+  const getUsers = async () => {
     try {
-      const response = await fetch("/api/get-all-users/");
-      if (!response.ok) {
-        // Parse the error message from the backend
-        const errorData = await response.json();
-        throw new Error(errorData.err || `Failed to fetch users: ${response.statusText}`);
-      }
+      const response = await API.get("/api/get-all-users/");
+      console.log("API Response:", response.data);
 
-      const data = await response.json();
+      const data = response.data;
       users = data.users.map((user: { username: string }) => ({
         id: user.username,
         name: user.username,
       }));
-    } catch (error) {
+      console.log("Users fetched successfully:", users);
+    } catch (err) {
+      const axiosError = err as AxiosError<ErrorResponse>;
       // Display error message
-      errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
-      console.error("Error fetching users:", errorMessage);
+      errorMessage = axiosError.response?.data?.err || "An unknown error occurred.";
+      console.error("Error getting users:", errorMessage);
     }
   };
 
@@ -38,7 +41,7 @@
 
   // Fetch users when the component is mounted
   onMount(() => {
-    fetchUsers();
+    getUsers();
   });
 </script>
 
