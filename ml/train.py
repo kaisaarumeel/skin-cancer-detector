@@ -290,5 +290,6 @@ def train(
         BATCH_SIZE,
         LEARNING_RATE,
         history.history["val_accuracy"][-1],
+        scaler
     )
     print("Model saved successfully to database")

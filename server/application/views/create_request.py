@@ -104,9 +104,8 @@ class CreateRequest(View):
             "image": image_array,
         }
 
+        # Create new Job and add it to the global queue
         job = Job(job_id=request_id, start_time=created_at, parameters=parameters)
-
-        # Add the Job to the global queue
         PREDICTION_JOBS.put(job)
 
         return JsonResponse(

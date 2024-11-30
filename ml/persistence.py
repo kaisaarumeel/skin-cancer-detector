@@ -6,6 +6,7 @@ import numpy as np
 import base64
 import io
 import tensorflow as tf
+import pickle
 
 
 def serialize_weights(weights):
@@ -48,10 +49,15 @@ def save_model(
     batch_size,
     learning_rate,
     validation_accuracy,
+    tabular_scaler
 ):
     try:
         # Serialize weights layer by layer
         serialized_weights = serialize_weights(model.get_weights())
+
+        # Serialize and encode the scaler
+        pickled_scaler = pickle.dumps(tabular_scaler)
+        encoded_scaler = base64.b64encode(pickled_scaler).decode("utf-8")
 
         # Prepare hyperparameters dict
         hyperparameters = {
@@ -64,6 +70,7 @@ def save_model(
             "learning_rate": float(learning_rate),
             "model_architecture": model.to_json(),
             "validation_accuracy": float(validation_accuracy),
+            "tabular_scaler": encoded_scaler
         }
 
         # Convert hyperparameters to JSON string
@@ -139,7 +146,7 @@ def load_active_model_from_db(db_path):
 
         conn.close()
 
-        return model
+        return model, hyperparameters
 
     except Exception as e:
         print(f"Error loading model: {str(e)}")

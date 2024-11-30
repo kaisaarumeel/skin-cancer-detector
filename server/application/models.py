@@ -211,9 +211,7 @@ class Requests(models.Model):
 
     # Sets the foreign key to be the Model version column, so that the model version
     # used for the prediction can be found even if the Model itself is deleted
-    model = models.ForeignKey(
-        Model, on_delete=models.DO_NOTHING, blank=True, null=True
-    )
+    model = models.ForeignKey(Model, on_delete=models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = True
