@@ -124,12 +124,62 @@
 
   <div class="bg-gray-100 p-4 rounded-md">
     {#if $activeModel}
-      <p class="text-sm text-tertiary font-regular">Training set size: 16Gb</p>
-      <p class="text-sm text-tertiary font-regular">Validation set size: 2Gb</p>
-      <p class="text-sm text-tertiary font-regular">Test set size: 2Gb</p>
-      <p class="text-sm text-tertiary font-regular">Accuracy rate: {$activeModel.hyperparameters["Validation accuracy"]}%</p>
-      <p class="text-sm text-tertiary font-regular">Custom recall rate: {$activeModel.hyperparameters["Custom recall"]}%</p>
-      <p class="text-sm text-tertiary font-regular">Model version: {$activeModel.version}.0</p>
+      <table class="w-full">
+        <tbody>
+          <!-- First Row with Headings -->
+          <tr>
+            <td class="text-sm text-tertiary font-regular" style="border-right: 1px solid #ccc; padding-right: 1rem;">
+              <strong>Active Model</strong>
+            </td>
+            <td class="text-sm text-tertiary font-regular" style="padding-left: 1rem;">
+              <strong>Dataset</strong>
+            </td>
+          </tr>
+
+          <!-- Second Row with Nested Tables -->
+          <tr>
+            <!-- Active Model Details -->
+            <td class="text-sm text-tertiary font-regular" style="border-right: 1px solid #ccc; padding-right: 1rem;">
+              <table class="w-full">
+                <tbody>
+                  <tr>
+                    <td class="text-sm text-tertiary font-regular">Model version:</td>
+                    <td class="text-sm text-tertiary font-regular">{$activeModel.version}.0</td>
+                  </tr>
+                  <tr>
+                    <td class="text-sm text-tertiary font-regular">Accuracy rate:</td>
+                    <td class="text-sm text-tertiary font-regular">{$activeModel.hyperparameters["Validation accuracy"]}%</td>
+                  </tr>
+                  <tr>
+                    <td class="text-sm text-tertiary font-regular">Custom recall rate:</td>
+                    <td class="text-sm text-tertiary font-regular">{$activeModel.hyperparameters["Custom recall"]}%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+
+            <!-- Dataset Details -->
+            <td class="text-sm text-tertiary font-regular" style="padding-left: 1rem;">
+              <table class="w-full">
+                <tbody>
+                  <tr>
+                    <td class="text-sm text-tertiary font-regular">Training set size:</td>
+                    <td class="text-sm text-tertiary font-regular">16GB</td>
+                  </tr>
+                  <tr>
+                    <td class="text-sm text-tertiary font-regular">Validation set size:</td>
+                    <td class="text-sm text-tertiary font-regular">2GB</td>
+                  </tr>
+                  <tr>
+                    <td class="text-sm text-tertiary font-regular">Test set size:</td>
+                    <td class="text-sm text-tertiary font-regular">2GB</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     {:else}
       <p class="text-sm text-tertiary font-regular">No active model</p>
     {/if}
