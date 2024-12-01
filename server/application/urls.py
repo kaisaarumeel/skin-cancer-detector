@@ -26,6 +26,7 @@ from .views.add_data import AddData
 from .views.models.all_models import GetAllModels
 from .views.models.active_model import GetActiveModel
 from .views.models.swap_model import SwapModel
+from .views.models.delete_model import DeleteModel
 from .views.get_all_requests import GetAllRequests
 from .views.get_all_users import GetAllUsers
 from .views.jobs.retrain import Retrain
@@ -45,6 +46,7 @@ urlpatterns = [
     path(
         "models/swap-model/<int:version>/", SwapModel.as_view(), name="api-swap-model"
     ),
+    path("models/delete-model/<int:version>/", DeleteModel.as_view(), name="api-delete-model"),
     path("get-all-requests/", GetAllRequests.as_view(), name="api-get-all-requests"),
     path("get-all-users/", GetAllUsers.as_view(), name="api-get-all-users"),
     path("retrain/", Retrain.as_view(), name="api-retrain-model"),
