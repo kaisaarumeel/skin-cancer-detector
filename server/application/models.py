@@ -157,7 +157,7 @@ class Users(AbstractUser):
 class Requests(models.Model):
     request_id = models.AutoField(primary_key=True)
     created_at = models.IntegerField(null=False, blank=False)
-    probability = models.IntegerField(blank=True, null=True)
+    probability = models.FloatField(blank=True, null=True)
     image = models.BinaryField(blank=False, null=False)
 
     LOCALIZATION_CHOICES = [

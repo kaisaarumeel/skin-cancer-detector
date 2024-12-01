@@ -3,6 +3,7 @@ import time
 import threading
 import base64
 import pickle
+import sqlite3
 from pathlib import Path
 
 import tensorflow as tf
@@ -38,13 +39,15 @@ def manage_predictions():
 
     if model != None:
         # Load the feature scaler and decoders
-        tabular_scaler = getScaler(hyperparameters)
-        localization_encoder, lesion_type_encoder = getEncoders(hyperparameters)
+        tabular_scaler = get_scaler(hyperparameters)
+        localization_encoder, lesion_type_encoder = get_encoders(hyperparameters)
 
     # Predictions loop
     while True:
         # Sleep thread to periodically check Job queue and not block app execution
         time.sleep(INTERVAL)
+
+        print("Processing predictions...")
 
         # Check if the active model should be reloaded
         if model_reload_event.is_set() or model == None:
@@ -63,8 +66,8 @@ def manage_predictions():
                 continue
 
             # Reload the feature scaler and encoders
-            tabular_scaler = getScaler(hyperparameters)
-            localization_encoder, lesion_type_encoder = getEncoders(hyperparameters)
+            tabular_scaler = get_scaler(hyperparameters)
+            localization_encoder, lesion_type_encoder = get_encoders(hyperparameters)
 
         # Dequeue the Jobs to be processed, up to the max limit
         jobs_batch = [
@@ -86,18 +89,15 @@ def manage_predictions():
             jobs_batch, tabular_scaler, localization_encoder
         )
 
-        # TODO call predict() on batch
-        ### NOTE: if predict function call doesn't work, uncomment weights statement inside ml/persistence.py
         # Run inference on the batch
+        # NOTE: if predict function call doesn't work, uncomment weights statement inside ml/persistence.py
         predictions = model.predict([resized_images, tabular_features])
 
-        # TODO postprocess the results
-        # extract confidence and actual label --> map to request_id
-        # need to load the lesion_type_encoder from the hyperparams alongside the other two
+        # TODO add model version as parameter
+        # Update the requests table in the database with the results
+        update_requests_in_db(abs_db_path, jobs_batch, predictions, lesion_type_encoder)
 
-        # TODO write results to database
-
-        print("Processing predictions...")
+        ### END OF LOOP
 
 
 ############################### HELPER FUNCTIONS ###############################
@@ -128,7 +128,7 @@ def get_model_input_shape(model):
     return (target_height, target_width)
 
 
-def getScaler(hyperparameters):
+def get_scaler(hyperparameters):
     # Decode and unpickle the scaler
     encoded_scaler = hyperparameters["tabular_scaler"]
     pickled_scaler = base64.b64decode(encoded_scaler)
@@ -137,7 +137,7 @@ def getScaler(hyperparameters):
     return pickle.loads(pickled_scaler)
 
 
-def getEncoders(hyperparameters):
+def get_encoders(hyperparameters):
     # Decode and unpickle the localization encoder
     encoded_loc_encoder = hyperparameters["localization_encoder"]
     pickled_loc_encoder = base64.b64decode(encoded_loc_encoder)
@@ -150,3 +150,53 @@ def getEncoders(hyperparameters):
 
     # Return Encoder objects
     return localization_encoder, lesion_type_encoder
+
+
+def update_requests_in_db(
+    db_path, jobs_batch, predictions, lesion_type_encoder, model_version=None
+):
+    """
+    Update the Requests table with the predictions for the given Jobs batch.
+    """
+
+    # Connect to the database
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    try:
+        conn.execute("BEGIN TRANSACTION")
+
+        # Prepare Request table updates
+        for job, prediction in zip(jobs_batch, predictions, strict=True):
+            # Extract the request id from the job_id as they are the same
+            request_id = job.job_id
+            # Extract the probability of the predicted class
+            probability = float(np.max(prediction))
+
+            # Get the index of the predicted class
+            predicted_class_index = np.argmax(prediction)
+            # Decode the label (return value is a list so we access the first element)
+            predicted_label = lesion_type_encoder.inverse_transform(
+                [predicted_class_index]
+            )[0]
+
+            # Update database query
+            cursor.execute(
+                """
+                UPDATE requests
+                SET probability = ?, lesion_type = ?, model = ?
+                WHERE request_id = ?;
+                """,
+                (probability, predicted_label, model_version, request_id),
+            )
+
+        # Commit database transaction
+        conn.commit()
+    except Exception as e:
+        # Rollback if there was an error
+        conn.rollback()
+        print(f"Error updating database request table: {e}")
+        # TODO error handling of processed jobs, add to some other queue?
+    finally:
+        # Close database connection
+        conn.close()
