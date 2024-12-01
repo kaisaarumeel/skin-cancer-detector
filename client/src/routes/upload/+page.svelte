@@ -5,7 +5,6 @@
   import { routeGuard } from '../../routeGuard';  // Import the route guard
   import { onMount } from "svelte";
   import { API } from '../../api'; // Import the API instance
-    import axios from "axios";
 
   // Check if the user is logged in when the page is loaded
   onMount(() => {
@@ -25,8 +24,10 @@
 
   let selectedFile: File | null = null;
   let fileName = "No file chosen";
-  // flag for checking if file is sumitted or not
-  let is_file_submitted = false
+  let localization = ""
+
+  let fileError = ""
+  let localizationError = ""
 
   // Updated function with TypeScript type annotation
   function handleFileChange(event: Event) {
@@ -34,30 +35,39 @@
     selectedFile  = input.files?.[0] || null ; // Use optional chaining
     if (selectedFile) {
       fileName = selectedFile.name;
-      is_file_submitted = true
     } else {
       fileName = "No file chosen";
-      is_file_submitted = false
     }
   }
-
    
   async function handleAnalyze(event: Event)
   {
     if (!selectedFile) {
       console.error("No file selected");
-      return; // Exit the function early if no file is selected
+      fileError = "No file is selected."
+      return; 
+    }
+    if (!localization) {
+      console.error("No localization selected")
+      localizationError = "No localization is selected."
+      return; 
     }
     try{
       const base64Image = await fileToBase64(selectedFile); // convert image to the base 64 format
+      const response = await API.post('/api/create-request/', {
+        "localization": localization,
+        "image": base64Image
+      });
+
+      if(response.status == 201)
+      {
+        // TODO: Add get results endpoint/logic here
+        goto('/results');
+      }
     }
     catch(err){
       console.error(err)
     }
-    
-    
-    // Add get results endpoint/logic here
-    goto('/results');
   }
 
   // Function to change the submitted 
@@ -97,8 +107,12 @@
       <h1 class="text-secondary text-3xl font-extralight mb-20">Upload a photo of your skin</h1>
       <p class="text-tertiary mb-2">For a more precise analysis choose the body part where the mole is located.</p>
 
+      {#if localizationError}
+        <p class="text-red-500 mb-2">{localizationError}</p>
+      {/if}
+
       <div class="mb-4 w-full">
-        <select class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary text-gray-500 focus:text-black" aria-label="Body Part">
+        <select bind:value={localization} class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary text-gray-500 focus:text-black" aria-label="Body Part">
           <option value="" disabled selected class="text-gray-400">Select Body Part</option>
           <option value="ear">Ear</option>
           <option value="face">Face</option>
@@ -140,12 +154,14 @@
             class="hidden"
             on:change={handleFileChange}
           />
-    
+          
           <span class="text-tertiary">{fileName}</span>
         </div>
       </form>
-
-      <button on:click={handleAnalyze} disabled={!is_file_submitted} class="w-1/2 p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-10 hover:bg-secondary shadow-l">Analyze</button>
+      {#if fileError}
+        <p class="text-red-500 mb-2">{fileError}</p>
+      {/if}
+      <button on:click={handleAnalyze} class="w-1/2 p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-10 hover:bg-secondary shadow-l">Analyze</button>
     </div>
   </div>
 </div>
