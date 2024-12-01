@@ -145,6 +145,7 @@ def feature_preprocessing(df, requested_size):
 
     # Label encoding the lesion_type feature
     lesion_type_encoder = LabelEncoder()
+
     df["lesion_type"] = lesion_type_encoder.fit_transform(df["lesion_type"])
 
     # One-hot encoding sex feature

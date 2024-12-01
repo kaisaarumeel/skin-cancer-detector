@@ -152,4 +152,13 @@ export let FIELDS: Field[] = [
         step: 0.00001,
         max: 1,
     },
+    {
+        label:"Malignant Class Multiplier",
+        id:"malignant_multiplier",
+        value:20.0,
+        isNumber:true,
+        min:0,
+        max:100,
+        step:1
+    }
 ];

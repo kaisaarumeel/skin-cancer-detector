@@ -33,6 +33,7 @@
     num_epochs: number;
     batch_size: number;
     learning_rate: number;
+    malignant_multiplier: number;
   }
 
   interface LoginResponse {

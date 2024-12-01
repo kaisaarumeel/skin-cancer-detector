@@ -52,6 +52,7 @@ def save_model(
     tabular_scaler,
     lesion_type_encoder,
     localization_encoder,
+    custom_recall,
 ):
     try:
         # Serialize weights layer by layer
@@ -85,6 +86,7 @@ def save_model(
             "tabular_scaler": encoded_scaler,
             "lesion_type_encoder": encoded_lesion_encoder,
             "localization_encoder": encoded_loc_encoder,
+            "custom_recall": float(custom_recall),
         }
 
         # Convert hyperparameters to JSON string

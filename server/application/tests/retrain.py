@@ -50,6 +50,7 @@ class RetrainTests(TestCase):
             "num_epochs": None,
             "batch_size": None,
             "learning_rate": None,
+            "malignant_multiplier": None,
         }
 
     def login_admin(self):
