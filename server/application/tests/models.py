@@ -4,6 +4,7 @@ import time
 import os
 
 from django.contrib.auth.hashers import make_password
+from django.core.exceptions import ObjectDoesNotExist
 from django.test import Client, TestCase
 from django.urls import reverse
 
@@ -217,3 +218,31 @@ class ModelTests(TestCase):
         self.assertEqual(
             active_model.model, new_model
         )  # check that it points to the correct model
+    
+    def test_delete_model_success(self):
+        """test successfully deleting a model"""
+        self.client.force_login(self.test_user_admin)
+        model = Model.objects.first()  # get the first model
+        response = self.client.delete(
+            reverse("api-delete-model", kwargs={"version": model.version}))
+        
+        self.assertEqual(response.status_code, 204)
+        self.assertRaises(ObjectDoesNotExist, Model.objects.get, version=model.version)
+
+    def test_delete_model_does_not_exist(self):
+        """test deleting a model that doesn't exist"""
+        self.client.force_login(self.test_user_admin)
+        response = self.client.delete(
+            reverse("api-delete-model", kwargs={"version": self.invalid_version}))
+        
+        self.assertEqual(response.status_code, 404)
+    
+    def test_delete_active_model_cascade(self):
+        """test deleting the active model and cascading to the ActiveModel table"""
+        self.client.force_login(self.test_user_admin)
+        response = self.client.delete(
+            reverse("api-delete-model", kwargs={"version": self.active_model.model.version}))
+        
+        self.assertEqual(response.status_code, 204)
+        self.assertRaises(ObjectDoesNotExist, ActiveModel.objects.get, model=self.active_model.model)
+

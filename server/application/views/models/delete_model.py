@@ -16,7 +16,7 @@ class DeleteModel(View):
             model = Model.objects.get(version=version)
             model.delete()
             
-            return JsonResponse({"message": f"Model version {version}.0 deleted successfully"}, status=200)
+            return JsonResponse({"message": f"Model version {version}.0 deleted successfully"}, status=204)
         
         except ObjectDoesNotExist:
             return JsonResponse({"err": f"Model version {version}.0 does not exist"}, status=404)
