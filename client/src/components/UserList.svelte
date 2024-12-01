@@ -1,23 +1,48 @@
-<script  lang="ts">
-    let users = [
-    { id: 1, name: "User 1" },
-    { id: 2, name: "User 2" },
-    { id: 3, name: "User 3" },
-    { id: 4, name: "User 4" },
-    { id: 5, name: "User 5" },
-    { id: 6, name: "User 6" },
-    { id: 7, name: "User 7" },
-    { id: 8, name: "User 8" },
-    { id: 9, name: "User 9" },
-    { id: 10, name: "User 10" },
-    { id: 11, name: "User 9" },
-    { id: 12, name: "User 10" },
-  ];
+<script lang="ts">
+  import { onMount } from "svelte";
+  import { API } from '../api';
+  import type { AxiosError } from 'axios';
 
-  const deleteUser = (id: number) => {
-    // Remove the user with the given id from the list
-    users = users.filter(user => user.id !== id);
+  interface User {
+    id: string;
+    name: string;
+  }
+  type ErrorResponse = {
+    err?: string;
   };
+
+  let users: User[] = []
+  let errorMessage: string | null = null; // To store any error messages
+
+  // Fetch users from the backend API
+  const getUsers = async () => {
+    try {
+      const response = await API.get("/api/get-all-users/");
+      console.log("API Response:", response.data);
+
+      const data = response.data;
+      users = data.users.map((user: { username: string }) => ({
+        id: user.username,
+        name: user.username,
+      }));
+      console.log("Users fetched successfully:", users);
+    } catch (err) {
+      const axiosError = err as AxiosError<ErrorResponse>;
+      // Display error message
+      errorMessage = axiosError.response?.data?.err || "An unknown error occurred.";
+      console.error("Error getting users:", errorMessage);
+    }
+  };
+
+  const deleteUser = (username: string) => {
+    // Remove the user with the given username from the list
+    users = users.filter(user => user.id !== username);
+  };
+
+  // Fetch users when the component is mounted
+  onMount(() => {
+    getUsers();
+  });
 </script>
 
 <div class="h-fit bg-white rounded-lg shadow-md p-4 flex flex-col items-start">
