@@ -69,7 +69,7 @@ This document tracks all project tasks, assignees, and the status per every week
 | :------------------------------------------------------------------------------------------------------------------------------ | :----------: | :------: | :-------: | :--------: | :-----------------------------------------------------------------------------------------: |
 | [Add user "photo upload" endpoint](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/17)                              |    Arvin     |  22 Nov  |    yes    |    yes     | Was supposed to be done the week before, but was not completed so carried over to this week |
 | [Add admin "get users" & "get requests" endpoints](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/18)              |    Arvin     |  22 Nov  |    yes    |    yes     | Was supposed to be done the week before, but was not completed so carried over to this week |
-| [Create prediction manager](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/23)                                     | Erik, Kaisa  |  29 Nov  |    yes    |          |
+| [Create prediction manager](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/23)                                     | Erik, Kaisa  |  29 Nov  |    yes    |            |
 | [Retrain endpoint](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/29)                                              |  Alexander   |  27 Nov  |    yes    |    yes     |
 | [Connect authentication to frontend](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/30)                            |    Kaisa     |  29 Nov  |    yes    |    yes     |
 | [Connect get all model/get active model/swap model to frontend](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/31) | Konstantinos |  29 Nov  |    yes    |    yes     |
@@ -84,16 +84,16 @@ This document tracks all project tasks, assignees, and the status per every week
 
 
 ## Week 5 _(Dec 2 - Dec 8)_:
-| Task                                                                                   | Responsible  | Deadline | Delivered | Integrated | Notes |
-| :------------------------------------------------------------------------------------- | :----------: | :------: | :-------: | :--------: | :---: |
-| [Get specific request](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/47) | Arvin |  3 Dec  |           |            |
-| [Explainable AI (backend)](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/48) |
-| [Delete user](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/49) |
-| [Explainable AI (frontend)](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/50) |
-| [Get request by username](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/51) | Arvin | 
+| Task                                                                                                         | Responsible | Deadline | Delivered | Integrated | Notes |
+| :----------------------------------------------------------------------------------------------------------- | :---------: | :------: | :-------: | :--------: | :---: |
+| [Get specific request](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/47)                       |    Arvin    |  3 Dec   |           |            |
+| [Explainable AI (backend)](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/48)                   |
+| [Delete user](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/49)                                |
+| [Explainable AI (frontend)](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/50)                  |
+| [Get request by username](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/51)                    |    Arvin    |
 | [Create page for viewing prediction history](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/52) |
-| [Dockerfile](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/53) |
-| [Cloud deployment](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/54) |
+| [Dockerfile](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/53)                                 |
+| [Cloud deployment](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/54)                           |
 
 
 
