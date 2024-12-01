@@ -131,33 +131,91 @@
                         
                         <!-- collapsible hyperparameter panel -->
                         {#if expandedModelVersion === model.version}
-                            <div class="mt-2 p-3 text-sm border rounded bg-gray-50">
-                                <p><strong>Hyperparameters:</strong></p>
-                                <ul>
-                                    {#each Object.entries(model.hyperparameters) as [key, value]}
-                                        {#if key === "Validation Accuracy" || key === "Custom recall"}
-                                            <li>{key}: {value}%</li>
-                                        {:else}
-                                            <li>{key}: {value}</li>
-                                        {/if}
-                                    {/each}
-                                </ul>
-                                <!-- swap model button -->
-                                <button
-                                    type="button"
-                                    class="mt-4 w-full py-2 px-4 bg-primary text-white rounded-md text-center cursor-pointer hover:bg-secondary"
-                                    on:click={() => setActiveModel(model)}
-                                >
-                                    Set as Active Model
-                                </button>
-                                <button
-                                    type="button"
-                                    class="mt-2 w-full py-2 px-4 bg-red-500 text-white rounded-md text-center cursor-pointer hover:bg-red-600"
-                                    on:click={() => deleteModel(model)}
-                                >
-                                    Delete Model
-                                </button>
-                            </div>
+                        <div class="mt-2 p-3 text-sm border rounded bg-gray-50">
+                            <table class="w-full table-auto border-collapse">
+                                <tbody>
+                                    <!-- Headings Row -->
+                                    <tr>
+                                        <td colspan="2" class="pr-2 align-top font-semibold text-left text-sm text-tertiary">
+                                            Hyperparameters
+                                        </td>
+                                        <td class="pl-4 align-top font-semibold text-left text-sm text-tertiary border-l border-gray-300">
+                                            Performance
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <!-- Hyperparameters -->
+                                        <td class="pr-2 align-top">
+                                            <table class="w-full">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-sm text-tertiary font-regular">Test size:</td>
+                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Test size"]}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-sm text-tertiary font-regular">Input size:</td>
+                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Input size"]}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-sm text-tertiary font-regular">Learning rate:</td>
+                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Learning rate"]}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-sm text-tertiary font-regular">Loss function:</td>
+                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Loss function"]}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td class="pr-2 align-top">
+                                            <table class="w-full">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-sm text-tertiary font-regular">Batch size:</td>
+                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Batch size"]}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-sm text-tertiary font-regular">Number of epochs:</td>
+                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Number of epochs"]}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-sm text-tertiary font-regular">Dropout rate:</td>
+                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Dropout rate"]}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <!-- Performance Metrics -->
+                                        <td class="pl-4 align-top border-l border-gray-300">
+                                            <table class="w-full">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-sm text-tertiary font-regular">Validation accuracy:</td>
+                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Validation Accuracy"]}%</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!-- Swap model button -->
+                            <button
+                                type="button"
+                                class="mt-4 w-full py-2 px-4 bg-primary text-white rounded-md text-center cursor-pointer hover:bg-secondary"
+                                on:click={() => setActiveModel(model)}
+                            >
+                                Set as Active Model
+                            </button>
+                            <!-- Delete model button -->
+                            <button
+                                type="button"
+                                class="mt-2 w-full py-2 px-4 bg-red-500 text-white rounded-md text-center cursor-pointer hover:bg-red-600"
+                                on:click={() => deleteModel(model)}
+                            >
+                                Delete Model
+                            </button>
+                        </div>
                         {/if}
                     </div>
                 </li>
