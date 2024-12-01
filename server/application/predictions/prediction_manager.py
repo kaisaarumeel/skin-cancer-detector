@@ -91,8 +91,7 @@ def manage_predictions():
             jobs_batch, tabular_scaler, localization_encoder
         )
 
-        # Run inference on the batch
-        # NOTE: if predict function call doesn't work, uncomment weights statement inside ml/persistence.py
+        # Run inference on the prepared batch
         predictions = model.predict([resized_images, tabular_features])
 
         # Update the requests table in the database with the results
