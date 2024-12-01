@@ -45,6 +45,25 @@
         }
     }
 
+    async function deleteModel(model: Model): Promise<void> {
+        try {
+            const response: AxiosResponse<{ message: string }> = await API.delete(`api/models/delete-model/${model.version}/`);
+
+            // update the models list
+            models.update((currentModels) => currentModels.filter((m) => m.version !== model.version));
+
+            // clear activemodel if it is the one being deleted
+            activeModel.update((currentActiveModel) => {
+                if (currentActiveModel?.version === model.version) {
+                    return null; // reset activemodel
+                }
+                return currentActiveModel; // keep current activemodel if not deleted
+            });
+        } catch (error) {
+            console.error("Setting active model failed:", error);
+        }
+    }
+
     function toggleExpandModel(model: Model): void {
         expandedModelVersion = expandedModelVersion === model.version ? null : model.version;
     }
@@ -116,7 +135,7 @@
                                 <p><strong>Hyperparameters:</strong></p>
                                 <ul>
                                     {#each Object.entries(model.hyperparameters) as [key, value]}
-                                        {#if key === "Validation Accuracy"}
+                                        {#if key === "Validation Accuracy" || key === "Custom recall"}
                                             <li>{key}: {value}%</li>
                                         {:else}
                                             <li>{key}: {value}</li>
@@ -130,6 +149,13 @@
                                     on:click={() => setActiveModel(model)}
                                 >
                                     Set as Active Model
+                                </button>
+                                <button
+                                    type="button"
+                                    class="mt-2 w-full py-2 px-4 bg-red-500 text-white rounded-md text-center cursor-pointer hover:bg-red-600"
+                                    on:click={() => deleteModel(model)}
+                                >
+                                    Delete Model
                                 </button>
                             </div>
                         {/if}
