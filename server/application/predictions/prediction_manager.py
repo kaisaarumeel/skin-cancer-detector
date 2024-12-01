@@ -37,9 +37,9 @@ def manage_predictions():
     model, hyperparameters = load_active_model_from_db(abs_db_path)
 
     if model != None:
-        # Load the feature scaler and localization decoder
+        # Load the feature scaler and decoders
         tabular_scaler = getScaler(hyperparameters)
-        localization_encoder = getEncoder(hyperparameters)
+        localization_encoder, lesion_type_encoder = getEncoders(hyperparameters)
 
     # Predictions loop
     while True:
@@ -62,9 +62,9 @@ def manage_predictions():
                 # Skip this loop iteration to attempt to reload the model
                 continue
 
-            # Reload the feature scaler and localization encoder
+            # Reload the feature scaler and encoders
             tabular_scaler = getScaler(hyperparameters)
-            localization_encoder = getEncoder(hyperparameters)
+            localization_encoder, lesion_type_encoder = getEncoders(hyperparameters)
 
         # Dequeue the Jobs to be processed, up to the max limit
         jobs_batch = [
@@ -87,9 +87,15 @@ def manage_predictions():
         )
 
         # TODO call predict() on batch
-        ### NOTE: if prediction doesn't work, uncomment weights statement inside ml/persistence.py
+        ### NOTE: if predict function call doesn't work, uncomment weights statement inside ml/persistence.py
+        # Run inference on the batch
+        predictions = model.predict([resized_images, tabular_features])
 
-        # TODO map results to request_ids and write them to database
+        # TODO postprocess the results
+        # extract confidence and actual label --> map to request_id
+        # need to load the lesion_type_encoder from the hyperparams alongside the other two
+
+        # TODO write results to database
 
         print("Processing predictions...")
 
@@ -131,10 +137,16 @@ def getScaler(hyperparameters):
     return pickle.loads(pickled_scaler)
 
 
-def getEncoder(hyperparameters):
-    # Decode and unpickle the encoder
-    encoded_encoder = hyperparameters["localization_encoder"]
-    pickled_encoder = base64.b64decode(encoded_encoder)
+def getEncoders(hyperparameters):
+    # Decode and unpickle the localization encoder
+    encoded_loc_encoder = hyperparameters["localization_encoder"]
+    pickled_loc_encoder = base64.b64decode(encoded_loc_encoder)
+    localization_encoder = pickle.loads(pickled_loc_encoder)
 
-    # Return Encoder object
-    return pickle.loads(pickled_encoder)
+    # Decode and unpickle the lesion_type encoder
+    encoded_lesion_encoder = hyperparameters["lesion_type_encoder"]
+    pickled_lesion_encoder = base64.b64decode(encoded_lesion_encoder)
+    lesion_type_encoder = pickle.loads(pickled_lesion_encoder)
+
+    # Return Encoder objects
+    return localization_encoder, lesion_type_encoder
