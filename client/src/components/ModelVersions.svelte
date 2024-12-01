@@ -97,7 +97,8 @@
         "Number of epochs": rawHyperparameters.num_epochs,
         "Batch size": rawHyperparameters.batch_size,
         "Learning rate": rawHyperparameters.learning_rate,
-        "Validation Accuracy": Math.round(Number(rawHyperparameters.validation_accuracy) * 100),
+        "Validation accuracy": Math.round(Number(rawHyperparameters.validation_accuracy) * 100),
+        "Custom recall": Math.round(Number(rawHyperparameters.custom_recall) * 100)
     };
 }
 
@@ -211,7 +212,11 @@
                                                 <tbody>
                                                     <tr>
                                                         <td class="text-sm text-tertiary font-regular">Validation accuracy:</td>
-                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Validation Accuracy"]}%</td>
+                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Validation accuracy"]}%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-sm text-tertiary font-regular">Custom recall:</td>
+                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Custom recall"]}%</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
