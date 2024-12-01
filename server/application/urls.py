@@ -46,7 +46,11 @@ urlpatterns = [
     path(
         "models/swap-model/<int:version>/", SwapModel.as_view(), name="api-swap-model"
     ),
-    path("models/delete-model/<int:version>/", DeleteModel.as_view(), name="api-delete-model"),
+    path(
+        "models/delete-model/<int:version>/",
+        DeleteModel.as_view(),
+        name="api-delete-model",
+    ),
     path("get-all-requests/", GetAllRequests.as_view(), name="api-get-all-requests"),
     path("get-all-users/", GetAllUsers.as_view(), name="api-get-all-users"),
     path("retrain/", Retrain.as_view(), name="api-retrain-model"),
