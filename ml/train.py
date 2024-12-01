@@ -293,6 +293,7 @@ def train(
         LEARNING_RATE,
         history.history["val_accuracy"][-1],
         scaler,
+        lesion_type_encoder,
         localization_encoder,
     )
     print("Model saved successfully to database")

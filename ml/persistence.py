@@ -50,6 +50,7 @@ def save_model(
     learning_rate,
     validation_accuracy,
     tabular_scaler,
+    lesion_type_encoder,
     localization_encoder,
 ):
     try:
@@ -60,9 +61,13 @@ def save_model(
         pickled_scaler = pickle.dumps(tabular_scaler)
         encoded_scaler = base64.b64encode(pickled_scaler).decode("utf-8")
 
-        # Serialize and encode the encoder
-        pickled_encoder = pickle.dumps(localization_encoder)
-        encoded_encoder = base64.b64encode(pickled_encoder).decode("utf-8")
+        # Serialize and encode the lesion_type encoder
+        pickled_lesion_encoder = pickle.dumps(lesion_type_encoder)
+        encoded_lesion_encoder = pickle.dumps(pickled_lesion_encoder)
+
+        # Serialize and encode the localization encoder
+        pickled_loc_encoder = pickle.dumps(localization_encoder)
+        encoded_loc_encoder = base64.b64encode(pickled_loc_encoder).decode("utf-8")
 
         # Prepare hyperparameters dict
         hyperparameters = {
@@ -76,7 +81,8 @@ def save_model(
             "model_architecture": model.to_json(),
             "validation_accuracy": float(validation_accuracy),
             "tabular_scaler": encoded_scaler,
-            "localization_encoder": encoded_encoder,
+            "lesion_type_encoder": encoded_lesion_encoder,
+            "localization_encoder": encoded_loc_encoder,
         }
 
         # Convert hyperparameters to JSON string
