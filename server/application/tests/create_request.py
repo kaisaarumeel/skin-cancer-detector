@@ -49,7 +49,9 @@ class CreateRequestTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json()["msg"], "Image uploaded successfully!")
+        self.assertEqual(
+            response.json()["msg"], "Request created successfully! Results pending."
+        )
 
     def test_upload_photo_missing_image(self):
         """Test upload with missing image"""
