@@ -35,7 +35,7 @@ def manage_predictions():
     warnings.simplefilter("always", UserWarning)
 
     # Load the active model from the database
-    model, hyperparameters = load_active_model_from_db(abs_db_path)
+    model, hyperparameters, model_version = load_active_model_from_db(abs_db_path)
 
     if model != None:
         # Load the feature scaler and decoders
@@ -52,7 +52,9 @@ def manage_predictions():
         # Check if the active model should be reloaded
         if model_reload_event.is_set() or model == None:
             print("Reloading model...")
-            model, hyperparameters = load_active_model_from_db(abs_db_path)
+            model, hyperparameters, model_version = load_active_model_from_db(
+                abs_db_path
+            )
             # Clear the event for reuse
             model_reload_event.clear()
 
@@ -93,9 +95,10 @@ def manage_predictions():
         # NOTE: if predict function call doesn't work, uncomment weights statement inside ml/persistence.py
         predictions = model.predict([resized_images, tabular_features])
 
-        # TODO add model version as parameter
         # Update the requests table in the database with the results
-        update_requests_in_db(abs_db_path, jobs_batch, predictions, lesion_type_encoder)
+        update_requests_in_db(
+            abs_db_path, jobs_batch, predictions, lesion_type_encoder, model_version
+        )
 
         ### END OF LOOP
 
@@ -153,7 +156,7 @@ def get_encoders(hyperparameters):
 
 
 def update_requests_in_db(
-    db_path, jobs_batch, predictions, lesion_type_encoder, model_version=None
+    db_path, jobs_batch, predictions, lesion_type_encoder, model_version
 ):
     """
     Update the Requests table with the predictions for the given Jobs batch.

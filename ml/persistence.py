@@ -125,7 +125,7 @@ def load_active_model_from_db(db_path):
 
         cursor.execute(
             """
-            SELECT models.weights, models.hyperparameters 
+            SELECT model.version models.weights, models.hyperparameters 
             FROM models
             JOIN model_active activemodels ON models.version = activemodels.model_id
             WHERE activemodels.id = 1
@@ -135,9 +135,9 @@ def load_active_model_from_db(db_path):
         row = cursor.fetchone()
         if row is None:
             print("No active model found in database")
-            return None, None
+            return None, None, None
 
-        serialized_weights, hyperparameters_json = row
+        model_version, serialized_weights, hyperparameters_json = row
 
         # Parse the hyperparameters
         hyperparameters = json.loads(hyperparameters_json)
@@ -155,12 +155,12 @@ def load_active_model_from_db(db_path):
         # Deserialize the weights from the serialized format
         weights = deserialize_weights(serialized_weights)
 
-        # PROBABLY NEED TO UNCOMMENT, TRY WITHOUT FIRST
-        # model.set_weights(weights)
+        # Set the model's weights
+        model.set_weights(weights)
 
         conn.close()
 
-        return model, hyperparameters
+        return model, hyperparameters, model_version
 
     except Exception as e:
         print(f"Error loading model: {str(e)}")
