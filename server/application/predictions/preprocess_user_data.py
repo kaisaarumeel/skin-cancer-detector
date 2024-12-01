@@ -4,6 +4,16 @@ import os
 
 
 def extract_images(jobs):
+    """
+    Extracts images from a list of jobs.
+
+    Args:
+        jobs (list): List of job objects. Each job object contains parameters, including an image.
+
+    Returns:
+        np.ndarray: A 2D numpy array where each column corresponds to an image extracted from the jobs.
+    """
+
     # Extract images using list comprehension
     images = [job.parameters.get("image") for job in jobs]
 
@@ -48,6 +58,18 @@ def preprocess_images(image_list, target_input_shape):
 
 
 def extract_tabular_features(jobs, scaler, localization_encoder):
+    """
+    Extracts and preprocesses tabular features from a list of jobs for model prediction.
+
+    Args:
+        jobs (list): List of job objects. Each job contains parameters like age, localization, and sex.
+        scaler (object): A fitted scaler (e.g., StandardScaler) used to standardize numerical features.
+        localization_encoder (object): A fitted encoder (e.g., LabelEncoder) used to encode localization labels.
+
+    Returns:
+        np.ndarray: A 2D numpy array of standardized tabular features ready for model prediction.
+    """
+
     # Extract features using list comprehension
     ages = [job.parameters.get("age") for job in jobs]
     localizations = [job.parameters.get("localization") for job in jobs]
