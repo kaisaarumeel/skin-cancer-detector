@@ -26,17 +26,29 @@
     }
   }
 
+  let selectedFile = null;
   let fileName = "No file chosen";
+  // flag for checking if file is sumitted or not
+  let is_file_submitted = false
 
   // Updated function with TypeScript type annotation
   function handleFileChange(event: Event) {
     const input = event.target as HTMLInputElement; // Type assertion
-    const file = input.files?.[0]; // Use optional chaining
-    if (file) {
-      fileName = file.name;
+    selectedFile  = input.files?.[0]; // Use optional chaining
+    if (selectedFile) {
+      fileName = selectedFile.name;
+      is_file_submitted = true
     } else {
       fileName = "No file chosen";
     }
+  }
+
+  // Function to handle the submit values 
+  function handleSubmit(event: Event)
+  {
+    event.preventDefault(); // Prevent the form from reloading the page
+    
+    
   }
 </script>
 
@@ -105,11 +117,12 @@
             type="submit"
             class="pt-3 pb-3 pr-5 pl-5 bg-primary text-white font-light rounded-md cursor-pointer hover:bg-secondary "
             value="Submit"
+            on:submit={handleSubmit}
           />
         </div>
       </form>
 
-      <button on:click={getResults} class="w-1/2 p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-10 hover:bg-secondary shadow-l">Analyze</button>
+      <button on:click={getResults} disabled={!is_file_submitted} class="w-1/2 p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-10 hover:bg-secondary shadow-l">Analyze</button>
     </div>
   </div>
 </div>
