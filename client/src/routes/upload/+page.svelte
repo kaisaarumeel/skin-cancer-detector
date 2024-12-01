@@ -4,16 +4,13 @@
   import { goto } from '$app/navigation';
   import { routeGuard } from '../../routeGuard';  // Import the route guard
   import { onMount } from "svelte";
+  import { API } from '../../api'; // Import the API instance
+    import axios from "axios";
 
   // Check if the user is logged in when the page is loaded
   onMount(() => {
     routeGuard();
   });
-  
-  function getResults() {
-    // Add get results endpoint/logic here
-    goto('/results');
-  }
     
   // Track the current step and visibility of the guide
   let currentStep = 1;
@@ -26,7 +23,7 @@
     }
   }
 
-  let selectedFile = null;
+  let selectedFile: File | null = null;
   let fileName = "No file chosen";
   // flag for checking if file is sumitted or not
   let is_file_submitted = false
@@ -34,22 +31,55 @@
   // Updated function with TypeScript type annotation
   function handleFileChange(event: Event) {
     const input = event.target as HTMLInputElement; // Type assertion
-    selectedFile  = input.files?.[0]; // Use optional chaining
+    selectedFile  = input.files?.[0] || null ; // Use optional chaining
     if (selectedFile) {
       fileName = selectedFile.name;
       is_file_submitted = true
     } else {
       fileName = "No file chosen";
+      is_file_submitted = false
     }
   }
 
-  // Function to handle the submit values 
-  function handleSubmit(event: Event)
+   
+  async function handleAnalyze(event: Event)
   {
-    event.preventDefault(); // Prevent the form from reloading the page
+    if (!selectedFile) {
+      console.error("No file selected");
+      return; // Exit the function early if no file is selected
+    }
+    try{
+      const base64Image = await fileToBase64(selectedFile); // convert image to the base 64 format
+    }
+    catch(err){
+      console.error(err)
+    }
     
     
+    // Add get results endpoint/logic here
+    goto('/results');
   }
+
+  // Function to change the submitted 
+  function fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const result = reader.result;
+        if (typeof result === "string") {
+          // Removes the Base64 header
+          resolve(result.split(",")[1]);
+        } else {
+          reject(new Error("Unexpected result type from FileReader"));
+        }
+      };
+
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file); // Reads the file as a Base64 encoded string
+    });
+  }
+
 </script>
 
 <div class="h-screen flex flex-col relative">
@@ -112,17 +142,10 @@
           />
     
           <span class="text-tertiary">{fileName}</span>
-
-          <input
-            type="submit"
-            class="pt-3 pb-3 pr-5 pl-5 bg-primary text-white font-light rounded-md cursor-pointer hover:bg-secondary "
-            value="Submit"
-            on:submit={handleSubmit}
-          />
         </div>
       </form>
 
-      <button on:click={getResults} disabled={!is_file_submitted} class="w-1/2 p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-10 hover:bg-secondary shadow-l">Analyze</button>
+      <button on:click={handleAnalyze} disabled={!is_file_submitted} class="w-1/2 p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-10 hover:bg-secondary shadow-l">Analyze</button>
     </div>
   </div>
 </div>
