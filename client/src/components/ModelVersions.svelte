@@ -3,6 +3,7 @@
     import type { AxiosResponse } from "axios";
     import { API } from "../api";
     import { models, activeModel, type Model, type Hyperparameters } from "../stores/modelStore";
+    import { slide } from "svelte/transition";
 
     let expandedModelVersion: string | null = null;
     let isConfirmingActivation: boolean = false;
@@ -93,7 +94,7 @@
         "Test size": rawHyperparameters.test_size,
         "Input size": rawHyperparameters.input_size,
         "Dropout rate": rawHyperparameters.dropout_rate,
-        "Loss function": rawHyperparameters.loss_function,
+        "Loss function": rawHyperparameters.loss_function.replaceAll("_", " "),
         "Number of epochs": rawHyperparameters.num_epochs,
         "Batch size": rawHyperparameters.batch_size,
         "Learning rate": rawHyperparameters.learning_rate,
@@ -127,8 +128,7 @@
         Switch the currently active Model Version:
     </p>
 
-    <!-- model versions list -->
-    <ul class="mt-1 w-full space-y-2 text-gray-700 max-h-80 overflow-y-auto pr-2">
+<ul class="mt-1 w-full space-y-2 text-gray-700 max-h-80 overflow-y-auto pr-2">
         {#if $models.length > 0}
             {#each $models as model (model.version)}
                 <li class="relative">
@@ -146,84 +146,31 @@
                                 </span>
                             </div>
                             {#if $activeModel && $activeModel.version === model.version}
-                                <span class="text-green-600 text-xs font-regular">ACTIVE</span>
+                                <span class="text-green-600 text-xs font-regular">(Current)</span>
                             {/if}
                         </button>
                         
                         <!-- collapsible hyperparameter panel -->
                         {#if expandedModelVersion === model.version}
-                        <div class="mt-2 p-3 text-sm border rounded bg-gray-50">
-                            <table class="w-full table-auto border-collapse">
-                                <tbody>
-                                    <!-- Headings Row -->
-                                    <tr>
-                                        <td colspan="2" class="pr-2 align-top font-semibold text-left text-sm text-tertiary">
-                                            Hyperparameters
-                                        </td>
-                                        <td class="pl-4 align-top font-semibold text-left text-sm text-tertiary border-l border-gray-300">
-                                            Performance
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <!-- Hyperparameters -->
-                                        <td class="pr-2 align-top">
-                                            <table class="w-full">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="text-sm text-tertiary font-regular">Test size:</td>
-                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Test size"]}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="text-sm text-tertiary font-regular">Input size:</td>
-                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Input size"]}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="text-sm text-tertiary font-regular">Learning rate:</td>
-                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Learning rate"]}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="text-sm text-tertiary font-regular">Loss function:</td>
-                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Loss function"]}</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                        <td class="pr-2 align-top">
-                                            <table class="w-full">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="text-sm text-tertiary font-regular">Batch size:</td>
-                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Batch size"]}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="text-sm text-tertiary font-regular">Number of epochs:</td>
-                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Number of epochs"]}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="text-sm text-tertiary font-regular">Dropout rate:</td>
-                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Dropout rate"]}</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                        <!-- Performance Metrics -->
-                                        <td class="pl-4 align-top border-l border-gray-300">
-                                            <table class="w-full">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="text-sm text-tertiary font-regular">Validation accuracy:</td>
-                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Validation accuracy"]}%</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="text-sm text-tertiary font-regular">Custom recall:</td>
-                                                        <td class="text-sm text-tertiary font-regular">{model.hyperparameters["Custom recall"]}%</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div transition:slide class="mt-2 p-3 text-sm border rounded bg-gray-50">
+                                <p><strong>Model Details</strong></p>
+                                <div class="w-full grid grid-cols-3 gap-x-2 gap-y-1 mt-2 text-sm">
+                                    {#each Object.entries(model.hyperparameters) as [key, value]}
+                                        <div class="px-2 flex flex-col border-b border-r rounded-md pb-1">
+                                            <div class="sm:max-w-24 md:max-w-full lg:max-w-24 xl:max-w-full">
+                                                <p class="font-medium mr-1 shrink">{key}</p>
+                                            </div>
+                                            <div class="sm:max-w-24 md:max-w-full lg:max-w-24 xl:max-w-full">
+                                                {#if key === "Validation accuracy" || key === "Custom recall"}
+                                                    <p class="text-wrap break-words shrink">{value}%</p>
+                                                {:else}
+                                                    <p class="text-wrap break-words shrink">{value}</p>
+                                                {/if}
+                                            </div>
+                                        </div>
+                                    {/each}
+                                </div>
+
                             <!-- Activate model button -->
                             {#if expandedModelVersion === $activeModel?.version}
                                 <button
