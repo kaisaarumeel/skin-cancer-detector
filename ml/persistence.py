@@ -63,7 +63,9 @@ def save_model(
 
         # Serialize and encode the lesion_type encoder
         pickled_lesion_encoder = pickle.dumps(lesion_type_encoder)
-        encoded_lesion_encoder = pickle.dumps(pickled_lesion_encoder)
+        encoded_lesion_encoder = base64.b64encode(pickled_lesion_encoder).decode(
+            "utf-8"
+        )
 
         # Serialize and encode the localization encoder
         pickled_loc_encoder = pickle.dumps(localization_encoder)
