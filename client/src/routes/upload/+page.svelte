@@ -29,12 +29,13 @@
   let fileError = ""
   let localizationError = ""
 
-  // Updated function with TypeScript type annotation
+  // Function to handle the upload file event
   function handleFileChange(event: Event) {
     const input = event.target as HTMLInputElement; // Type assertion
-    selectedFile  = input.files?.[0] || null ; // Use optional chaining
+    selectedFile  = input.files?.[0] || null ;
     if (selectedFile) {
       fileName = selectedFile.name;
+      fileError = ""; 
     } else {
       fileName = "No file chosen";
     }
@@ -159,7 +160,7 @@
         </div>
       </form>
       {#if fileError}
-        <p class="text-red-500 mb-2">{fileError}</p>
+        <p class="text-red-500 text-sm mt-1 ">{fileError}</p>
       {/if}
       <button on:click={handleAnalyze} class="w-1/2 p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-10 hover:bg-secondary shadow-l">Analyze</button>
     </div>
