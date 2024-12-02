@@ -47,8 +47,6 @@ def manage_predictions():
         # Sleep thread to periodically check Job queue and not block app execution
         time.sleep(INTERVAL)
 
-        print("Processing predictions...")
-
         # Check if the active model should be reloaded
         if model_reload_event.is_set() or model == None:
             print("Reloading model...")
@@ -80,6 +78,8 @@ def manage_predictions():
         # If there are no Jobs to be processed, skip this loop iteration
         if not jobs_batch:
             continue
+
+        print("Processing predictions...")
 
         # Prepare resized images that fit the model input size
         resized_images = preprocess_images(
