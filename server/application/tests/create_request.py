@@ -2,12 +2,12 @@ import os
 import json
 import base64
 import time
+import numpy as np
 from django.contrib.auth.hashers import make_password
 from django.test import Client, TestCase
 from django.urls import reverse
 from ..models import Users
 from unittest.mock import patch
-from ..views.jobs.state import PREDICTION_JOBS
 
 
 class CreateRequestTests(TestCase):
@@ -100,7 +100,7 @@ class CreateRequestTests(TestCase):
             self.assertEqual(
                 created_job.parameters["localization"], data["localization"]
             )
-            self.assertIsNotNone(created_job.parameters["image"])
+            self.assertIsInstance(created_job.parameters["image"], np.ndarray)
 
     def test_create_request_missing_image(self):
         """Test upload with missing image"""
