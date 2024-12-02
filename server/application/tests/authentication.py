@@ -105,7 +105,7 @@ class AuthenticationTests(TestCase):
             "username": "newuser",
             "password": "newpass123",
             # missing age field
-            "age": "20"
+            "age": "20",
         }
 
         response = self.client.post(
@@ -116,14 +116,13 @@ class AuthenticationTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-
     def test_register_invalid_sex(self):
         """Test registration with invalid sex"""
         invalid_data = {
             "username": "newuser",
             "password": "newpass123",
             "sex": "invalid",
-            "age": "20"
+            "age": "20",
         }
 
         response = self.client.post(
@@ -140,7 +139,7 @@ class AuthenticationTests(TestCase):
             "username": "newuser",
             "password": "newpass123",
             "sex": "invalid",
-            "age": "130"
+            "age": "130",
         }
 
         response = self.client.post(
@@ -157,7 +156,7 @@ class AuthenticationTests(TestCase):
             "username": "newuser",
             "password": "newpass123",
             "sex": "invalid",
-            "age": "age"
+            "age": "age",
         }
 
         response = self.client.post(
@@ -167,8 +166,6 @@ class AuthenticationTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 400)
-
-   
 
     def test_register_duplicate_user(self):
         """Test registration with existing username"""
