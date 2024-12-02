@@ -153,6 +153,7 @@
             id="fileInput"
             type="file"
             class="hidden"
+            accept=".png, .jpg, .jpeg"
             on:change={handleFileChange}
           />
           
