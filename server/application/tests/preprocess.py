@@ -5,6 +5,7 @@ import os
 from ..predictions.preprocess_user_data import preprocess_images, extract_images
 from unittest.mock import MagicMock
 
+
 class PreprocessDataTests(TestCase):
     def setUp(self):
         """Setup for tests, called before each test method."""
@@ -33,11 +34,19 @@ class PreprocessDataTests(TestCase):
         """Test preprocessing of a list of valid images."""
         try:
             # Preprocess a list of valid images
-            result = preprocess_images([self.valid_image, self.valid_image2], self.target_input_shape)
+            result = preprocess_images(
+                [self.valid_image, self.valid_image2], self.target_input_shape
+            )
 
             # Assertions
-            self.assertEqual(result.shape, (2, *self.target_input_shape, 3), f"Unexpected shape: {result.shape}")
-            self.assertTrue(result.dtype == np.float16, f"Unexpected dtype: {result.dtype}")
+            self.assertEqual(
+                result.shape,
+                (2, *self.target_input_shape, 3),
+                f"Unexpected shape: {result.shape}",
+            )
+            self.assertTrue(
+                result.dtype == np.float16, f"Unexpected dtype: {result.dtype}"
+            )
             self.assertTrue(
                 np.all(result >= -1.0) and np.all(result <= 1.0),
                 "Normalization out of range",
@@ -50,9 +59,11 @@ class PreprocessDataTests(TestCase):
         """Test preprocessing of an invalid image."""
         try:
             # Load invalid image
-            invalid_image = cv2.imread(self.invalid_image_path)  
+            invalid_image = cv2.imread(self.invalid_image_path)
             if invalid_image is None:
-                raise ValueError("Invalid test image could not be loaded. Check the file format.")
+                raise ValueError(
+                    "Invalid test image could not be loaded. Check the file format."
+                )
 
             preprocess_images([invalid_image], self.target_input_shape)
 
@@ -61,8 +72,11 @@ class PreprocessDataTests(TestCase):
 
         except Exception as e:
             # An exception is expected for invalid input; ensure it's meaningful
-            self.assertIn("could not be loaded", str(e).lower(), f"Unexpected error message: {str(e)}")
-
+            self.assertIn(
+                "could not be loaded",
+                str(e).lower(),
+                f"Unexpected error message: {str(e)}",
+            )
 
     def test_extract_images_valid_jobs(self):
         """Test extraction of images from valid job objects."""
@@ -146,7 +160,9 @@ class PreprocessDataTests(TestCase):
 
         # Check that the result contains 1000 images
         self.assertEqual(len(result), 1000)
-        self.assertTrue(all(isinstance(image, np.ndarray) for image in result))  # Ensure each entry is an image array
+        self.assertTrue(
+            all(isinstance(image, np.ndarray) for image in result)
+        )  # Ensure each entry is an image array
 
     def tearDown(self):
         """Teardown method for cleaning up after tests."""
