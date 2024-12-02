@@ -10,16 +10,11 @@ def extract_images(jobs):
         jobs (list): List of job objects. Each job object contains parameters, including an image.
 
     Returns:
-        np.ndarray: A 2D numpy array where each column corresponds to an image extracted from the jobs.
+        list: A list of images extracted from the jobs.
     """
 
     # Extract images using list comprehension
-    images = [job.parameters.get("image") for job in jobs]
-
-    # Stack images in 2D array
-    images = np.column_stack((images))
-
-    return images
+    return [job.parameters.get("image") for job in jobs]
 
 
 def preprocess_images(image_list, target_input_shape):
