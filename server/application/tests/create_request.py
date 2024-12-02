@@ -21,7 +21,7 @@ class CreateRequestTests(TestCase):
             is_active=True,
         )
 
-        # Test file paths
+        # Test data file paths
         self.valid_image_path = os.path.join(
             os.path.dirname(__file__), "test_data", "valid_test_image.jpg"
         )
@@ -34,7 +34,9 @@ class CreateRequestTests(TestCase):
         with open(file_path, "rb") as img_file:
             return base64.b64encode(img_file.read()).decode("utf-8")
 
-    def test_upload_photo_success(self):
+    ################################## INTEGRATION TESTS ##################################
+
+    def test_create_request_success(self):
         """Test successful photo upload"""
         self.client.force_login(self.test_user)
 
@@ -53,7 +55,7 @@ class CreateRequestTests(TestCase):
             response.json()["msg"], "Request created successfully! Results pending."
         )
 
-    def test_upload_photo_missing_image(self):
+    def test_create_request_missing_image(self):
         """Test upload with missing image"""
         self.client.force_login(self.test_user)
 
@@ -67,7 +69,7 @@ class CreateRequestTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["err"], "No image file provided")
 
-    def test_upload_photo_missing_json(self):
+    def test_create_request_missing_json(self):
         """Test upload with missing JSON data"""
         self.client.force_login(self.test_user)
 
@@ -81,7 +83,7 @@ class CreateRequestTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("No JSON data provided", response.json()["err"])
 
-    def test_upload_photo_missing_localization(self):
+    def test_create_request_missing_localization(self):
         """Test upload with JSON missing required 'localization' field"""
         self.client.force_login(self.test_user)
 
@@ -97,7 +99,24 @@ class CreateRequestTests(TestCase):
             response.json()["err"], "Missing or empty required field: 'localization'"
         )
 
-    def test_upload_photo_invalid_base64_image(self):
+    def test_create_request_invalid_localization(self):
+        """Test upload with an invalid localization value"""
+        self.client.force_login(self.test_user)
+
+        data = {
+            "localization": "invalid_location",
+            "image": self.encode_image_to_base64(self.valid_image_path),
+        }
+        response = self.client.post(
+            reverse("api-create-request"),
+            json.dumps(data),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["err"], "Invalid localization value.")
+
+    def test_create_request_invalid_base64_image(self):
         """Test upload with invalid Base64 image format"""
         self.client.force_login(self.test_user)
 
@@ -114,7 +133,7 @@ class CreateRequestTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("Invalid Base64", response.json()["err"])
 
-    def test_upload_photo_unsupported_format(self):
+    def test_create_request_unsupported_format(self):
         """Test upload with unsupported file format"""
         self.client.force_login(self.test_user)
 
