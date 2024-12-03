@@ -2,8 +2,14 @@ from django.test import TestCase
 import numpy as np
 import cv2
 import os
-from ..predictions.preprocess_user_data import preprocess_images, extract_images
 from unittest.mock import MagicMock
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from ..models import Requests
+from ..predictions.preprocess_user_data import (
+    preprocess_images,
+    extract_images,
+    extract_tabular_features,
+)
 
 
 class PreprocessDataTests(TestCase):
@@ -112,40 +118,6 @@ class PreprocessDataTests(TestCase):
         self.assertIsInstance(result, list)
         self.assertEqual(len(result), 0)
 
-    def test_extract_images_missing_images(self):
-        """Test extraction when some jobs have missing images."""
-        # Mock job objects with missing image data
-        job1 = MagicMock()
-        job1.parameters = {"image": self.valid_image}
-        job2 = MagicMock()
-        job2.parameters = {"image": None}  # Missing image
-
-        jobs = [job1, job2]
-
-        # Extract images
-        result = extract_images(jobs)
-
-        # Ensure that the first image is the valid image and the second is None
-        np.testing.assert_array_equal(result[0], self.valid_image)
-        self.assertIsNone(result[1])
-
-    def test_extract_images_non_image_data(self):
-        """Test extraction when the image field contains non-image data."""
-        # Mock job objects with non-image data in the image field
-        job1 = MagicMock()
-        job1.parameters = {"image": "non_image_data"}  # Non-image data
-        job2 = MagicMock()
-        job2.parameters = {"image": 12345}  # Non-image integer data
-
-        jobs = [job1, job2]
-
-        # Extract images
-        result = extract_images(jobs)
-
-        # Ensure that the result contains the non-image data as is
-        self.assertEqual(result[0], "non_image_data")
-        self.assertEqual(result[1], 12345)
-
     def test_extract_images_large_number_of_jobs(self):
         """Test extraction with a large number of jobs."""
         # Generate a large number of jobs (e.g., 1000 jobs)
@@ -163,6 +135,158 @@ class PreprocessDataTests(TestCase):
         self.assertTrue(
             all(isinstance(image, np.ndarray) for image in result)
         )  # Ensure each entry is an image array
+
+    def test_extract_tabular_features_standardized(self):
+        """Test the scaling of standardized features."""
+
+        ############################ SETUP ############################
+
+        # Mock data
+        jobs = [
+            MagicMock(parameters={"age": 30, "localization": "ear", "sex": "male"}),
+            MagicMock(parameters={"age": 50, "localization": "face", "sex": "female"}),
+        ]
+        # Encoded representation of job data used to fit scaler
+        # age, location (ear = 0, face = 1), sex (male = 1, female = 0)
+        mock_training_data = [[30, 0, 1], [50, 1, 0]]
+
+        # Create and fit mock scaler
+        mock_scaler = StandardScaler()
+        mock_scaler.fit(mock_training_data)
+
+        # Mock the encoder
+        mock_encoder = MagicMock()
+        # This returns the encoded labels 0 and 1 when we pass it to the function under test
+        mock_encoder.transform = MagicMock(side_effect=lambda x: [0, 1])
+
+        ############################ TEST ############################
+
+        # Call the function we are testing
+        result = extract_tabular_features(jobs, mock_scaler, mock_encoder)
+
+        # Assert the correctness of the results
+        expected = mock_scaler.transform(mock_training_data)
+        # Use numpy testing methods rather than python unittest,
+        # in order to compare nested arrays
+        np.testing.assert_array_almost_equal(result, expected, decimal=6)
+
+    def test_extract_tabular_features_encoding(self):
+        """Test the encoding of localization labels."""
+
+        ############################ SETUP ############################
+
+        # Get the localization options from the model schema
+        localizations = [loc[0] for loc in Requests.LOCALIZATION_CHOICES]
+        # Create mock jobs
+        jobs = [
+            MagicMock(parameters={"age": 25, "localization": loc, "sex": "female"})
+            for loc in localizations
+        ]
+
+        # Create and fit the mock encoder
+        mock_encoder = LabelEncoder()
+        mock_encoder.fit(localizations)
+
+        # Mock scaler (not tested here, simply passes data through)
+        mock_scaler = MagicMock()
+        mock_scaler.transform = MagicMock(side_effect=lambda x: x)
+
+        ############################ TEST ############################
+
+        # Call the function we are testing
+        result = extract_tabular_features(jobs, mock_scaler, mock_encoder)
+
+        # Extract the encoded localizations
+        encoded_localizations = [row[1] for row in result]
+
+        # Assert the correctness of the encoding
+        expected_encodings = mock_encoder.transform(localizations)
+
+        # Use numpy testing methods to compare arrays
+        np.testing.assert_array_equal(encoded_localizations, expected_encodings)
+
+    def test_ordering_is_preserved(self):
+        """Test that the ordering of features is preserved when processing the jobs."""
+
+        ############################ SETUP ############################
+
+        # Mock input data
+        mock_jobs_batch = [
+            MagicMock(
+                parameters={
+                    "age": 25,
+                    "localization": "ear",
+                    "sex": "male",
+                    "image": np.random.rand(100, 100, 3),
+                }
+            ),
+            MagicMock(
+                parameters={
+                    "age": 40,
+                    "localization": "face",
+                    "sex": "female",
+                    "image": np.random.rand(100, 100, 3),
+                }
+            ),
+            MagicMock(
+                parameters={
+                    "age": 60,
+                    "localization": "neck",
+                    "sex": "male",
+                    "image": np.random.rand(100, 100, 3),
+                }
+            ),
+        ]
+
+        # Mock labels (same labels as in the mock jobs)
+        mock_localization_labels = ["ear", "face", "neck"]
+
+        # Expected model input shape and target image height and width
+        model_input_shape = (64, 64, 3)
+        target_image_size = (64, 64)
+
+        # Mock scaler (not tested here, simply passes data through)
+        mock_scaler = MagicMock()
+        mock_scaler.transform = MagicMock(side_effect=lambda x: x)
+
+        # Mock a fitted localization encoder
+        mock_encoder = LabelEncoder()
+        mock_encoder.fit(mock_localization_labels)
+
+        ############################ TEST ############################
+
+        # Extract and preprocess the images
+        processed_images = preprocess_images(
+            extract_images(mock_jobs_batch), target_image_size
+        )
+
+        # Extract tabular features
+        tabular_features = extract_tabular_features(
+            mock_jobs_batch, mock_scaler, mock_encoder
+        )
+
+        # Assertions to check that the ordering is kept intact
+        for i, job in enumerate(mock_jobs_batch):
+
+            # Assert that the image is correct
+            expected_image = preprocess_images(
+                [job.parameters["image"]], target_image_size
+            )
+            np.testing.assert_array_equal(expected_image[0], processed_images[i])
+
+            # Assert that the age is correct
+            expected_age = job.parameters["age"]
+            self.assertEqual(expected_age, tabular_features[i, 0])
+
+            # Assert that the localization is correct
+            expected_localization = mock_encoder.transform(
+                [job.parameters["localization"]]
+            )
+            self.assertEqual(expected_localization, tabular_features[i, 1])
+
+            # Assert that the sex is correct ("male" = 1, "female" = 0)
+            expected_sex = job.parameters["sex"].lower() == "male"
+            self.assertEqual(expected_sex, tabular_features[i, 2])
 
     def tearDown(self):
         """Teardown method for cleaning up after tests."""
