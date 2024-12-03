@@ -34,9 +34,18 @@
     }
   };
 
-  const deleteUser = (username: string) => {
-    // Remove the user with the given username from the list
-    users = users.filter(user => user.id !== username);
+  // Method to delete a user
+  const deleteUser = async (username: string) => {
+    try {
+      const response = await API.delete(`/api/delete-user/${username}/`);
+      console.log("User deleted successfully:", response.data);
+      // Update the local state to remove the deleted user
+      users = users.filter(user => user.id !== username);
+    } catch (err) {
+      const axiosError = err as AxiosError<ErrorResponse>;
+      errorMessage = axiosError.response?.data?.err || "An unknown error occurred.";
+      console.error("Error deleting user:", errorMessage);
+    }
   };
 
   // Fetch users when the component is mounted
