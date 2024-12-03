@@ -58,5 +58,5 @@ urlpatterns = [
     path("is_logged_in/", IsLoggedIn.as_view(), name="api-is-logged-in"),
     path("logout/", Logout.as_view(), name="api-logout"),
     path("is_admin/", IsAdmin.as_view(), name="api-is-admin"),
-    path("delete-user/", DeleteUser.as_view(), name="api-delete-user"),
+    path("delete-user/<str:username>/", DeleteUser.as_view(), name="api-delete-user"),
 ]
