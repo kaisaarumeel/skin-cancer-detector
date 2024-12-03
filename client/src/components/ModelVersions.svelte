@@ -3,8 +3,11 @@
     import type { AxiosResponse } from "axios";
     import { API } from "../api";
     import { models, activeModel, type Model, type Hyperparameters } from "../stores/modelStore";
+    import { slide } from "svelte/transition";
 
     let expandedModelVersion: string | null = null;
+    let isConfirmingActivation: boolean = false;
+    let isConfirmingDeletion: boolean = false;
 
     async function getAllModels(): Promise<void> {
         try {
@@ -43,10 +46,47 @@
         } catch (error) {
             console.error("Setting active model failed:", error);
         }
+        resetConfirmationState()
+    }
+
+    async function deleteModel(model: Model): Promise<void> {
+        try {
+            const response: AxiosResponse<{ message: string }> = await API.delete(`api/models/delete-model/${model.version}/`);
+
+            // update the models list
+            models.update((currentModels) => currentModels.filter((m) => m.version !== model.version));
+
+            // clear activemodel if it is the one being deleted
+            activeModel.update((currentActiveModel) => {
+                if (currentActiveModel?.version === model.version) {
+                    return null; // reset activemodel
+                }
+                return currentActiveModel; // keep current activemodel if not deleted
+            });
+        } catch (error) {
+            console.error("Deleting active model failed:", error);
+        }
+        resetConfirmationState()
     }
 
     function toggleExpandModel(model: Model): void {
         expandedModelVersion = expandedModelVersion === model.version ? null : model.version;
+        resetConfirmationState()
+    }
+
+    function toggleConfirmActivation(): void {
+        isConfirmingActivation = !isConfirmingActivation;
+        isConfirmingDeletion = false;
+    }
+
+    function toggleConfirmDeletion(): void {
+        isConfirmingDeletion = !isConfirmingDeletion;
+        isConfirmingActivation = false;
+    }
+
+    function resetConfirmationState(): void {
+        isConfirmingDeletion = false;
+        isConfirmingActivation = false;
     }
 
     function parseHyperparameters(rawHyperparameters: any): Hyperparameters {
@@ -54,7 +94,7 @@
         "Test size": rawHyperparameters.test_size,
         "Input size": rawHyperparameters.input_size,
         "Dropout rate": rawHyperparameters.dropout_rate,
-        "Loss function": rawHyperparameters.loss_function,
+        "Loss function": rawHyperparameters.loss_function.replaceAll("_", " "),
         "Number of epochs": rawHyperparameters.num_epochs,
         "Batch size": rawHyperparameters.batch_size,
         "Learning rate": rawHyperparameters.learning_rate,
@@ -88,8 +128,7 @@
         Switch the currently active Model Version:
     </p>
 
-    <!-- model versions list -->
-    <ul class="mt-1 w-full space-y-2 text-gray-700 max-h-80 overflow-y-auto pr-2">
+<ul class="mt-1 w-full space-y-2 text-gray-700 max-h-80 overflow-y-auto pr-2">
         {#if $models.length > 0}
             {#each $models as model (model.version)}
                 <li class="relative">
@@ -113,26 +152,88 @@
                         
                         <!-- collapsible hyperparameter panel -->
                         {#if expandedModelVersion === model.version}
-                            <div class="mt-2 p-3 text-sm border rounded bg-gray-50">
-                                <p><strong>Hyperparameters:</strong></p>
-                                <ul>
+                            <div transition:slide class="mt-2 p-3 text-sm border rounded bg-gray-50">
+                                <p><strong>Model Details</strong></p>
+                                <div class="w-full grid grid-cols-3 gap-x-2 gap-y-1 mt-2 text-sm">
                                     {#each Object.entries(model.hyperparameters) as [key, value]}
-                                        {#if key === "Validation accuracy" || key === "Custom recall"}
-                                            <li>{key}: {value}%</li>
-                                        {:else}
-                                            <li>{key}: {value}</li>
-                                        {/if}
+                                        <div class="px-2 flex flex-col border-b border-r rounded-md pb-1">
+                                            <div class="sm:max-w-24 md:max-w-full lg:max-w-24 xl:max-w-full">
+                                                <p class="font-medium mr-1 shrink">{key}</p>
+                                            </div>
+                                            <div class="sm:max-w-24 md:max-w-full lg:max-w-24 xl:max-w-full">
+                                                {#if key === "Validation accuracy" || key === "Custom recall"}
+                                                    <p class="text-wrap break-words shrink">{value}%</p>
+                                                {:else}
+                                                    <p class="text-wrap break-words shrink">{value}</p>
+                                                {/if}
+                                            </div>
+                                        </div>
                                     {/each}
-                                </ul>
-                                <!-- swap model button -->
+                                </div>
+
+                            <!-- Activate model button -->
+                            {#if expandedModelVersion === $activeModel?.version}
+                                <button
+                                    type="button"
+                                    class="mt-4 w-full py-2 px-4 bg-gray-200 text-tertiary rounded-md text-center cursor-not-allowed"
+                                    disabled
+                                >
+                                    Model Active
+                                </button>
+                            {:else if isConfirmingActivation}
+                                <div class="flex space-x-2 mt-4 w-full">
+                                    <button
+                                        type="button"
+                                        class="flex-1 py-2 px-4 bg-green-300 text-white rounded-md text-center cursor-pointer hover:bg-green-400"
+                                        on:click={() => setActiveModel(model)}
+                                    >
+                                        Confirm Activation
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="flex-1 py-2 px-4 bg-primary text-white rounded-md text-center cursor-pointer hover:bg-secondary"
+                                        on:click={() => toggleConfirmActivation()}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            {:else}
                                 <button
                                     type="button"
                                     class="mt-4 w-full py-2 px-4 bg-primary text-white rounded-md text-center cursor-pointer hover:bg-secondary"
-                                    on:click={() => setActiveModel(model)}
+                                    on:click={() => toggleConfirmActivation()}
                                 >
                                     Set as Active Model
                                 </button>
-                            </div>
+                            {/if}
+                            <!-- Delete model button -->
+                            {#if isConfirmingDeletion}
+                                <div class="flex space-x-2 mt-2 w-full">
+                                    <button
+                                        type="button"
+                                        class="flex-1 py-2 px-4 bg-red-500 text-white rounded-md text-center cursor-pointer hover:bg-red-600"
+                                        on:click={() => deleteModel(model)}
+                                    >
+                                        Confirm Deletion
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="flex-1 py-2 px-4 bg-primary text-white rounded-md text-center cursor-pointer hover:bg-secondary"
+                                        on:click={() => toggleConfirmDeletion()}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            {:else}
+                                <button
+                                    type="button"
+                                    class="mt-2 w-full py-2 px-4 bg-red-500 text-white rounded-md text-center cursor-pointer hover:bg-red-600"
+                                    on:click={() => toggleConfirmDeletion()}
+                                >
+                                    Delete Model
+                                </button>
+                            {/if}
+                        </div>
                         {/if}
                     </div>
                 </li>

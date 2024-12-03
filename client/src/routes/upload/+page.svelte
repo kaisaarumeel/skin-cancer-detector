@@ -4,16 +4,12 @@
   import { goto } from '$app/navigation';
   import { routeGuard } from '../../routeGuard';  // Import the route guard
   import { onMount } from "svelte";
+  import { API } from '../../api'; // Import the API instance
 
   // Check if the user is logged in when the page is loaded
   onMount(() => {
     routeGuard();
   });
-  
-  function getResults() {
-    // Add get results endpoint/logic here
-    goto('/results');
-  }
     
   // Track the current step and visibility of the guide
   let currentStep = 1;
@@ -26,18 +22,75 @@
     }
   }
 
+  let selectedFile: File | null = null;
   let fileName = "No file chosen";
+  let localization = ""
 
-  // Updated function with TypeScript type annotation
+  let fileError = ""
+  let localizationError = ""
+
+  // Function to handle the upload file event
   function handleFileChange(event: Event) {
     const input = event.target as HTMLInputElement; // Type assertion
-    const file = input.files?.[0]; // Use optional chaining
-    if (file) {
-      fileName = file.name;
+    selectedFile  = input.files?.[0] || null ;
+    if (selectedFile) {
+      fileName = selectedFile.name;
+      fileError = ""; 
     } else {
       fileName = "No file chosen";
     }
   }
+   
+  async function handleAnalyze(event: Event)
+  {
+    if (!selectedFile) {
+      console.error("No file selected");
+      fileError = "No file is selected."
+      return; 
+    }
+    if (!localization) {
+      console.error("No localization selected")
+      localizationError = "No localization is selected."
+      return; 
+    }
+    try{
+      const base64Image = await fileToBase64(selectedFile); // convert image to the base 64 format
+      const response = await API.post('/api/create-request/', {
+        "localization": localization,
+        "image": base64Image
+      });
+
+      if(response.status == 201)
+      {
+        // TODO: Add get results endpoint/logic here
+        goto('/results');
+      }
+    }
+    catch(err){
+      console.error(err)
+    }
+  }
+
+  // Function to change the submitted 
+  function fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const result = reader.result;
+        if (typeof result === "string") {
+          // Removes the Base64 header
+          resolve(result.split(",")[1]);
+        } else {
+          reject(new Error("Unexpected result type from FileReader"));
+        }
+      };
+
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file); // Reads the file as a Base64 encoded string
+    });
+  }
+
 </script>
 
 <div class="h-screen flex flex-col relative">
@@ -56,7 +109,7 @@
       <p class="text-tertiary mb-2">For a more precise analysis choose the body part where the mole is located.</p>
 
       <div class="mb-4 w-full">
-        <select class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary text-gray-500 focus:text-black" aria-label="Body Part">
+        <select bind:value={localization} class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary text-gray-500 focus:text-black" aria-label="Body Part">
           <option value="" disabled selected class="text-gray-400">Select Body Part</option>
           <option value="ear">Ear</option>
           <option value="face">Face</option>
@@ -96,20 +149,22 @@
             id="fileInput"
             type="file"
             class="hidden"
+            accept=".png, .jpg, .jpeg"
             on:change={handleFileChange}
           />
-    
+          
           <span class="text-tertiary">{fileName}</span>
-
-          <input
-            type="submit"
-            class="pt-3 pb-3 pr-5 pl-5 bg-primary text-white font-light rounded-md cursor-pointer hover:bg-secondary "
-            value="Submit"
-          />
         </div>
       </form>
 
-      <button on:click={getResults} class="w-1/2 p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-10 hover:bg-secondary shadow-l">Analyze</button>
+      <button on:click={handleAnalyze} class="w-1/2 p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-10 hover:bg-secondary shadow-l">Analyze</button>
+
+      {#if fileError}
+      <p class="text-red-500 text-sm mt-2 ">{fileError}</p>
+    {/if}
+      {#if localizationError}
+      <p class="text-red-500 text-sm mt-2">{localizationError}</p>
+    {/if}
     </div>
   </div>
 </div>
