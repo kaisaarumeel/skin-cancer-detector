@@ -6,5 +6,5 @@ from .get_all_users import GetAllUsersTests
 from .create_request import CreateRequestTests
 from .ml import MLTests
 from .retrain import RetrainTests
-from .preprocess_user_data import PreprocessDataTests
+from .predictions import PreprocessDataTests
 from .delete_user import DeleteUserTests

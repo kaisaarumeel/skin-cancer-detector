@@ -5,6 +5,7 @@ import os
 from unittest.mock import MagicMock
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from ..models import Requests
+from ..predictions.prediction_manager import get_model_input_shape
 from ..predictions.preprocess_user_data import (
     preprocess_images,
     extract_images,
@@ -135,6 +136,22 @@ class PreprocessDataTests(TestCase):
         self.assertTrue(
             all(isinstance(image, np.ndarray) for image in result)
         )  # Ensure each entry is an image array
+
+    def test_get_model_input_shape(self):
+        """Test that the height and width are correctly extracted from the model input shape."""
+        # Mock a TensorFlow CNN model input shape
+        mock_model = MagicMock()
+
+        # Define the input shape parameter
+        # (batch size unspecified, height, width, channels)
+        mock_model.input_shape = [(None, 64, 64, 3)]
+
+        # Call the function we are testing
+        extracted_height, extracted_width = get_model_input_shape(mock_model)
+
+        # Assert the returned dimensions
+        self.assertEqual(extracted_height, 64)
+        self.assertEqual(extracted_width, 64)
 
     def test_extract_tabular_features_standardized(self):
         """Test the scaling of standardized features."""
