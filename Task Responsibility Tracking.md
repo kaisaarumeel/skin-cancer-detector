@@ -69,31 +69,33 @@ This document tracks all project tasks, assignees, and the status per every week
 | :------------------------------------------------------------------------------------------------------------------------------ | :----------: | :------: | :-------: | :--------: | :-----------------------------------------------------------------------------------------: |
 | [Add user "photo upload" endpoint](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/17)                              |    Arvin     |  22 Nov  |    yes    |    yes     | Was supposed to be done the week before, but was not completed so carried over to this week |
 | [Add admin "get users" & "get requests" endpoints](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/18)              |    Arvin     |  22 Nov  |    yes    |    yes     | Was supposed to be done the week before, but was not completed so carried over to this week |
-| [Create prediction manager](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/23)                                     | Erik, Kaisa  |  29 Nov  |    yes    |            |
+| [Create prediction manager](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/23)                                     | Erik, Kaisa  |  29 Nov  |    yes    |     no     |
 | [Retrain endpoint](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/29)                                              |  Alexander   |  27 Nov  |    yes    |    yes     |
 | [Connect authentication to frontend](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/30)                            |    Kaisa     |  29 Nov  |    yes    |    yes     |
 | [Connect get all model/get active model/swap model to frontend](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/31) | Konstantinos |  29 Nov  |    yes    |    yes     |
 | [Connect get all users, get all requests to frontend](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/32)           |    Arvin     |  29 Nov  |    yes    |    yes     |
-| [Connect create request endpoint to frontend](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/33)                   |  Amirpooya   |  28 Nov  |    no     |     no     |
+| [Connect create request endpoint to frontend](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/33)                   |  Amirpooya   |  28 Nov  |    yes    |    yes     |
 | [Connect retrain to frontend](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/34)                                   |  Alexander   |  29 Nov  |    yes    |    yes     |
 | [Connect add training data to frontend](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/44)                         | Konstantinos |  29 Nov  |    yes    |    yes     |
 | [Add one-hot encoding for localization feature](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/45)                 | Konstantinos |  2 Dec   |    yes    |    yes     |
 | [Custom metric or class weight bias](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/46)                            |  Alexander   |  29 Nov  |    yes    |    yes     |
-| [Add custom recall to admin UI](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/55)                                 | Konstantinos |  30 Nov  |           |            |
-| [Add delete model endpoint](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/56)                                     | Konstantinos |  30 Nov  |           |            |
+| [Add custom recall to admin UI](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/55)                                 | Konstantinos |  30 Nov  |    yes    |    yes     |
+| [Add delete model endpoint](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/56)                                     | Konstantinos |  30 Nov  |    yes    |    yes     |
 
 
 ## Week 5 _(Dec 2 - Dec 8)_:
-| Task                                                                                                         | Responsible | Deadline | Delivered | Integrated | Notes |
-| :----------------------------------------------------------------------------------------------------------- | :---------: | :------: | :-------: | :--------: | :---: |
-| [Get specific request](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/47)                       |    Arvin    |  3 Dec   |           |            |
-| [Explainable AI (backend)](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/48)                   |
-| [Delete user](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/49)                                |
-| [Explainable AI (frontend)](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/50)                  |
-| [Get request by username](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/51)                    |    Arvin    |
-| [Create page for viewing prediction history](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/52) |
-| [Dockerfile](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/53)                                 |
-| [Cloud deployment](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/54)                           |
+| Task                                                                                                         |    Responsible     | Deadline | Delivered | Integrated |               Notes               |
+| :----------------------------------------------------------------------------------------------------------- | :----------------: | :------: | :-------: | :--------: | :-------------------------------: |
+| [Create prediction manager](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/23)                  |    Erik, Kaisa     |  29 Nov  |    yes    |            | Integration part is due this week |
+| [Get specific request](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/47)                       |       Arvin        |  3 Dec   |           |            |
+| [Explainable AI (backend)](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/48)                   |    Amir, Arvin     |  9 Dec   |
+| [Delete user](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/49)                                |       Kaisa        |  5 Dec   |
+| [Explainable AI (frontend)](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/50)                  |     Alexander      |  5 Dec   |
+| [Get request by username](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/51)                    |       Arvin        |  3 Dec   |    yes    |
+| [Create page for viewing prediction history](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/52) |       Kaisa        |  8 Dec   |
+| [Dockerfile](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/53)                                 | Konstantinos, Erik |  9 Dec   |
+| [Cloud deployment](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/54)                           | Erik, Konstantinos |  9 Dec   |
+| [Distribution of requests](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/57)                   |     Alexander      |  6 Dec   |
 
 
 
