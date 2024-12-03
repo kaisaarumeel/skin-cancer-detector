@@ -6,4 +6,4 @@ from .get_all_users import GetAllUsersTests
 from .create_request import CreateRequestTests
 from .ml import MLTests
 from .retrain import RetrainTests
-from.delete_user import DeleteUserTests
+from .delete_user import DeleteUserTests

@@ -57,7 +57,9 @@ class DeleteUserTests(TestCase):
             content_type="application/json",
         )
         self.assertEqual(delete_response.status_code, 200)
-        self.assertEqual(delete_response.json().get("msg"), "User deleted successfully.")
+        self.assertEqual(
+            delete_response.json().get("msg"), "User deleted successfully."
+        )
 
         # Ensure user no longer exists
         self.assertFalse(Users.objects.filter(username="testuser").exists())
