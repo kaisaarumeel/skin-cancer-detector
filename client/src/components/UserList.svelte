@@ -11,11 +11,10 @@
     err?: string;
   };
 
-  let users: User[] = []
+  let users: User[] = [];
   let errorMessage: string | null = null; // To store any error messages
   let showModal = false; // To toggle the modal visibility
   let userToDelete: string | null = null; // Store the username of the user to be deleted
-
 
   // Fetch users from the backend API
   const getUsers = async () => {
@@ -31,7 +30,6 @@
       console.log("Users fetched successfully:", users);
     } catch (err) {
       const axiosError = err as AxiosError<ErrorResponse>;
-      // Display error message
       errorMessage = axiosError.response?.data?.err || "An unknown error occurred.";
       console.error("Error getting users:", errorMessage);
     }
@@ -40,26 +38,22 @@
   // Show the confirmation modal
   const confirmDelete = (username: string) => {
     userToDelete = username;
+    errorMessage = null; // Reset any previous error messages
     showModal = true;
   };
-
 
   // Method to delete a user
   const deleteUser = async () => {
     if (!userToDelete) return;
     try {
       const response = await API.delete(`/api/delete-user/${userToDelete}/`);
-      console.log("User deleted successfully:", response.data);
       // Update the local state to remove the deleted user
       users = users.filter(user => user.id !== userToDelete);
+      showModal = false; // Close modal after successful deletion
     } catch (err) {
       const axiosError = err as AxiosError<ErrorResponse>;
       errorMessage = axiosError.response?.data?.err || "An unknown error occurred.";
       console.error("Error deleting user:", errorMessage);
-    } finally {
-      // Reset modal state
-      showModal = false;
-      userToDelete = null;
     }
   };
 
@@ -76,12 +70,18 @@
       <p class="mt-2 text-sm text-tertiary">
         Are you sure you want to delete this user? This action cannot be undone.
       </p>
+      {#if errorMessage}
+        <p class="mt-2 text-sm text-red-500">
+          {errorMessage}
+        </p>
+      {/if}
       <div class="mt-4 flex justify-end space-x-4">
         <button
           class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
           on:click={() => {
             showModal = false;
             userToDelete = null;
+            errorMessage = null; // Reset error message
           }}
         >
           Cancel
