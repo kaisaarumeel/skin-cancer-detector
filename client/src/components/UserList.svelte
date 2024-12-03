@@ -13,6 +13,9 @@
 
   let users: User[] = []
   let errorMessage: string | null = null; // To store any error messages
+  let showModal = false; // To toggle the modal visibility
+  let userToDelete: string | null = null; // Store the username of the user to be deleted
+
 
   // Fetch users from the backend API
   const getUsers = async () => {
@@ -34,17 +37,29 @@
     }
   };
 
+  // Show the confirmation modal
+  const confirmDelete = (username: string) => {
+    userToDelete = username;
+    showModal = true;
+  };
+
+
   // Method to delete a user
-  const deleteUser = async (username: string) => {
+  const deleteUser = async () => {
+    if (!userToDelete) return;
     try {
-      const response = await API.delete(`/api/delete-user/${username}/`);
+      const response = await API.delete(`/api/delete-user/${userToDelete}/`);
       console.log("User deleted successfully:", response.data);
       // Update the local state to remove the deleted user
-      users = users.filter(user => user.id !== username);
+      users = users.filter(user => user.id !== userToDelete);
     } catch (err) {
       const axiosError = err as AxiosError<ErrorResponse>;
       errorMessage = axiosError.response?.data?.err || "An unknown error occurred.";
       console.error("Error deleting user:", errorMessage);
+    } finally {
+      // Reset modal state
+      showModal = false;
+      userToDelete = null;
     }
   };
 
@@ -53,6 +68,34 @@
     getUsers();
   });
 </script>
+
+{#if showModal}
+  <div class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
+    <div class="bg-white rounded-lg shadow-lg p-6 lg:w-1/3 w-2/3">
+      <h3 class="text-lg text-tertiary font-bold">Confirm Deletion</h3>
+      <p class="mt-2 text-sm text-tertiary">
+        Are you sure you want to delete this user? This action cannot be undone.
+      </p>
+      <div class="mt-4 flex justify-end space-x-4">
+        <button
+          class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+          on:click={() => {
+            showModal = false;
+            userToDelete = null;
+          }}
+        >
+          Cancel
+        </button>
+        <button
+          class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          on:click={deleteUser}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}
 
 <div class="h-fit bg-white rounded-lg shadow-md p-4 flex flex-col items-start">
     <h2 class="text-lg font-regular text-secondary">Manage Users</h2>
@@ -64,7 +107,7 @@
           <button
             class="text-red-500 hover:text-red-700 focus:outline-none"
             aria-label="Delete user"
-            on:click={() => deleteUser(user.id)}
+            on:click={() => confirmDelete(user.id)}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
