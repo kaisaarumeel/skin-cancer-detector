@@ -26,6 +26,22 @@ class Register(View):
         ):
             return JsonResponse({"err": "Username already exists"}, status=400)
 
+        # Validate age
+        try:
+            age = int(request.data["age"])
+            if not (0 <= age <= 120):
+                return JsonResponse(
+                    {"err": "Age must be between 0 and 120"}, status=400
+                )
+        except (ValueError, TypeError):
+            return JsonResponse({"err": "Age must be an integer"}, status=400)
+
+        # Validate sex
+        if request.data["sex"] not in ["female", "male"]:
+            return JsonResponse(
+                {"err": "Sex must be either 'female' or 'male'"}, status=400
+            )
+
         # Create the user
         user = Users.objects.using("default").create(
             username=request.data["username"],

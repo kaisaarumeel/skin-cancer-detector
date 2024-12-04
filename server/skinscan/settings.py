@@ -3,12 +3,13 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-# Load environment variables
-dotenv_path = Path(__file__).resolve().parents[4] / ".env"
-load_dotenv(dotenv_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parents[2]
+
+# Load environment variables
+dotenv_path = BASE_DIR / ".env"
+load_dotenv(dotenv_path)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = str(os.getenv("SECRET_KEY"))
