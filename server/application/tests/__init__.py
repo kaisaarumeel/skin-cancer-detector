@@ -8,4 +8,3 @@ from .ml import MLTests
 from .retrain import RetrainTests
 from .get_specific_request import GetSpecificRequestTests
 from .delete_user import DeleteUserTests
-
