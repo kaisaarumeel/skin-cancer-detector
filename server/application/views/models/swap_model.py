@@ -7,6 +7,8 @@ from ...decorators import admin_only
 from ...models import ActiveModel
 from ...models import Model
 
+from ...predictions.prediction_manager import signal_model_reload
+
 
 class SwapModel(View):
     @admin_only
@@ -29,6 +31,10 @@ class SwapModel(View):
                         "updated_at": int(time()),
                     },
                 )
+
+                # Signal the event to the prediction manager
+                # So it can reload the model used for predictions
+                signal_model_reload()
 
             return JsonResponse(
                 {"message": f"Active model changed to version {new_model.version}"}

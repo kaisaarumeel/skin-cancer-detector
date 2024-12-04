@@ -86,15 +86,17 @@ def train(
 
     set_status(job, "Retrieving processed data, lesion_type_encoder, and images")
 
-    # Retrieve processed data, lesion_type_encoder, and images
-    processed_data, lesion_type_encoder, images = query_db_or_cache(
-        clear_cache=clear_cache,
-        test=test,
-        db_name=db_images_name,
-        images_table_name=images_table_name,
-        row_limit=row_limit,
-        start_row=start_row,
-        requested_size=input_size[:2],
+    # Retrieve processed data, lesion_type_encoder, localization_encoder, and images
+    processed_data, lesion_type_encoder, localization_encoder, images = (
+        query_db_or_cache(
+            clear_cache=clear_cache,
+            test=test,
+            db_name=db_images_name,
+            images_table_name=images_table_name,
+            row_limit=row_limit,
+            start_row=start_row,
+            requested_size=input_size[:2],
+        )
     )
     set_status(job, "Validating input data")
     validate_input_data(processed_data, images, input_size)
@@ -318,6 +320,9 @@ def train(
         BATCH_SIZE,
         LEARNING_RATE,
         history.history["val_accuracy"][-1],
+        scaler,
+        lesion_type_encoder,
+        localization_encoder,
         custom_recall,
     )
     print("Model saved successfully to database")
