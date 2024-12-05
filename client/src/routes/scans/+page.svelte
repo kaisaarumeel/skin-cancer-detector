@@ -2,7 +2,7 @@
     import TopBar from "../../components/TopBar.svelte";
     import { goto } from '$app/navigation';
     import { API } from '../../api'; 
-    import { onMount } from "svelte";
+    import { onMount, onDestroy } from "svelte";
     import { routeGuard } from "../../routeGuard";
   
     interface ScanHistory {
@@ -59,10 +59,18 @@
     function newScan() {
       goto('/upload');
     }
-    
+      // Fetch scan history on mount and set interval for periodic updates
+    let intervalId: ReturnType<typeof setInterval>;
+
     onMount(() => {
-        routeGuard();
-        fetchScanHistory();
+    routeGuard();
+    fetchScanHistory();  // Initial fetch
+    intervalId = setInterval(fetchScanHistory, 5000);  // Fetch every 5 seconds
+    });
+
+    // Cleanup interval when the component is destroyed
+    onDestroy(() => {
+    clearInterval(intervalId);  // Clear interval on component destroy
     });
   </script>
   
