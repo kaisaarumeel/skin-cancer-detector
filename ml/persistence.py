@@ -5,6 +5,8 @@ from datetime import datetime
 import numpy as np
 import base64
 import io
+import tensorflow as tf
+import pickle
 
 
 def serialize_weights(weights):
@@ -47,11 +49,28 @@ def save_model(
     batch_size,
     learning_rate,
     validation_accuracy,
+    tabular_scaler,
+    lesion_type_encoder,
+    localization_encoder,
     custom_recall,
 ):
     try:
         # Serialize weights layer by layer
         serialized_weights = serialize_weights(model.get_weights())
+
+        # Serialize and encode the scaler
+        pickled_scaler = pickle.dumps(tabular_scaler)
+        encoded_scaler = base64.b64encode(pickled_scaler).decode("utf-8")
+
+        # Serialize and encode the lesion_type encoder
+        pickled_lesion_encoder = pickle.dumps(lesion_type_encoder)
+        encoded_lesion_encoder = base64.b64encode(pickled_lesion_encoder).decode(
+            "utf-8"
+        )
+
+        # Serialize and encode the localization encoder
+        pickled_loc_encoder = pickle.dumps(localization_encoder)
+        encoded_loc_encoder = base64.b64encode(pickled_loc_encoder).decode("utf-8")
 
         # Prepare hyperparameters dict
         hyperparameters = {
@@ -64,6 +83,9 @@ def save_model(
             "learning_rate": float(learning_rate),
             "model_architecture": model.to_json(),
             "validation_accuracy": float(validation_accuracy),
+            "tabular_scaler": encoded_scaler,
+            "lesion_type_encoder": encoded_lesion_encoder,
+            "localization_encoder": encoded_loc_encoder,
             "custom_recall": float(custom_recall),
         }
 
@@ -105,8 +127,8 @@ def load_active_model_from_db(db_path):
 
         cursor.execute(
             """
-            SELECT models.weights, models.hyperparameters 
-            FROM model models
+            SELECT models.version, models.weights, models.hyperparameters 
+            FROM models
             JOIN model_active activemodels ON models.version = activemodels.model_id
             WHERE activemodels.id = 1
         """
@@ -115,18 +137,32 @@ def load_active_model_from_db(db_path):
         row = cursor.fetchone()
         if row is None:
             print("No active model found in database")
-            return None, None
+            return None, None, None
 
-        serialized_weights, hyperparameters_json = row
+        model_version, serialized_weights, hyperparameters_json = row
 
-        # Deserialize weights using the improved method
+        # Parse the hyperparameters
+        hyperparameters = json.loads(hyperparameters_json)
+
+        # Ensure model architecture is in the hyperparameters
+        if "model_architecture" not in hyperparameters:
+            raise ValueError("Model architecture is missing in hyperparameters")
+
+        # Load model architecture from the hyperparameters
+        architecture_json = hyperparameters["model_architecture"]
+
+        # Reconstruct the model's structure using the architecture JSON
+        model = tf.keras.models.model_from_json(architecture_json)
+
+        # Deserialize the weights from the serialized format
         weights = deserialize_weights(serialized_weights)
 
-        # Parse hyperparameters
-        hyperparameters = json.loads(hyperparameters_json)
+        # Set the model's weights
+        model.set_weights(weights)
+
         conn.close()
 
-        return weights, hyperparameters
+        return model, hyperparameters, model_version
 
     except Exception as e:
         print(f"Error loading model: {str(e)}")
