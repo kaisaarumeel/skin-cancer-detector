@@ -26,7 +26,7 @@
                 date: formatDate(req.created_at),
                 bodyPart: req.localization,
                 image: `data:image/jpeg;base64,${req.image}`,
-                prediction: req.lesion_type,
+                prediction: req.lesion_type || "Pending...",
             }));
         } catch (err: unknown) {
             if (err instanceof Error) {
