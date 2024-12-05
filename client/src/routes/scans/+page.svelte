@@ -1,30 +1,51 @@
 <script lang="ts">
     import TopBar from "../../components/TopBar.svelte";
     import { goto } from '$app/navigation';
+    import { API } from '../../api'; 
+    import { onMount } from "svelte";
+    import { routeGuard } from "../../routeGuard";
   
     interface ScanHistory {
       id: number;
       date: string;
       bodyPart: string;
-      image: string; 
+      image: string;
       prediction: string;
     }
   
     let expandedScanId: number | null = null;
+    let scanHistory: ScanHistory[] = [];
+    let loading = true;
+    let error: string | null = null;
+    let username: string | null = null;
   
-    let scanHistory: ScanHistory[] = [
-      { id: 1, date: "2024-12-01", bodyPart: "Face", image: "example1.jpg", prediction: "Malignant" },
-      { id: 2, date: "2024-11-20", bodyPart: "Back", image: "example2.jpg", prediction: "Benign" },
-      { id: 3, date: "2024-11-10", bodyPart: "Neck", image: "example3.jpg", prediction: "Malignant" },
-      { id: 4, date: "2024-12-01", bodyPart: "Face", image: "example1.jpg", prediction: "Malignant" },
-      { id: 5, date: "2024-11-20", bodyPart: "Back", image: "example2.jpg", prediction: "Benign" },
-      { id: 6, date: "2024-11-10", bodyPart: "Neck", image: "example3.jpg", prediction: "Malignant" },
-      { id: 7, date: "2024-12-01", bodyPart: "Face", image: "example1.jpg", prediction: "Malignant" },
-      { id: 8, date: "2024-11-20", bodyPart: "Back", image: "example2.jpg", prediction: "Benign" },
-      { id: 9, date: "2024-11-10", bodyPart: "Neck", image: "example3.jpg", prediction: "Malignant" },
-    
-    ];
+
   
+    async function fetchScanHistory() {
+    loading = true;
+    error = null;
+
+    try {
+        const response = await API.get('/api/get-requests-by-username');
+        scanHistory = response.data.requests.map((req: any) => ({
+            id: req.request_id,
+            date: req.created_at,
+            bodyPart: req.localization,
+            image: `data:image/jpeg;base64,${req.image}`,
+            prediction: req.lesion_type,
+        }));
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            error = err.message;
+        } else {
+            error = 'An unknown error occurred.';
+        }
+    } finally {
+        loading = false;
+    }
+}
+
+
     function toggleExpandScan(scanId: number): void {
       expandedScanId = expandedScanId === scanId ? null : scanId;
     }
@@ -32,17 +53,24 @@
     function newScan() {
       goto('/upload');
     }
+    
+    onMount(() => {
+        routeGuard();
+        fetchScanHistory();
+    });
   </script>
   
+  
   <div class="h-screen flex flex-col">
-
     <div class="flex-shrink-0">
       <TopBar />
     </div>
     <div class="flex-1 w-full p-10 flex flex-col items-center overflow-y-auto">
       <h1 class="text-secondary text-2xl font-extralight mb-4">Scan History</h1>
   
-      {#if scanHistory.length > 0}
+      {#if error}
+        <p class="text-red-500">Error: {error}</p>
+      {:else if scanHistory.length > 0}
         <div class="overflow-x-auto w-full lg:w-10/12">
           <table class="min-w-full">
             <thead class="bg-primary text-white rounded-t-lg">
@@ -73,10 +101,9 @@
                   <tr>
                     <td colspan="4" class="border-b p-6 bg-gray-100">
                       <div class="flex flex-col lg:flex-row items-center gap-6">
-                        <!-- svelte-ignore a11y_img_redundant_alt -->
                         <img
                           src="{scan.image}"
-                          alt="Skin image"
+                          alt="Skin scan"
                           class="h-40 w-40 object-cover border"
                         />
                         <div class="flex-1">

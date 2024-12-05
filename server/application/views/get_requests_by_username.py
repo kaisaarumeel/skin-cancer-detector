@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from ..models import Requests
 from django.views import View
 from ..decorators import login_required
+import base64
 
 
 class GetRequestsByUsername(View):
@@ -20,6 +21,7 @@ class GetRequestsByUsername(View):
                     "localization": req.localization,
                     "lesion_type": req.lesion_type,
                     "user": req.user.username,
+                    "image": base64.b64encode(req.image).decode("utf-8"),
                     "model_version": req.model.version if req.model else None,
                 }
                 for req in user_requests
