@@ -20,7 +20,7 @@ from .preprocess_user_data import (
 
 
 # Find the path to the database
-abs_db_path = Path(__file__).resolve().parents[3] / "db_app.sqlite3"
+abs_db_path = "../db_app.sqlite3"
 
 # Event to signal model reload
 model_reload_event = threading.Event()
@@ -36,7 +36,7 @@ def manage_predictions():
 
     # Load the active model from the database
     model, hyperparameters, model_version = load_active_model_from_db(abs_db_path)
-
+    print(model_version)
     if model != None:
         # Load the feature scaler and decoders
         tabular_scaler = get_scaler(hyperparameters)
@@ -144,7 +144,7 @@ def get_encoders(hyperparameters):
     encoded_loc_encoder = hyperparameters["localization_encoder"]
     pickled_loc_encoder = base64.b64decode(encoded_loc_encoder)
     localization_encoder = pickle.loads(pickled_loc_encoder)
-
+    print(localization_encoder)
     # Decode and unpickle the lesion_type encoder
     encoded_lesion_encoder = hyperparameters["lesion_type_encoder"]
     pickled_lesion_encoder = base64.b64decode(encoded_lesion_encoder)
@@ -166,7 +166,7 @@ def update_requests_in_db(
     cursor = conn.cursor()
 
     try:
-        conn.execute("BEGIN TRANSACTION")
+        #conn.execute("BEGIN TRANSACTION")
 
         # Prepare Request table updates
         for job, prediction in zip(jobs_batch, predictions, strict=True):
@@ -186,7 +186,7 @@ def update_requests_in_db(
             cursor.execute(
                 """
                 UPDATE requests
-                SET probability = ?, lesion_type = ?, model = ?
+                SET probability = ?, lesion_type = ?, model_id = ?
                 WHERE request_id = ?;
                 """,
                 (probability, predicted_label, model_version, request_id),
