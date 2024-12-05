@@ -23,19 +23,10 @@ def get_db_schemas(db_path):
 
         # Query the sqlite_master table to retrieve schema definitions
         cursor.execute(
-            "SELECT name, type, sql FROM sqlite_master WHERE type IN ('table', 'index', 'view');"
+            "SELECT lesion_type,probability,request_id,created_at FROM requests;"
         )
         schemas = cursor.fetchall()
-
-        # Print the results
-        print(f"\nSchema for database: {db_path}")
-        if not schemas:
-            print("No tables, indexes, or views found.")
-        for name, obj_type, sql in schemas:
-            print(f"  {obj_type.upper()}: {name}")
-            print(f"    Definition: {sql}")
-            print("-" * 70)
-
+        print(schemas)
     except sqlite3.Error as e:
         print(f"Error accessing database {db_path}: {e}")
     finally:
@@ -50,4 +41,4 @@ if __name__ == "__main__":
     get_db_schemas(db_default_path)
 
     # Check the images database
-    get_db_schemas(db_images_path)
+    #get_db_schemas(db_images_path)
