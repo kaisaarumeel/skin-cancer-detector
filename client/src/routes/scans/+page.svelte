@@ -15,35 +15,41 @@
   
     let expandedScanId: number | null = null;
     let scanHistory: ScanHistory[] = [];
-    let loading = true;
     let error: string | null = null;
-    let username: string | null = null;
-  
-
   
     async function fetchScanHistory() {
-    loading = true;
     error = null;
-
-    try {
-        const response = await API.get('/api/get-requests-by-username');
-        scanHistory = response.data.requests.map((req: any) => ({
-            id: req.request_id,
-            date: req.created_at,
-            bodyPart: req.localization,
-            image: `data:image/jpeg;base64,${req.image}`,
-            prediction: req.lesion_type,
-        }));
-    } catch (err: unknown) {
-        if (err instanceof Error) {
-            error = err.message;
-        } else {
-            error = 'An unknown error occurred.';
-        }
-    } finally {
-        loading = false;
+        try {
+            const response = await API.get('/api/get-requests-by-username');
+            scanHistory = response.data.requests.map((req: any) => ({
+                id: req.request_id,
+                date: formatDate(req.created_at),
+                bodyPart: req.localization,
+                image: `data:image/jpeg;base64,${req.image}`,
+                prediction: req.lesion_type,
+            }));
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                error = err.message;
+            } else {
+                error = 'An unknown error occurred.';
+            }
+        } 
     }
-}
+
+    // Function to format the timestamp to a human-readable format
+    function formatDate(timestamp: number): string {
+        // Convert from seconds to milliseconds
+        const date = new Date(timestamp * 1000); 
+        // Format the date
+        return date.toLocaleDateString('en-UK', {
+        year: 'numeric',
+        month: 'short',  
+        day: 'numeric',  
+        hour: '2-digit',
+        minute: '2-digit' 
+        });
+    }
 
 
     function toggleExpandScan(scanId: number): void {
