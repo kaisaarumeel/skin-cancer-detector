@@ -22,6 +22,13 @@ class GetRequestsByUsername(View):
                         return choice_label
                 return localization  # Return the original value if not found
 
+            # Map lesion type values to their corresponding display names
+            def get_lesion_display(lesion_type):
+                for choice_value, choice_label in Requests.LESION_TYPE_CHOICES:
+                    if lesion_type == choice_value:
+                        return choice_label
+                return lesion_type  # Return the original value if not found
+
             request_data = [
                 {
                     "request_id": req.request_id,
@@ -29,7 +36,8 @@ class GetRequestsByUsername(View):
                     "probability": req.probability,
                     # Use the helper function to get the readable name for the localization
                     "localization": get_localization_display(req.localization),
-                    "lesion_type": req.lesion_type,
+                    # Use the helper function to get the readable name for the lesion type
+                    "lesion_type": get_lesion_display(req.lesion_type),
                     "user": req.user.username,
                     "image": base64.b64encode(req.image).decode("utf-8"),
                     "model_version": req.model.version if req.model else None,
