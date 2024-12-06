@@ -174,10 +174,10 @@ class Requests(models.Model):
         # Upper limbs
         ("acral", "Acral (Fingers/Toes)"),
         ("hand", "Hand"),
-        ("upper_extremity", "Upper Extremity (Arm)"),
+        ("upper extremity", "Upper Extremity (Arm)"),
         # Lower limbs
         ("foot", "Foot"),
-        ("lower_extremity", "Lower Extremity (Leg)"),
+        ("lower extremity", "Lower Extremity (Leg)"),
         # Other locations
         ("genital", "Genital Area"),
     ]

@@ -150,12 +150,12 @@ function handleDrop(event: DragEvent) {
           <optgroup label="Upper limbs">
             <option value="acral">Acral (Fingers/Toes)</option>
             <option value="hand">Hand</option>
-            <option value="upper_extremity">Upper Extremity (Arm)</option>
+            <option value="upper extremity">Upper Extremity (Arm)</option>
           </optgroup>
         
           <optgroup label="Lower limbs">
             <option value="foot">Foot</option>
-            <option value="lower_extremity">Lower Extremity (Leg)</option>
+            <option value="lower extremity">Lower Extremity (Leg)</option>
           </optgroup>
         
           <option value="genital">Genital Area</option>
