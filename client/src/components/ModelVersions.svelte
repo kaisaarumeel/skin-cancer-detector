@@ -41,6 +41,7 @@
     }
 
     async function setActiveModel(model: Model): Promise<void> {
+        console.log($csrfToken)
         try {
             const response: AxiosResponse<{ message: string }> = await API.post(`api/models/swap-model/${model.version}/`, {
                 headers: {

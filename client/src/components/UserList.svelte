@@ -45,6 +45,7 @@
 
   // Method to delete a user
   const deleteUser = async () => {
+    console.log($csrfToken)
     if (!userToDelete) return;
     try {
       const response = await API.delete(`/api/delete-user/${userToDelete}/`, {
