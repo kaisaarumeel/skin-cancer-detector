@@ -16,7 +16,6 @@ SECRET_KEY = str(os.getenv("SECRET_KEY"))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", True) == True  # True unless injected with False
-DEBUG = os.getenv("DEBUG", True) == True  # True unless injected with False
 ALLOWED_HOSTS = ["*"]
 
 
@@ -131,17 +130,10 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
 ]
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_COOKIE_SECURE = True  # Only sent over HTTPS
 CSRF_COOKIE_HTTPONLY = False  # Cookie is accessible to JavaScript in client
-
-CSRF_COOKIE_NAME = "csrftoken"
-CSRF_COOKIE_SECURE = True  # Only sent over HTTPS
-CSRF_COOKIE_HTTPONLY = False  # Cookie is accessible to JavaScript in client
-
 
 # Logging configuration
 LOGGING = {
