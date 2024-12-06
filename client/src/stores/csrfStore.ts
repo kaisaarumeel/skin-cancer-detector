@@ -1,4 +1,14 @@
-import { writable } from 'svelte/store';
+import { API } from '../api'; // Import the API instance
+
+// function to generate CSRF token, set to browser cookies and return it
+export async function generateCSRFToken() {
+  try {
+    const response = await API.get('/api/get-csrf-token/');
+    console.log(response)
+  } catch (error) {
+    console.error("Error fetching CSRF token:", error);
+  }
+}
 
 export function getCSRFToken() {
     // Check if the cookie exists in the browser storage

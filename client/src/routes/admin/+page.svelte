@@ -16,7 +16,7 @@
 
     async function handleLogout() {
       try {
-        const response = await API.post('api/logout/', {
+        const response = await API.post('api/logout/', {}, {
           headers: {
             'X-CSRFToken': getCSRFToken(),
           }

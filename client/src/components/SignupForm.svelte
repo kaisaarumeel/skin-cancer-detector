@@ -2,7 +2,7 @@
   import { goto } from '$app/navigation';
   import { API } from '../api'; // Import the API instance
   import type { AxiosError } from 'axios'; // Import AxiosError type
-  import { getCSRFToken } from '../stores/csrfStore'; // Import CSRF token
+  import { generateCSRFToken, getCSRFToken } from '../stores/csrfStore'; // Import CSRF token
 
   let username = '';
   let password = '';
@@ -18,6 +18,9 @@
   async function Signup() {
     errorMessage = ''; // Reset error message
     try {
+      // generate csrf token and store in browser cookie
+      await generateCSRFToken();
+
       const signupResponse = await API.post('/api/register/', {
         username: username,
         password: password,

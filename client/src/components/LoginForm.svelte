@@ -2,7 +2,7 @@
   import { goto } from '$app/navigation';
   import { API } from '../api'; // Import the API instance
   import type { AxiosError } from 'axios'; // Import AxiosError type
-  import { getCSRFToken } from '../stores/csrfStore'; // Import CSRF token
+  import { generateCSRFToken, getCSRFToken } from '../stores/csrfStore'; // Import CSRF token
 
   let username = '';
   let password = '';
@@ -13,26 +13,13 @@
     err?: string;
   };
 
-  // function to generate CSRF token, set to browser cookies and return it
-    async function generateCSRFToken() {
-      try {
-        const response = await API.get('/api/get-csrf-token/');
-      } catch (error) {
-        console.error("Error fetching CSRF token:", error);
-      }
-    }
 
   async function Signin() {
     errorMessage = ''; // Reset error message
     try {
-        // generate csrf token and store in browser cookie
-        await generateCSRFToken();
+      // generate csrf token and store in browser cookie
+      await generateCSRFToken();
 
-    } catch(error) {
-        console.error('Error fetching CSRF token:', error);
-    }
-
-    try {
       // Make POST request to the login endpoint
       const response = await API.post('/api/login/', {
         username: username,
