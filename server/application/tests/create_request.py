@@ -8,7 +8,6 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from ..models import Users
 from unittest.mock import patch
-from ..predictions.queue_manager import QueueManager
 
 
 class CreateRequestTests(TestCase):
