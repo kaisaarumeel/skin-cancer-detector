@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { API } from '../api';
   import type { AxiosError } from 'axios';
-  import { csrfToken } from '../stores/csrfStore'; // Import CSRF token
+  import { getCSRFToken } from '../stores/csrfStore'; // Import CSRF token
 
   interface User {
     id: string;
@@ -45,12 +45,11 @@
 
   // Method to delete a user
   const deleteUser = async () => {
-    console.log($csrfToken)
     if (!userToDelete) return;
     try {
       const response = await API.delete(`/api/delete-user/${userToDelete}/`, {
         headers: {
-          'X-CSRFToken': $csrfToken,
+          'X-CSRFToken': getCSRFToken(),
         }
       });
       // Update the local state to remove the deleted user

@@ -2,7 +2,7 @@
   import { goto } from '$app/navigation';
   import { API } from '../api'; // Import the API instance
   import type { AxiosError } from 'axios'; // Import AxiosError type
-  import { csrfToken } from '../stores/csrfStore'; // Import CSRF token
+  import { getCSRFToken } from '../stores/csrfStore'; // Import CSRF token
 
   let username = '';
   let password = '';
@@ -14,15 +14,9 @@
   };
 
   // function to generate CSRF token, set to browser cookies and return it
-    async function getCsrfToken() {
+    async function generateCSRFToken() {
       try {
         const response = await API.get('/api/get-csrf-token/');
-
-        const csrfCookie = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('csrftoken='));
-
-        return csrfCookie ? csrfCookie.split('=')[1] : ''; 
       } catch (error) {
         console.error("Error fetching CSRF token:", error);
       }
@@ -31,11 +25,9 @@
   async function Signin() {
     errorMessage = ''; // Reset error message
     try {
-        // generate csrf token and save it in store
-        const token = await getCsrfToken();
-        if(token) {    
-          csrfToken.set(token);
-        }
+        // generate csrf token and store in browser cookie
+        await generateCSRFToken();
+
     } catch(error) {
         console.error('Error fetching CSRF token:', error);
     }
@@ -47,7 +39,7 @@
         password: password,
       }, {
         headers: {
-          'X-CSRFToken': $csrfToken,
+          'X-CSRFToken': getCSRFToken(),
         }
       });
 

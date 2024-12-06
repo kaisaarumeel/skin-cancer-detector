@@ -3,7 +3,7 @@
   import { onMount } from "svelte";
   import type { AxiosResponse, AxiosError } from "axios";
   import { FIELDS } from "../scripts/fields";
-  import { csrfToken } from '../stores/csrfStore'; // Import CSRF token
+  import { getCSRFToken } from '../stores/csrfStore'; // Import CSRF token
 
   // Interface definitions
   interface TrainingJob {
@@ -120,7 +120,7 @@
       // Delete all completed jobs
       await API.delete("/api/retrain/", {
         headers: {
-          'X-CSRFToken': $csrfToken,
+          'X-CSRFToken': getCSRFToken(),
         }
       });
       // Filter out completed jobs
@@ -179,7 +179,7 @@
       const response: AxiosResponse<{ success: boolean }> = await API.post("/api/retrain/",
         payload, {
           headers: {
-            'X-CSRFToken': $csrfToken,
+            'X-CSRFToken': getCSRFToken(),
           }
         }
       );

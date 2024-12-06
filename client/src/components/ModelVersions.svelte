@@ -4,7 +4,7 @@
     import { API } from "../api";
     import { models, activeModel, type Model, type Hyperparameters } from "../stores/modelStore";
     import { slide } from "svelte/transition";
-    import { csrfToken } from '../stores/csrfStore'; // Import CSRF token
+    import { getCSRFToken } from '../stores/csrfStore'; // Import CSRF token
 
     let expandedModelVersion: string | null = null;
     let isConfirmingActivation: boolean = false;
@@ -41,11 +41,10 @@
     }
 
     async function setActiveModel(model: Model): Promise<void> {
-        console.log($csrfToken)
         try {
-            const response: AxiosResponse<{ message: string }> = await API.post(`api/models/swap-model/${model.version}/`, {
+            const response: AxiosResponse<{ message: string }> = await API.post(`api/models/swap-model/${model.version}/`, {}, {
                 headers: {
-                    'X-CSRFToken': $csrfToken,
+                    'X-CSRFToken': getCSRFToken(),
                 }
             });
             activeModel.set(model);
@@ -59,7 +58,7 @@
         try {
             const response: AxiosResponse<{ message: string }> = await API.delete(`api/models/delete-model/${model.version}/`, {
                 headers: {
-                    'X-CSRFToken': $csrfToken,
+                    'X-CSRFToken': getCSRFToken(),
                 }
             });
 

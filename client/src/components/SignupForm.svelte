@@ -2,7 +2,7 @@
   import { goto } from '$app/navigation';
   import { API } from '../api'; // Import the API instance
   import type { AxiosError } from 'axios'; // Import AxiosError type
-  import { csrfToken } from '../stores/csrfStore'; // Import CSRF token
+  import { getCSRFToken } from '../stores/csrfStore'; // Import CSRF token
 
   let username = '';
   let password = '';
@@ -25,7 +25,7 @@
         sex: sex,
       }, {
         headers: {
-          'X-CSRFToken': $csrfToken,
+          'X-CSRFToken': getCSRFToken(),
         }
       });
 
@@ -35,7 +35,7 @@
         password: password,
       }, {
         headers: {
-          'X-CSRFToken': $csrfToken,
+          'X-CSRFToken': getCSRFToken(),
         }
       });
 
