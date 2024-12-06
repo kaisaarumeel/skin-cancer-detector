@@ -2,7 +2,7 @@
   import { goto } from '$app/navigation';
   import { API } from '../api'; // Import the API instance
   import type { AxiosError } from 'axios'; // Import AxiosError type
-  import { setCsrfToken, csrfToken } from '../stores/csrfStore'; // hnnnnnggghh
+  import { csrfToken } from '../stores/csrfStore'; 
 
   let username = '';
   let password = '';

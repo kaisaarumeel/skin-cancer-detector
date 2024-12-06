@@ -66,5 +66,5 @@ urlpatterns = [
         name="api-get-requests-by-username",
     ),
     path("delete-user/<str:username>/", DeleteUser.as_view(), name="api-delete-user"),
-    path("get_csrf_token/", GetCSRFToken.as_view(), name="api-get-csrf-token"),
+    path("get-csrf-token/", GetCSRFToken.as_view(), name="api-get-csrf-token"),
 ]
