@@ -2,6 +2,7 @@
   import { goto } from '$app/navigation';
   import { API } from '../api'; // Import the API instance
   import type { AxiosError } from 'axios'; // Import AxiosError type
+  import { csrfToken } from '../stores/csrfStore'; // Import CSRF token
 
   let username = '';
   let password = '';
@@ -22,12 +23,20 @@
         password: password,
         age: age,
         sex: sex,
+      }, {
+        headers: {
+          'X-CSRFToken': $csrfToken,
+        }
       });
 
       // After signup, automatically log the user in
       const signinResponse = await API.post('/api/login/', {
         username: username,
         password: password,
+      }, {
+        headers: {
+          'X-CSRFToken': $csrfToken,
+        }
       });
 
       // Check if the user is an admin

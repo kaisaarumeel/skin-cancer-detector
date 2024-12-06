@@ -7,4 +7,6 @@ class Logout(View):
     def post(self, request):
         # Log out the user
         logout(request)
-        return JsonResponse({"msg": "Successfully logged out"}, status=200)
+        response = JsonResponse({"msg": "Successfully logged out"}, status=200)
+        response.delete_cookie('csrftoken')
+        return response

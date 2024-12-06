@@ -1,6 +1,7 @@
 <script lang="ts">
   import { API } from "../api";
   import type { AxiosResponse, AxiosError } from "axios";
+  import { csrfToken } from '../stores/csrfStore'; // Import CSRF token
 
   let isDragging: boolean = false; // State to indicate drag-and-drop activity
   let uploadedFile: File | null = null; // State to hold the uploaded file, initially null
@@ -74,6 +75,7 @@
         const response = await API.post("/api/add-data/", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
+            'X-CSRFToken': $csrfToken,
           },
         });
         message = response.data.message;

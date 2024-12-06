@@ -1,11 +1,16 @@
 <script>
     import { goto } from '$app/navigation';
     import { API } from '../api'; 
+    import { csrfToken } from '../stores/csrfStore'; // Import CSRF token
 
 
     async function handleLogout() {
       try {
-        const response = await API.post('api/logout/');
+        const response = await API.post('api/logout/', {
+          headers: {
+            'X-CSRFToken': $csrfToken,
+          }
+        });
         if (response.status === 200) {
           console.log('User logged out successfully');
          goto('/home');

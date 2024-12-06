@@ -8,6 +8,7 @@
     import { onMount } from "svelte";
     import { routeGuard } from '../../routeGuard';
     import { API } from '../../api'; 
+    import { csrfToken } from '../../stores/csrfStore'; // Import CSRF token
 
     onMount(() => {
         routeGuard(true); // Enable admin check in the routeguard
@@ -15,10 +16,15 @@
 
     async function handleLogout() {
       try {
-        const response = await API.post('api/logout/');
+        const response = await API.post('api/logout/', {
+          headers: {
+            'X-CSRFToken': $csrfToken,
+          }
+        });
         if (response.status === 200) {
+          csrfToken.set(null);
           console.log('User logged out successfully');
-         goto('/home');
+          goto('/home');
         }
       } catch (err) {
         console.error('Error logging out:', err);
