@@ -41,4 +41,4 @@ if __name__ == "__main__":
     get_db_schemas(db_default_path)
 
     # Check the images database
-    #get_db_schemas(db_images_path)
+    # get_db_schemas(db_images_path)

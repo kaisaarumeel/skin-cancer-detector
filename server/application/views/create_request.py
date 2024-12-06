@@ -111,7 +111,6 @@ class CreateRequest(View):
         # Create new Job and add it to the global queue
         job = Job(job_id=request_id, start_time=created_at, parameters=parameters)
         PREDICTION_JOBS.put(job)
-        print(PREDICTION_JOBS)
         return JsonResponse(
             {
                 "msg": "Request created successfully! Results pending.",
