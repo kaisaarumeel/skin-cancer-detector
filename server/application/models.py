@@ -191,9 +191,9 @@ class Requests(models.Model):
     LESION_TYPE_CHOICES = [
         # Benign lesions
         ("nv", "Melanocytic nevi (Benign)"),
-        ("bkl", "Benign keratosis-like lesions (Benign)"),
+        ("bkl", "Benign keratosis-like lesion (Benign)"),
         ("df", "Dermatofibroma (Benign)"),
-        ("vasc", "Vascular lesions (Benign)"),
+        ("vasc", "Vascular lesion (Benign)"),
         # Malignant/Potentially Malignant lesions
         ("mel", "Melanoma (Malignant)"),
         ("bcc", "Basal cell carcinoma (Malignant)"),

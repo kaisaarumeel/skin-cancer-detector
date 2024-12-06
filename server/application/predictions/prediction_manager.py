@@ -166,7 +166,7 @@ def update_requests_in_db(
     cursor = conn.cursor()
 
     try:
-        #conn.execute("BEGIN TRANSACTION")
+        # conn.execute("BEGIN TRANSACTION")
 
         # Prepare Request table updates
         for job, prediction in zip(jobs_batch, predictions, strict=True):
