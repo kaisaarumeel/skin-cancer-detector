@@ -129,7 +129,7 @@
                             <p class="text-tertiary font-light"><strong>Created at:</strong> {scan.date}</p>
                             <p class="text-tertiary font-light"><strong>Body Part:</strong> {scan.bodyPart}</p>
                             <p class="text-tertiary font-light"><strong>Prediction:</strong> {scan.prediction}</p>
-                            <p class="text-tertiary font-light"><strong>Probability of being {scan.prediction}:</strong> {scan.probability ? (scan.probability * 100).toFixed(2) + '%' : 'N/A'}</p> 
+                            <p class="text-tertiary font-light"><strong>Probability of the result:</strong> {scan.probability ? (scan.probability * 100).toFixed(2) + '%' : 'N/A'}</p> 
                           </div>
                         </div>
                       </div>

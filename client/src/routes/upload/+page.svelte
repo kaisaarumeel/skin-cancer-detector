@@ -130,7 +130,7 @@ function handleDrop(event: DragEvent) {
   <div class="h-full w-full flex items-center justify-center">
     <div class="flex flex-col items-center justify-center lg:w-6/12 w-10/12">
       <h1 class="text-secondary text-3xl font-extralight mb-20">Upload a photo of your skin</h1>
-      <p class="text-tertiary mb-2">For a more precise analysis choose the body part where the mole is located.</p>
+      <p class="text-tertiary mb-2">For a more precise analysis choose the body part where the lesion is located.</p>
 
       <div class="mb-4 w-full">
         <select bind:value={localization} class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary text-gray-500 focus:text-black" aria-label="Body Part">
