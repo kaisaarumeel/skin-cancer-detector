@@ -6,7 +6,6 @@ import sys
 import django
 
 
-
 def main():
     global PREDICTION_JOBS
     """Run administrative tasks."""
@@ -25,8 +24,8 @@ def main():
     django.setup()
     if os.environ.get("RUN_MAIN") != "true" and "runserver" in sys.argv:
         from setup import setup
-        setup.setup()
 
+        setup.setup()
 
     # Start the server
     execute_from_command_line(sys.argv)

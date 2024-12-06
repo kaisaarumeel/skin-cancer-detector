@@ -6,7 +6,7 @@ from django.views import View
 from django.db import transaction, DatabaseError
 from ..models import Users, Requests
 from ..decorators import login_required, load_json
-from .jobs.state import PREDICTION_JOBS,MGR_INIT
+from .jobs.state import PREDICTION_JOBS, MGR_INIT
 from .jobs.job import Job
 from io import BytesIO
 from PIL import Image
@@ -30,7 +30,7 @@ class CreateRequest(View):
 
         if not MGR_INIT:
             start_prediction_manager()
-            MGR_INIT=True
+            MGR_INIT = True
 
         data = request.data
 
@@ -89,7 +89,7 @@ class CreateRequest(View):
                     image=image_data,
                     localization=localization,
                     user=user,
-                    model=None
+                    model=None,
                 )
 
                 # Retrieve the generated request id from the database insertion
