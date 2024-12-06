@@ -1,6 +1,8 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from ..models import Model, Requests, Users
+import base64
+import os
 
 
 class GetSpecificRequestTests(TestCase):
@@ -45,11 +47,17 @@ class GetSpecificRequestTests(TestCase):
             hyperparameters="default",
         )
 
+        self.valid_image_path = os.path.join(
+            os.path.dirname(__file__), "test_data", "valid_test_image.jpg"
+        )
+
+        self.encoded_image = self.encode_image_to_base64(self.valid_image_path)
+
         # Create a request for the normal user
         self.user_request = Requests.objects.create(
             created_at=1234567890,
             probability=95,
-            image=b"image_data",
+            image=base64.b64decode(self.encoded_image),
             localization="face",
             lesion_type="nv",
             user=self.normal_user,
@@ -60,12 +68,28 @@ class GetSpecificRequestTests(TestCase):
         self.other_user_request = Requests.objects.create(
             created_at=1234567891,
             probability=90,
-            image=b"image_data",
+            image=base64.b64decode(self.encoded_image),
             localization="ear",
             lesion_type="mel",
             user=self.other_user,
             model=self.model_version,
         )
+
+        # Create a request for another user with null fields
+        self.null_fields_request = Requests.objects.create(
+            created_at=1234567892,
+            probability=None,
+            image=base64.b64decode(self.encoded_image),
+            localization="ear",
+            lesion_type="mel",
+            user=self.normal_user,
+            model=None,
+        )
+
+    def encode_image_to_base64(self, file_path):
+        """Helper method to encode an image to Base64 and include the data URI prefix"""
+        with open(file_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode("utf-8")
 
     def test_normal_user_access_own_request(self):
         """Test if a normal user can access their own request"""
@@ -81,6 +105,11 @@ class GetSpecificRequestTests(TestCase):
             response_data["request"]["request_id"], self.user_request.request_id
         )
         self.assertEqual(response_data["request"]["user"], self.normal_user.username)
+
+        self.assertIn("image", response_data["request"])
+        self.assertEqual(
+            base64.b64decode(response_data["request"]["image"]), self.user_request.image
+        )
 
     def test_admin_access_any_user_request(self):
         """Test if an admin can access any user's request"""
@@ -123,3 +152,20 @@ class GetSpecificRequestTests(TestCase):
         response_data = response.json()
         self.assertIn("err", response_data)
         self.assertEqual(response_data["err"], "Unauthorized")
+
+    def test_request_with_null_fields(self):
+        """Test if the endpoint handles a request with null fields correctly"""
+        self.client.force_login(self.admin_user)
+        response = self.client.get(
+            reverse(
+                "api-get-specific-request", args=[self.null_fields_request.request_id]
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+
+        response_data = response.json()
+        self.assertIn("request", response_data)
+
+        # Ensure the null fields are returned as None
+        self.assertIsNone(response_data["request"]["probability"])
+        self.assertIsNone(response_data["request"]["model_version"])
