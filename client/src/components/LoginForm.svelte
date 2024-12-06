@@ -26,7 +26,6 @@
       } catch (error) {
         console.error("Error fetching CSRF token:", error);
       }
-
     }
 
   async function Signin() {
@@ -40,6 +39,7 @@
         console.error('Error fetching CSRF token:', error);
     }
 
+    try {
       // Make POST request to the login endpoint
       const response = await API.post('/api/login/', {
         username: username,
