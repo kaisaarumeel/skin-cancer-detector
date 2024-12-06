@@ -46,7 +46,7 @@
         password: password,
       }, {
         headers: {
-          'X-CSRFToken': csrfToken,
+          'X-CSRFToken': $csrfToken,
         }
       });
 
