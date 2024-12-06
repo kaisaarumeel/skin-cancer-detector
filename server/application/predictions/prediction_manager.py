@@ -36,7 +36,7 @@ def manage_predictions():
 
     # Load the active model from the database
     model, hyperparameters, model_version = load_active_model_from_db(abs_db_path)
-    print(model_version)
+
     if model != None:
         # Load the feature scaler and decoders
         tabular_scaler = get_scaler(hyperparameters)
@@ -144,7 +144,6 @@ def get_encoders(hyperparameters):
     encoded_loc_encoder = hyperparameters["localization_encoder"]
     pickled_loc_encoder = base64.b64decode(encoded_loc_encoder)
     localization_encoder = pickle.loads(pickled_loc_encoder)
-    print(localization_encoder)
     # Decode and unpickle the lesion_type encoder
     encoded_lesion_encoder = hyperparameters["lesion_type_encoder"]
     pickled_lesion_encoder = base64.b64decode(encoded_lesion_encoder)
