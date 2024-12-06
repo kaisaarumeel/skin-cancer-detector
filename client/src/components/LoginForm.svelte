@@ -14,24 +14,28 @@
   };
 
   // Function to get the CSRF token from cookies
-  function getCSRFToken() {
-    const cookieValue = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('csrftoken='))
-      ?.split('=')[1];
-    return cookieValue;
+  async function getCsrfToken() {
+    const response = await fetch('/api/get-csrf-token/', {
+      credentials: 'include', // Ensure cookies are included
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch CSRF token');
+    }
+
+    const csrfCookie = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('csrftoken='));
+    return csrfCookie ? csrfCookie.split('=')[1] : '';   
   }
 
   async function Signin() {
     errorMessage = ''; // Reset error message
     try {
-      // Get the CSRF token from cookies
-      const csrfTemp = getCSRFToken();
-
-      // Check if it is non-empty before setting it to prevent errors
-      if (csrfTemp) {
-        setCsrfToken(csrfTemp);
-      }
+      getCsrfToken().then(token => {
+        csrfToken.set(token);
+      }).catch(error => {
+        console.error('Error fetching CSRF token:', error);
+      });
 
       // Make POST request to the login endpoint
       const response = await API.post('/api/login/', {

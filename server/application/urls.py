@@ -35,6 +35,7 @@ from .views.logout import Logout
 from .views.is_admin import IsAdmin
 from .views.get_requests_by_username import GetRequestsByUsername
 from .views.delete_user import DeleteUser
+from .views.get_csrf_token import GetCSRFToken
 
 
 urlpatterns = [
@@ -65,4 +66,5 @@ urlpatterns = [
         name="api-get-requests-by-username",
     ),
     path("delete-user/<str:username>/", DeleteUser.as_view(), name="api-delete-user"),
+    path("get_csrf_token/", GetCSRFToken.as_view(), name="api-get-csrf-token"),
 ]
