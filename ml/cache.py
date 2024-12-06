@@ -14,7 +14,8 @@ def query_db_or_cache(
     cache_dir="cache",
     test_data_dir="test_data",
     tabular_features="tabular_data.pkl",
-    encoder="lesion_type_encoder.pkl",
+    lesion_encoder="lesion_type_encoder.pkl",
+    localization_encoder_fname="localization_encoder.pkl",
     images="images.pkl",
     requested_size=(224, 224),
 ):
@@ -27,13 +28,19 @@ def query_db_or_cache(
 
     # Define cache paths
     PROCESSED_DATA_PATH = os.path.join(script_dir, cache_dir, tabular_features)
-    ENCODER_PATH = os.path.join(script_dir, cache_dir, encoder)
+    LESION_ENCODER_PATH = os.path.join(script_dir, cache_dir, lesion_encoder)
+    LOCALIZATION_ENCODER_PATH = os.path.join(
+        script_dir, cache_dir, localization_encoder_fname
+    )
     IMAGES_PATH = os.path.join(script_dir, cache_dir, images)
 
     # Define test data paths
     test_data_dir = os.path.join(script_dir, test_data_dir)
     TEST_PROCESSED_DATA_PATH = os.path.join(script_dir, test_data_dir, tabular_features)
-    TEST_ENCODER_PATH = os.path.join(script_dir, test_data_dir, encoder)
+    TEST_LESION_ENCODER_PATH = os.path.join(script_dir, test_data_dir, lesion_encoder)
+    TEST_LOCALIZATION_ENCODER_PATH = os.path.join(
+        script_dir, test_data_dir, localization_encoder_fname
+    )
     TEST_IMAGES_PATH = os.path.join(script_dir, test_data_dir, images)
 
     # Update the db_name to be relative to the script location
@@ -44,34 +51,40 @@ def query_db_or_cache(
         not clear_cache
         and not test
         and os.path.exists(PROCESSED_DATA_PATH)
-        and os.path.exists(ENCODER_PATH)
+        and os.path.exists(LESION_ENCODER_PATH)
+        and os.path.exists(LOCALIZATION_ENCODER_PATH)
     ):
         print("Loading cached processed data...")
         with open(PROCESSED_DATA_PATH, "rb") as f:
             processed_data = pickle.load(f)
-        with open(ENCODER_PATH, "rb") as f:
+        with open(LESION_ENCODER_PATH, "rb") as f:
             lesion_type_encoder = pickle.load(f)
+        with open(LOCALIZATION_ENCODER_PATH, "rb") as f:
+            localization_encoder = pickle.load(f)
         with open(IMAGES_PATH, "rb") as f:
             images = pickle.load(f)
         print("Cached data loaded successfully")
-        return processed_data, lesion_type_encoder, images
+        return processed_data, lesion_type_encoder, localization_encoder, images
 
     # Try to load cached test data (if it exists) and this is a test run
     if (
         not clear_cache
         and test
         and os.path.exists(TEST_PROCESSED_DATA_PATH)
-        and os.path.exists(TEST_ENCODER_PATH)
+        and os.path.exists(TEST_LESION_ENCODER_PATH)
+        and os.path.exists(TEST_LOCALIZATION_ENCODER_PATH)
     ):
         print("Loading cached test data...")
         with open(TEST_PROCESSED_DATA_PATH, "rb") as f:
             processed_data = pickle.load(f)
-        with open(TEST_ENCODER_PATH, "rb") as f:
+        with open(TEST_LESION_ENCODER_PATH, "rb") as f:
             lesion_type_encoder = pickle.load(f)
+        with open(TEST_LOCALIZATION_ENCODER_PATH, "rb") as f:
+            localization_encoder = pickle.load(f)
         with open(TEST_IMAGES_PATH, "rb") as f:
             images = pickle.load(f)
         print("Cached test data loaded successfully")
-        return processed_data, lesion_type_encoder, images
+        return processed_data, lesion_type_encoder, localization_encoder, images
 
     # If the data is not cached, we must load and process it
 
@@ -94,8 +107,8 @@ def query_db_or_cache(
 
     print("Processing features...")
     # Process the data
-    processed_data, lesion_type_encoder, images = feature_preprocessing(
-        cleaned_data, requested_size
+    processed_data, lesion_type_encoder, localization_encoder, images = (
+        feature_preprocessing(cleaned_data, requested_size)
     )
 
     # Drop the cleaned_data DataFrame to free up memory
@@ -107,19 +120,23 @@ def query_db_or_cache(
     if test:
         with open(TEST_PROCESSED_DATA_PATH, "wb") as f:
             pickle.dump(processed_data, f)
-        with open(TEST_ENCODER_PATH, "wb") as f:
+        with open(TEST_LESION_ENCODER_PATH, "wb") as f:
             pickle.dump(lesion_type_encoder, f)
+        with open(TEST_LOCALIZATION_ENCODER_PATH, "wb") as f:
+            pickle.dump(localization_encoder, f)
         with open(TEST_IMAGES_PATH, "wb") as f:
             pickle.dump(images, f)
         print("Test data cached successfully")
-        return processed_data, lesion_type_encoder, images
+        return processed_data, lesion_type_encoder, localization_encoder, images
 
     # Cache the processed data (non-test)
     with open(PROCESSED_DATA_PATH, "wb") as f:
         pickle.dump(processed_data, f)
-    with open(ENCODER_PATH, "wb") as f:
+    with open(LESION_ENCODER_PATH, "wb") as f:
         pickle.dump(lesion_type_encoder, f)
+    with open(LOCALIZATION_ENCODER_PATH, "wb") as f:
+        pickle.dump(localization_encoder, f)
     with open(IMAGES_PATH, "wb") as f:
         pickle.dump(images, f)
     print("Data cached successfully")
-    return processed_data, lesion_type_encoder, images
+    return processed_data, lesion_type_encoder, localization_encoder, images

@@ -34,7 +34,7 @@
     </header>
   
     <div class="p-6 flex flex-row gap-2 flex-wrap">
-      <div class="gap-6">
+      <div class="gap-6 grow max-w-full lg:max-w-lg">
         <div>
           <AdminUpload></AdminUpload>
 

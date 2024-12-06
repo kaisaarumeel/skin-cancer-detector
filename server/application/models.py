@@ -157,7 +157,7 @@ class Users(AbstractUser):
 class Requests(models.Model):
     request_id = models.AutoField(primary_key=True)
     created_at = models.IntegerField(null=False, blank=False)
-    probability = models.IntegerField(blank=True, null=True)
+    probability = models.FloatField(blank=True, null=True)
     image = models.BinaryField(blank=False, null=False)
 
     LOCALIZATION_CHOICES = [
@@ -211,9 +211,7 @@ class Requests(models.Model):
 
     # Sets the foreign key to be the Model version column, so that the model version
     # used for the prediction can be found even if the Model itself is deleted
-    model = models.ForeignKey(
-        Model, on_delete=models.DO_NOTHING, blank=False, null=False
-    )
+    model = models.ForeignKey(Model, on_delete=models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = True

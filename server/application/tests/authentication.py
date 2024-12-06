@@ -82,13 +82,81 @@ class AuthenticationTests(TestCase):
 
         self.assertEqual(response.status_code, 201)
 
-    def test_register_missing_fields(self):
+    def test_register_missing_age(self):
         """Test registration with missing fields"""
         invalid_data = {
             "username": "newuser",
             "password": "newpass123",
             "sex": "female",
             # missing age field
+        }
+
+        response = self.client.post(
+            reverse("api-register"),
+            json.dumps(invalid_data),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_register_missing_sex(self):
+        """Test registration with missing fields"""
+        invalid_data = {
+            "username": "newuser",
+            "password": "newpass123",
+            # missing age field
+            "age": "20",
+        }
+
+        response = self.client.post(
+            reverse("api-register"),
+            json.dumps(invalid_data),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_register_invalid_sex(self):
+        """Test registration with invalid sex"""
+        invalid_data = {
+            "username": "newuser",
+            "password": "newpass123",
+            "sex": "invalid",
+            "age": "20",
+        }
+
+        response = self.client.post(
+            reverse("api-register"),
+            json.dumps(invalid_data),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_register_invalid_age(self):
+        """Test registration with invalid age"""
+        invalid_data = {
+            "username": "newuser",
+            "password": "newpass123",
+            "sex": "invalid",
+            "age": "130",
+        }
+
+        response = self.client.post(
+            reverse("api-register"),
+            json.dumps(invalid_data),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_register_age_not_integer(self):
+        """Test registration with invalid age"""
+        invalid_data = {
+            "username": "newuser",
+            "password": "newpass123",
+            "sex": "invalid",
+            "age": "age",
         }
 
         response = self.client.post(
