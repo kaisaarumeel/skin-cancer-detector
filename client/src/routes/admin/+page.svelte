@@ -8,10 +8,11 @@
     import { onMount } from "svelte";
     import { routeGuard } from '../../routeGuard';
     import { API } from '../../api'; 
-    import { csrfToken } from '../../stores/csrfStore'; // Import CSRF token
+    import { getCsrfTokenFromBrowser, csrfToken } from '../../stores/csrfStore'; // Import CSRF token
 
     onMount(() => {
-        routeGuard(true); // Enable admin check in the routeguard
+      getCsrfTokenFromBrowser();
+      routeGuard(true); // Enable admin check in the routeguard
     });
 
     async function handleLogout() {
