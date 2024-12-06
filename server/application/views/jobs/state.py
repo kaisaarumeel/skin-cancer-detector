@@ -7,3 +7,4 @@ from .job import Job
 # Using the built in Queue class ensures thread safety
 # Docs: https://docs.python.org/3/library/queue.html#queue.Queue
 PREDICTION_JOBS = Queue()
+MGR_INIT = False
