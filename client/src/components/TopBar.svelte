@@ -14,8 +14,13 @@
         console.error('Error logging out:', err);
       }
     }
+
+    async function getScans() {
+         goto('/scans');
+    }
 </script>
 
-<div class="shadow h-16 w-full bg-primary flex flex-col items-end justify-center pr-20 font-light text-white">    
+<div class="shadow h-16 w-full bg-primary flex items-center justify-end pr-20 font-light text-white"> 
+    <button class="mr-8" on:click={getScans}>My scan history</button>   
     <button on:click={handleLogout}>Log out</button>
 </div>

@@ -34,7 +34,15 @@ export async function loggedInRedirect() {
     try {
         const response = await API.get('api/is_logged_in/');
         if (response.data.is_logged_in) {
-            goto('/upload'); // Users who are logged in get redirected to upload page
+            // Check if the user is an admin
+            const adminResponse = await API.get('api/is_admin/');
+            if (adminResponse.data.is_admin) {
+                // If user is admin, redirect to /admin page
+                goto('/admin');
+            } else {
+                // Otherwise, redirect to /upload page
+                goto('/upload');
+            }
         }
     } catch (err: unknown) {
         if ((err as AxiosError).isAxiosError) {

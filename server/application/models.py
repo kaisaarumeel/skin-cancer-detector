@@ -190,14 +190,14 @@ class Requests(models.Model):
 
     LESION_TYPE_CHOICES = [
         # Benign lesions
-        ("nv", "Melanocytic nevi"),
-        ("bkl", "Benign keratosis-like lesions"),
-        ("df", "Dermatofibroma"),
-        ("vasc", "Vascular lesions"),
+        ("nv", "Melanocytic nevi (Benign)"),
+        ("bkl", "Benign keratosis-like lesion (Benign)"),
+        ("df", "Dermatofibroma (Benign)"),
+        ("vasc", "Vascular lesion (Benign)"),
         # Malignant/Potentially Malignant lesions
-        ("mel", "Melanoma"),
-        ("bcc", "Basal cell carcinoma"),
-        ("akiec", "Actinic keratoses and intraepithelial carcinoma"),
+        ("mel", "Melanoma (Malignant)"),
+        ("bcc", "Basal cell carcinoma (Malignant)"),
+        ("akiec", "Actinic keratoses and intraepithelial carcinoma (Malignant)"),
     ]
     lesion_type = models.CharField(
         max_length=5,

@@ -52,31 +52,67 @@
       }
     }
   }
+
+  // Function to handle form submission when pressing Enter
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      Signup();
+    }
+  }
 </script>
 
 <div class="flex flex-col max-w-md w-full text-center justify-center">
   <h2 class="text-3xl font-light text-secondary mb-6 block lg:hidden">Sign up to SkinScan.</h2>
   <h2 class="text-3xl font-light text-secondary mb-6 hidden lg:block"> Sign up </h2>
-    <p class="text-tertiary mb-5">Create an account.</p>
-    <div class="mb-4">
-      <input type="username" placeholder="Username" bind:value={username} class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary">
-    </div>
-    <div class="mb-4">
-      <input type="password" bind:value={password} placeholder="Password" class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary">
-    </div>
-    <div class="mb-4">
-        <select bind:value={sex} class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary text-gray-500 focus:text-black" aria-label="Sex">
-          <option value="" disabled selected class="text-gray-400">Select Sex</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
-    </div>
-    <div class="mb-4">
-        <input bind:value={age} type="number" placeholder="Age" class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary" min="0" max="100" step="1">
-      </div>
-      
-    {#if errorMessage}
-      <p class="text-red-500 text-xs font-light">{errorMessage}</p>
-    {/if}
-    <button on:click={Signup} class="w-full p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-4 transition-colors hover:bg-secondary shadow-l">Sign up</button>
+  <p class="text-tertiary mb-5">Create an account.</p>
+  <div class="mb-4">
+    <input 
+      type="username" 
+      placeholder="Username"  
+      on:keydown={handleKeydown} 
+      bind:value={username} 
+      class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary"
+    />
+  </div>
+  <div class="mb-4">
+    <input 
+      type="password" 
+      bind:value={password}  
+      on:keydown={handleKeydown} 
+      placeholder="Password" 
+      class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary"
+    />
+  </div>
+  <div class="mb-4">
+    <select 
+      bind:value={sex} 
+      class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary text-gray-500 focus:text-black" 
+      aria-label="Sex"
+    >
+      <option value="" disabled selected class="text-gray-400">Select Sex</option>
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
+  </div>
+  <div class="mb-4">
+    <input  
+      on:keydown={handleKeydown}  
+      bind:value={age} 
+      type="number" 
+      placeholder="Age" 
+      class="w-full p-2 border border-gray-300 rounded-md outline-none mt-1 focus:border-secondary" 
+      min="0" max="100" step="1"
+    />
+  </div>
+
+  {#if errorMessage}
+    <p class="text-red-500 text-xs font-light">{errorMessage}</p>
+  {/if}
+
+  <button 
+    on:click={Signup} 
+    class="w-full p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-4 transition-colors hover:bg-secondary shadow-l"
+  >
+    Sign up
+  </button>
 </div>
