@@ -1,3 +1,4 @@
+import base64
 from django.http import JsonResponse
 from django.views import View
 from ..decorators import login_required
@@ -22,6 +23,7 @@ class GetSpecificRequest(View):
             request_data = {
                 "request_id": specific_request.request_id,
                 "created_at": specific_request.created_at,
+                "image": base64.b64encode(specific_request.image).decode("utf-8"),
                 "probability": specific_request.probability,
                 "localization": specific_request.localization,
                 "lesion_type": specific_request.lesion_type,
