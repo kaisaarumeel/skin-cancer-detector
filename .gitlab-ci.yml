@@ -46,6 +46,7 @@ backend-api-tests:
   script:
     # Run backend tests
     - cd server
+    - python manage.py makemigrations
     - python manage.py test --verbosity=2
   rules:
     # Only run on main and develop branches

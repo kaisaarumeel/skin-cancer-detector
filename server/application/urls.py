@@ -33,6 +33,7 @@ from .views.jobs.retrain import Retrain
 from .views.is_logged_in import IsLoggedIn
 from .views.logout import Logout
 from .views.is_admin import IsAdmin
+from .views.get_specific_request import GetSpecificRequest
 from .views.get_requests_by_username import GetRequestsByUsername
 from .views.delete_user import DeleteUser
 
@@ -59,6 +60,11 @@ urlpatterns = [
     path("is_logged_in/", IsLoggedIn.as_view(), name="api-is-logged-in"),
     path("logout/", Logout.as_view(), name="api-logout"),
     path("is_admin/", IsAdmin.as_view(), name="api-is-admin"),
+    path(
+        "get-specific-request/<int:request_id>/",
+        GetSpecificRequest.as_view(),
+        name="api-get-specific-request",
+    ),
     path(
         "get-requests-by-username/",
         GetRequestsByUsername.as_view(),

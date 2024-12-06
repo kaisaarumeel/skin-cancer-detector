@@ -202,8 +202,8 @@ class Requests(models.Model):
     lesion_type = models.CharField(
         max_length=5,
         choices=LESION_TYPE_CHOICES,
-        blank=False,
-        null=False,
+        blank=True,
+        null=True,
     )
 
     # Foreign Keys
