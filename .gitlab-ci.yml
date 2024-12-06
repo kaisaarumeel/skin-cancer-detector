@@ -34,6 +34,7 @@ backend-code-quality:
     
     # Ensure django system checks pass
     - cd server
+    - python manage.py makemigrations
     - python manage.py check || (echo "❌ Django system checks failed" && exit 1)
   rules: 
     # Only run on main and develop branches
