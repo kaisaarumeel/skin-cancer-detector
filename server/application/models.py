@@ -203,7 +203,7 @@ class Requests(models.Model):
         max_length=5,
         choices=LESION_TYPE_CHOICES,
         blank=False,
-        null=False,
+        null=True,
     )
 
     # Foreign Keys
