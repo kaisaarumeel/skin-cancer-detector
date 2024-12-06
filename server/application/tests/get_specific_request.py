@@ -81,7 +81,7 @@ class GetSpecificRequestTests(TestCase):
             probability=None,
             image=base64.b64decode(self.encoded_image),
             localization="ear",
-            lesion_type="mel",
+            lesion_type=None,
             user=self.normal_user,
             model=None,
         )
@@ -169,3 +169,4 @@ class GetSpecificRequestTests(TestCase):
         # Ensure the null fields are returned as None
         self.assertIsNone(response_data["request"]["probability"])
         self.assertIsNone(response_data["request"]["model_version"])
+        self.assertIsNone(response_data["request"]["lesion_type"])
