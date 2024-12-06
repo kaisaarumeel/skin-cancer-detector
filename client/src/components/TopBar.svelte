@@ -13,6 +13,7 @@
         });
         if (response.status === 200) {
           console.log('User logged out successfully');
+          csrfToken.set(null);
          goto('/home');
         }
       } catch (err) {
