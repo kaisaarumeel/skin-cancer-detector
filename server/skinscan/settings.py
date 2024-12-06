@@ -132,23 +132,9 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:5173",
 ]
 CSRF_COOKIE_NAME = "csrftoken"
-CSRF_COOKIE_SECURE = True  # Only sent over HTTPS
+CSRF_COOKIE_SECURE = False  # Only sent over HTTPS
 CSRF_COOKIE_HTTPONLY = False  # Cookie is accessible to JavaScript in client
-
-# Logging configuration
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-        },
-    },
-    "root": {
-        "handlers": ["console"],
-        "level": "INFO",
-    },
-}
+SESSION_COOKIE_SECURE = False 
 
 # Security settings (for production)
 if not DEBUG:
@@ -166,3 +152,18 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
 ]
 CORS_ALLOW_CREDENTIALS = True
+
+# Logging configuration
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+}
