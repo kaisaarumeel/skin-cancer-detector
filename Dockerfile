@@ -1,19 +1,17 @@
 # base image for ML with CUDA
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 as backend
 
+RUN rm -rf /var/lib/apt/lists/* \
+    /etc/apt/sources.list.d/cuda.list \
+    /etc/apt/sources.list.d/nvidia-ml.list 
+
 # install python and required tools
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    wget \
+RUN apt-get update && apt-get install -y \
     python3.11 python3.11-venv python3-pip \
     build-essential \
     libgl1 \
-    libglib2.0-0 && \
-    wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-wsl-ubuntu.pin && \
-    mv cuda-wsl-ubuntu.pin /etc/apt/preferences.d/cuda-repository-pin-600 && \
-    wget https://developer.download.nvidia.com/compute/cuda/12.3.2/local_installers/cuda-repo-wsl-ubuntu-12-3-local_12.3.2-1_amd64.deb && \
-    dpkg -i cuda-repo-wsl-ubuntu-12-3-local_12.3.2-1_amd64.deb && \
-    cp /var/cuda-repo-wsl-ubuntu-12-3-local/cuda-*-keyring.gpg /usr/share/keyrings/ && \
-    rm -rf /var/lib/apt/lists/*
+    libglib2.0-0 \ 
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
