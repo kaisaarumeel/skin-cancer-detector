@@ -71,7 +71,7 @@
     {:else if impact}
         <div class="space-y-6">
             <div class="flex justify-between items-center">
-                <h2 class="text-2xl text-gray-800">Diagnosis Explanation</h2>
+                <h2 class="text-2xl text-tertiary">Diagnosis Explanation</h2>
                 <button
                     class="text-gray-500 hover:text-gray-700"
                     on:click={() => (showFeatureImpact = false)}
@@ -82,7 +82,7 @@
 
             <div class="grid md:grid-cols-2 gap-6">
                 <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-gray-700">
+                    <h3 class="text-lg font-semibold text-tertiary">
                         Visual Explanation
                     </h3>
                     <div class="border rounded-lg overflow-hidden">
@@ -92,14 +92,14 @@
                             class="w-full h-auto"
                         />
                     </div>
-                    <p class="text-sm text-gray-600">
+                    <p class="text-sm text-tertiary">
                         Highlighted areas show regions that influenced the
                         decision of the the AI model.
                     </p>
                 </div>
 
                 <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-gray-700">
+                    <h3 class="text-lg font-semibold text-tertiary">
                         Feature Contributions
                     </h3>
                     <div class="space-y-3">
@@ -108,13 +108,13 @@
                                 class="flex items-center space-x-4 p-3 rounded-lg bg-primary"
                             >
                                 <div class="flex-1">
-                                    <span class="font-medium text-gray-700"
+                                    <span class="font-medium text-white"
                                         >{feature.feature}</span
                                     >
                                 </div>
                                 <div class="text-right">
-                                    <span class="font-mono text-black">
-                                        {feature.impact.toFixed(2)}
+                                    <span class="font-mono text-white font-bold">
+                                        {Number(feature.impact.toFixed(2))*100}%
                                     </span>
                                 </div>
                             </div>
