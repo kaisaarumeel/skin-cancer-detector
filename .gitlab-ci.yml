@@ -32,7 +32,7 @@ cache:
     - apt-get update
     - apt-get install -y libgl1-mesa-glx libglib2.0-0 libsm6 libxext6 libxrender-dev
     # Install Python dependencies and cache them
-    - python -m pip install -r requirements.txt
+    - python -m pip install -cache-dir .pip-cache -r requirements.txt
 
 backend-code-quality:
   extends: .setup
