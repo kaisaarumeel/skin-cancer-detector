@@ -56,7 +56,7 @@ stages:
 #     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
 
 backend-build:
-  image: docker:24.0.7-alpine3.19
+  image: docker:19.03.5
   stage: backend-build
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
