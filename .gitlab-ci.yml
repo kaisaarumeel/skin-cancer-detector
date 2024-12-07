@@ -9,6 +9,7 @@ stages:
 
 variables:
   DOCKER_IMAGE: python:3.12
+  DOCKER_TLS_CERTDIR: ""
 
 # cache:
 #   # Cache by branch name
@@ -60,6 +61,8 @@ backend-build:
   image: docker:19.03.5
   tags: 
     - docker-build
+  services:
+    - docker:19.03.5-dind
   script:
     - unset DOCKER_HOST
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
