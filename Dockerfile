@@ -2,14 +2,12 @@
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 as backend
 
 # install python and required tools
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    gnupg \
-    dirmngr \
-    ca-certificates && \
-    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/3bf863cc.pub | \
-    gpg --dearmor -o /usr/share/keyrings/cuda-archive-keyring.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/cuda-archive-keyring.gpg] https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
+RUN wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-wsl-ubuntu.pin && \
+    mv cuda-wsl-ubuntu.pin /etc/apt/preferences.d/cuda-repository-pin-600 && \
+    wget https://developer.download.nvidia.com/compute/cuda/12.3.2/local_installers/cuda-repo-wsl-ubuntu-12-3-local_12.3.2-1_amd64.deb && \
+    dpkg -i cuda-repo-wsl-ubuntu-12-3-local_12.3.2-1_amd64.deb && \
+    cp /var/cuda-repo-wsl-ubuntu-12-3-local/cuda-*-keyring.gpg /usr/share/keyrings/ && \
+    apt-get update && apt-get install -y \
     apt-get update && apt-get install -y \
     python3.11 python3.11-venv python3-pip \
     build-essential \
