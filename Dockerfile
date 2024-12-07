@@ -1,5 +1,5 @@
 # base image for ML with CUDA
-FROM nvidia/cuda:12.6.3-cudnn-devel-ubuntu22.04 as backend
+FROM ubuntu:22.04 as backend
 
 # install python and required tools
 RUN apt-get update && apt-get install -y \
