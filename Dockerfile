@@ -1,12 +1,8 @@
 # base image for ML with CUDA
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 as backend
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/3bf863cc.pub
-
 # install python and required tools
-RUN apt-get update --allow-unauthenticated  && apt-get install -y \
+RUN apt-get update && apt-get install -y \
     python3.11 python3.11-venv python3-pip \
     build-essential \
     libgl1 \
