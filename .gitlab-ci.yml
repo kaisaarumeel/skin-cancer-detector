@@ -20,9 +20,6 @@ cache:
 .setup:
   image: $DOCKER_IMAGE
   before_script:
-    - echo "CI_REGISTRY = $CI_REGISTRY"
-    - echo "CI_REGISTRY_USER = $CI_REGISTRY_USER"
-    - echo "CI_REGISTRY_PASSWORD = $CI_REGISTRY_PASSWORD" | wc -c # Avoid showing sensitive data
     # Make pip cache directory to ensure it exists
     - mkdir -p .pip-cache
     # Install system dependencies for OpenCV
@@ -58,13 +55,14 @@ backend-api-tests:
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
 
-# backend-build:
-#   image: docker:24.0-alpine
-#   stage: backend-build
-#   script:
-#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#     - docker build -f Dockerfile -t skinscan-backend:latest .
-#   rules: 
-#     # Only run on main and develop branches
-#     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
-#     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
+backend-build:
+  image: docker:24.0-alpine
+  stage: backend-build
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -f Dockerfile -t $CI_REGISTRY/group6/skinscan-backend:latest .
+    - docker push $CI_REGISTRY/group6/skinscan-backend:latest
+  rules: 
+    # Only run on main and develop branches
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
