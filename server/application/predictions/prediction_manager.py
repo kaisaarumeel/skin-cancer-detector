@@ -9,6 +9,8 @@ from pathlib import Path
 import tensorflow as tf
 import numpy as np
 
+import shap
+
 # Custom modules
 from application.views.jobs.state import PREDICTION_JOBS
 from application.mlsym.persistence import load_active_model_from_db
@@ -37,10 +39,15 @@ def manage_predictions():
     # Load the active model from the database
     model, hyperparameters, model_version = load_active_model_from_db(abs_db_path)
 
+    # Global explainer
+    explainer = None
+
     if model != None:
         # Load the feature scaler and decoders
         tabular_scaler = get_scaler(hyperparameters)
         localization_encoder, lesion_type_encoder = get_encoders(hyperparameters)
+        # Initialize the explainer
+        explainer = shap.Explainer(model)
 
     # Predictions loop
     while True:
@@ -64,7 +71,10 @@ def manage_predictions():
                 )
                 # Skip this loop iteration to attempt to reload the model
                 continue
-
+            
+            # Reload the explainer based on the new reloaded model
+            explainer = shap.Explainer(model)
+            
             # Reload the feature scaler and encoders
             tabular_scaler = get_scaler(hyperparameters)
             localization_encoder, lesion_type_encoder = get_encoders(hyperparameters)
@@ -87,12 +97,23 @@ def manage_predictions():
         )
 
         # Extract the tabular features
-        tabular_features = extract_tabular_features(
+        tabular_features, feature_names = extract_tabular_features(
             jobs_batch, tabular_scaler, localization_encoder
         )
 
         # Run inference on the prepared batch
         predictions = model.predict([resized_images, tabular_features])
+        
+        # Calculate imapct values for tabular features using SHAP
+        tabular_features_impacts = explainer(tabular_features)
+
+        for i, job in enumerate(jobs_batch):
+            feature_impacts = [{"feature": feature, "impact": value}
+                for feature, value in zip(feature_names, tabular_features_impacts[i])]
+            job.feature_impact = feature_impacts
+
+
+        # TODO: Update the 'update_requests_in_db' function to include the feature impacts
 
         # Update the requests table in the database with the results
         update_requests_in_db(

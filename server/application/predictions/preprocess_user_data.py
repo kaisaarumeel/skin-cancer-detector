@@ -80,4 +80,7 @@ def extract_tabular_features(jobs, scaler, localization_encoder):
     # Standardize the distribution using the scaler
     tabular_features = scaler.transform(tabular_features)
 
-    return tabular_features
+    # Define feature names
+    feature_names = ["age", "localization", "sex"]
+
+    return tabular_features, feature_names
