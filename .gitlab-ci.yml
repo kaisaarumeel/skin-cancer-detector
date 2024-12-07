@@ -20,9 +20,9 @@ cache:
 .setup:
   image: $DOCKER_IMAGE
   before_script:
-    - echo "CI_REGISTRY: $CI_REGISTRY"
-    - echo "CI_REGISTRY_USER: $CI_REGISTRY_USER"
-    - echo "CI_REGISTRY_PASSWORD: $CI_REGISTRY_PASSWORD" | wc -c # Avoid showing sensitive data
+    - echo "CI_REGISTRY = $CI_REGISTRY"
+    - echo "CI_REGISTRY_USER = $CI_REGISTRY_USER"
+    - echo "CI_REGISTRY_PASSWORD = $CI_REGISTRY_PASSWORD" | wc -c # Avoid showing sensitive data
     # Make pip cache directory to ensure it exists
     - mkdir -p .pip-cache
     # Install system dependencies for OpenCV
