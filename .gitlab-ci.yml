@@ -5,6 +5,7 @@ default:
 stages:
   - backend-code-quality
   - backend-api-tests
+  - backend-build
 
 variables:
   DOCKER_IMAGE: python:3.12
@@ -19,15 +20,11 @@ cache:
 .setup:
   image: $DOCKER_IMAGE
   before_script:
+    - echo "CI_REGISTRY: $CI_REGISTRY"
+    - echo "CI_REGISTRY_USER: $CI_REGISTRY_USER"
+    - echo "CI_REGISTRY_PASSWORD: $CI_REGISTRY_PASSWORD" | wc -c # Avoid showing sensitive data
     # Make pip cache directory to ensure it exists
     - mkdir -p .pip-cache
-    # Debug commands to check working directory and cache location
-    - echo "Current working directory:"
-    - pwd
-    - echo "Contents of the working directory:"
-    - ls -la
-    - echo "Contents of .pip-cache/ (if exists):"
-    - ls -la .pip-cache || echo ".pip-cache/ directory does not exist yet"
     # Install system dependencies for OpenCV
     - apt-get update
     - apt-get install -y libgl1-mesa-glx libglib2.0-0 libsm6 libxext6 libxrender-dev
@@ -57,6 +54,17 @@ backend-api-tests:
     - cd server
     - python manage.py test --verbosity=2
   rules:
+    # Only run on main and develop branches
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
+
+backend-build:
+  image: docker:24.0-alpine
+  stage: backend-build
+  script:
+    #- docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    #- docker build -f Dockerfile -t skinscan-backend:latest .
+  rules: 
     # Only run on main and develop branches
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
