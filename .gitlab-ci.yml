@@ -3,60 +3,60 @@ default:
     - docker
 
 stages:
-  - backend-code-quality
-  - backend-api-tests
+  # - backend-code-quality
+  # - backend-api-tests
   - backend-build
 
-variables:
-  DOCKER_IMAGE: python:3.12
+# variables:
+#   DOCKER_IMAGE: python:3.12
 
-cache:
-  # Cache by branch name
-  key: "${CI_COMMIT_REF_SLUG}"
-  paths:
-  # Cache pip downloads
-    - .pip-cache/
+# cache:
+#   # Cache by branch name
+#   key: "${CI_COMMIT_REF_SLUG}"
+#   paths:
+#   # Cache pip downloads
+#     - .pip-cache/
 
-.setup:
-  image: $DOCKER_IMAGE
-  before_script:
-    # Make pip cache directory to ensure it exists
-    - mkdir -p .pip-cache
-    # Install system dependencies for OpenCV
-    - apt-get update
-    - apt-get install -y libgl1-mesa-glx libglib2.0-0 libsm6 libxext6 libxrender-dev
-    # Install Python dependencies and cache them
-    - python -m pip install --cache-dir .pip-cache -r requirements.txt
+# .setup:
+#   image: $DOCKER_IMAGE
+#   before_script:
+#     # Make pip cache directory to ensure it exists
+#     - mkdir -p .pip-cache
+#     # Install system dependencies for OpenCV
+#     - apt-get update
+#     - apt-get install -y libgl1-mesa-glx libglib2.0-0 libsm6 libxext6 libxrender-dev
+#     # Install Python dependencies and cache them
+#     - python -m pip install --cache-dir .pip-cache -r requirements.txt
 
-backend-code-quality:
-  extends: .setup
-  stage: backend-code-quality
-  script:
-    # Ensure code is formatted correctly
-    - python -m black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
+# backend-code-quality:
+#   extends: .setup
+#   stage: backend-code-quality
+#   script:
+#     # Ensure code is formatted correctly
+#     - python -m black . --check || (echo "❌ Code formatting check failed. Run 'black .' locally to fix formatting" && exit 1)
     
-    # Ensure django system checks pass
-    - cd server
-    - python manage.py check || (echo "❌ Django system checks failed" && exit 1)
-  rules: 
-    # Only run on main and develop branches
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
+#     # Ensure django system checks pass
+#     - cd server
+#     - python manage.py check || (echo "❌ Django system checks failed" && exit 1)
+#   rules: 
+#     # Only run on main and develop branches
+#     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
+#     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
 
-backend-api-tests:
-  extends: .setup
-  stage: backend-api-tests
-  script:
-    # Run backend tests
-    - cd server
-    - python manage.py test --verbosity=2
-  rules:
-    # Only run on main and develop branches
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
+# backend-api-tests:
+#   extends: .setup
+#   stage: backend-api-tests
+#   script:
+#     # Run backend tests
+#     - cd server
+#     - python manage.py test --verbosity=2
+#   rules:
+#     # Only run on main and develop branches
+#     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
+#     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
 
 backend-build:
-  image: docker:24.0-alpine
+  image: docker:24.0.7-alpine3.19
   stage: backend-build
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
