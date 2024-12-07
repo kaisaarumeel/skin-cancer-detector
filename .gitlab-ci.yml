@@ -61,6 +61,7 @@ backend-build:
   tags: 
     - docker-build
   script:
+    - unset DOCKER_HOST
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -f Dockerfile -t $CI_REGISTRY/group6/skinscan-backend:latest .
     - docker push $CI_REGISTRY/group6/skinscan-backend:latest
