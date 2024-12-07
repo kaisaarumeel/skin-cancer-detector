@@ -1,9 +1,5 @@
 # base image for ML with CUDA
-FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 as backend
-
-RUN rm -rf /var/lib/apt/lists/* \
-    /etc/apt/sources.list.d/cuda.list \
-    /etc/apt/sources.list.d/nvidia-ml.list 
+FROM nvidia/cuda:12.6.3-cudnn-devel-ubuntu22.04 as backend
 
 # install python and required tools
 RUN apt-get update && apt-get install -y \
