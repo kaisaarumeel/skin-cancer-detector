@@ -1,5 +1,12 @@
-# base image for ML with CUDA
+# base image 
 FROM ubuntu:22.04 as backend
+
+# Import missing GPG keys and configure the repository
+RUN apt-get install -y gnupg && \
+    mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x871920D1991BC93C | gpg --dearmor -o /etc/apt/keyrings/ubuntu-archive.gpg && \
+    chmod 644 /etc/apt/keyrings/ubuntu-archive.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/ubuntu-archive.gpg] http://archive.ubuntu.com/ubuntu jammy main universe restricted multiverse" > /etc/apt/sources.list.d/jammy.list
 
 # install python and required tools
 RUN apt-get update && apt-get install -y \
