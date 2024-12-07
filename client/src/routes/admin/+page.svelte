@@ -8,6 +8,7 @@
     import { onMount } from "svelte";
     import { routeGuard } from '../../routeGuard';
     import { API } from '../../api'; 
+    import ResultsDistribution from '../../components/ResultsDistribution.svelte';
 
     onMount(() => {
         routeGuard(true); // Enable admin check in the routeguard
@@ -51,7 +52,9 @@
         </div>
         <div class="mt-2">
           <ModelAccuracy></ModelAccuracy>
-
+          <div class="mt-2">
+            <ResultsDistribution> </ResultsDistribution>
+          </div>
         </div>
 
       </div>

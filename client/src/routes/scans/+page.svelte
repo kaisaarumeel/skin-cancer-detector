@@ -4,7 +4,9 @@
     import { API } from '../../api'; 
     import { onMount, onDestroy } from "svelte";
     import { routeGuard } from "../../routeGuard";
-    
+    import FeatureImpact from "../../components/FeatureImpact.svelte"; 
+
+
     interface ScanHistory {
       id: number;
       date: string;
@@ -30,6 +32,7 @@
               prediction: req.lesion_type || "Pending...",
               probability: req.probability, 
           }));
+
       } catch (err: unknown) {
           if (err instanceof Error) {
               error = err.message;
@@ -118,11 +121,18 @@
                   <tr>
                     <td colspan="5" class="border-b p-6 bg-gray-100">
                       <div class="flex flex-col lg:flex-row items-center gap-6">
-                        <img
+                        <div>
+                          <img
                           src="{scan.image}"
                           alt="Skin scan"
                           class="h-40 w-40 object-cover border"
                         />
+                        <div class="mt-2">
+                          <FeatureImpact scan={scan.id}/>
+
+                        </div>
+
+                        </div>
                         <div class="flex-1">
                           <p class="text-lg text-tertiary font-medium">Scan Details</p>
                           <div class="mt-4 space-y-2">
@@ -132,6 +142,7 @@
                             <p class="text-tertiary font-light"><strong>Probability of the result:</strong> {scan.probability ? (scan.probability * 100).toFixed(2) + '%' : 'N/A'}</p> 
                           </div>
                         </div>
+                       
                       </div>
                     </td>
                   </tr>
