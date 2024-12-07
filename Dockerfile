@@ -2,7 +2,11 @@
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 as backend
 
 # install python and required tools
-RUN apt-get update && apt-get install -y curl gnupg && \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    gnupg \
+    dirmngr \
+    ca-certificates && \
     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/3bf863cc.pub | \
     gpg --dearmor -o /usr/share/keyrings/cuda-archive-keyring.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/cuda-archive-keyring.gpg] https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
