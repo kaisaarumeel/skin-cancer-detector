@@ -23,3 +23,5 @@ server/launch.sh
 server/db.test.sqlite3
 /ml/cache
 credentials.json
+chalmers-registry-secret.yml
+django-secrets.yml
