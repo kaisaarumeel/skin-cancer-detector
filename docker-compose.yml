@@ -1,0 +1,12 @@
+services:
+    backend:
+        image: registry.git.chalmers.se/courses/dit826/2024/group6/skinscan-backend:latest
+        network_mode: "host"
+        ipc: "host"
+    frontend:
+        # This pulls the image from the project repository
+        image: registry.git.chalmers.se/courses/dit826/2024/group6/skinscan-frontend:latest
+        network_mode: "host"
+        ipc: "host"
+        depends_on:
+            - backend
