@@ -12,27 +12,21 @@ variables:
   DOCKER_IMAGE: python:3.12
 
 cache:
-  key: ${CI_COMMIT_REF_SLUG}-docker
-  paths:
-    - .docker-cache/
-
-cache:
   # Cache by branch name
   key: "${CI_COMMIT_REF_SLUG}"
   paths:
-  # Cache pip downloads
+  # Cache pip and docker downloads
     - .pip-cache/
+    - .docker-cache/
 
 .setup:
   image: $DOCKER_IMAGE
   before_script:
-    # Make pip cache directory to ensure it exists
-    - mkdir -p .pip-cache
     # Install system dependencies for OpenCV
     - apt-get update
     - apt-get install -y libgl1-mesa-glx libglib2.0-0 libsm6 libxext6 libxrender-dev
     # Install Python dependencies and cache them
-    - python -m pip install --cache-dir .pip-cache -r requirements.txt
+    - python -m pip install -r requirements.txt
 
 backend-code-quality:
   extends: .setup
@@ -73,15 +67,13 @@ backend-build:
     DOCKER_TLS_CERTDIR: ""
     DOCKER_DRIVER: overlay2
   script:
-    - mkdir -p .docker-cache
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull $CI_REGISTRY/courses/dit826/2024/group6/skinscan-backend:latest || true
     - docker build --cache-from=$CI_REGISTRY/courses/dit826/2024/group6/skinscan-backend:latest -t $CI_REGISTRY/courses/dit826/2024/group6/skinscan-backend:latest .
     - docker push $CI_REGISTRY/courses/dit826/2024/group6/skinscan-backend:latest
   rules: 
-    # Only run on main and develop branches
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
+    # Only run with build tag
+    - if: $CI_COMMIT_TAG == "build"
 
 frontend-build:
   stage: frontend-build
@@ -95,12 +87,10 @@ frontend-build:
     DOCKER_TLS_CERTDIR: ""
     DOCKER_DRIVER: overlay2
   script:
-    - mkdir -p .docker-cache
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull $CI_REGISTRY/courses/dit826/2024/group6/skinscan-frontend:latest || true
     - docker build --cache-from=$CI_REGISTRY/courses/dit826/2024/group6/skinscan-frontend:latest -f client/Dockerfile -t $CI_REGISTRY/courses/dit826/2024/group6/skinscan-frontend:latest client
     - docker push $CI_REGISTRY/courses/dit826/2024/group6/skinscan-frontend:latest
   rules: 
-    # Only run on main and develop branches
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main|develop)/
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /(main|develop)/
+    # Only run with build tag
+    - if: $CI_COMMIT_TAG == "build"
