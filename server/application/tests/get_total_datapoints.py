@@ -84,17 +84,11 @@ class GetTotalDataPointsTests(TestCase):
 
         # Validate total, test, and train data points
         self.assertIn("total_data_points", response_data)
-        self.assertIn("test_total", response_data)
-        self.assertIn("train_total", response_data)
 
         # Verify counts
         total_data_points = response_data["total_data_points"]
-        test_total = response_data["test_total"]
-        train_total = response_data["train_total"]
 
         self.assertEqual(total_data_points, 5)  # Total data points = 5
-        self.assertEqual(test_total, 1)  # Test = 20% of 5 (rounded down)
-        self.assertEqual(train_total, 4)  # Train = Total - Test
 
     def test_unauthorized_access(self):
         """Test access without admin privileges"""

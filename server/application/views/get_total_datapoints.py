@@ -11,16 +11,10 @@ class GetTotalDataPoints(View):
             # Count all datapoints in the DataPoint model
             total_data_points = Data.objects.using("db_images").count()
 
-            # 20 percent of total data points are reserved for tests
-            test_total = int(total_data_points * 0.2)
-            train_total = total_data_points - test_total
-
             # Return the count in a JSON response
             return JsonResponse(
                 {
-                    "total_data_points": total_data_points,
-                    "test_total": test_total,
-                    "train_total": train_total,
+                    "total_data_points": total_data_points
                 },
                 status=200,
             )
