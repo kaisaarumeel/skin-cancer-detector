@@ -72,5 +72,9 @@ urlpatterns = [
         name="api-get-requests-by-username",
     ),
     path("delete-user/<str:username>/", DeleteUser.as_view(), name="api-delete-user"),
-    path("get-total-datapoints/", GetTotalDataPoints.as_view(), name="api-get-total-datapoints")
+    path(
+        "get-total-datapoints/",
+        GetTotalDataPoints.as_view(),
+        name="api-get-total-datapoints",
+    ),
 ]
