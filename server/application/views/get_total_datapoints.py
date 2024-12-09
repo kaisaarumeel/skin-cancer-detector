@@ -9,7 +9,7 @@ class GetTotalDataPoints(View):
     def get(self, request):
         try:
             # Count all datapoints in the DataPoint model
-            total_data_points = Data.objects.count()
+            total_data_points = Data.objects.using("db_images").count()
 
             # 20 percent of total data points are reserved for tests
             test_total = int(total_data_points * 0.2)

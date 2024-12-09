@@ -1,26 +1,30 @@
 from django.test import TestCase, Client
 from django.urls import reverse
+from django.contrib.auth.hashers import make_password
 from ..models import Data, Users
+import random
 
 
 class GetTotalDataPointsTests(TestCase):
+
+    databases = {"default", "db_images"}
+
     def setUp(self):
         """Set up test data and client"""
         self.client = Client()
 
-        # Create an admin user for testing
+        # create a user with admin privileges to test admin-restricted model endpoints
         self.test_user_admin = Users.objects.create(
-            username="testadmin",
-            password="testadminpassword",
-            age=30,
-            sex="male",
+            username=f"testadmin",
+            password=make_password("testpass123"),
+            age=random.randint(0, 99),
+            sex=random.choice(["male", "female"]),
             is_active=True,
             is_admin=True,
         )
 
         # Create some sample data points
-        # Create some sample data points
-        Data.objects.create(
+        Data.objects.using("db_images").create(
             image_id="datapoint1",
             created_at=1700000000,
             image=b"dummy_binary_data_1",
@@ -29,7 +33,7 @@ class GetTotalDataPointsTests(TestCase):
             localization="face",
             lesion_type="mel",
         )
-        Data.objects.create(
+        Data.objects.using("db_images").create(
             image_id="datapoint2",
             created_at=1700000001,
             image=b"dummy_binary_data_2",
@@ -38,7 +42,7 @@ class GetTotalDataPointsTests(TestCase):
             localization="neck",
             lesion_type="nv",
         )
-        Data.objects.create(
+        Data.objects.using("db_images").create(
             image_id="datapoint3",
             created_at=1700000002,
             image=b"dummy_binary_data_3",
@@ -47,7 +51,7 @@ class GetTotalDataPointsTests(TestCase):
             localization="back",
             lesion_type="bcc",
         )
-        Data.objects.create(
+        Data.objects.using("db_images").create(
             image_id="datapoint4",
             created_at=1700000003,
             image=b"dummy_binary_data_4",
@@ -56,7 +60,7 @@ class GetTotalDataPointsTests(TestCase):
             localization="hand",
             lesion_type="akiec",
         )
-        Data.objects.create(
+        Data.objects.using("db_images").create(
             image_id="datapoint5",
             created_at=1700000004,
             image=b"dummy_binary_data_5",
@@ -72,7 +76,7 @@ class GetTotalDataPointsTests(TestCase):
         self.client.force_login(self.test_user_admin)
 
         # Make GET request to the endpoint
-        response = self.client.get(reverse("api-get-total-data-points"))
+        response = self.client.get(reverse("api-get-total-datapoints"))
         self.assertEqual(response.status_code, 200)
 
         # Parse response data
@@ -95,5 +99,5 @@ class GetTotalDataPointsTests(TestCase):
     def test_unauthorized_access(self):
         """Test access without admin privileges"""
         # Make GET request without logging in
-        response = self.client.get(reverse("api-get-total-data-points"))
+        response = self.client.get(reverse("api-get-total-datapoints"))
         self.assertEqual(response.status_code, 401)  # Forbidden for unauthorized users
