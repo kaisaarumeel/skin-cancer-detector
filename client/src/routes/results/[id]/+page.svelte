@@ -5,13 +5,13 @@
   import { routeGuard } from "../../../routeGuard";
   import { goto } from "$app/navigation";
   import TopBar from "../../../components/TopBar.svelte";
+  import FeatureImpact from '../../../components/FeatureImpact.svelte';
 
   interface RequestData {
-    request_id: string;
+    request_id: number;
     image: string;
     probability: number | null;
     lesion_type: string | null;
-    feature_impact: { feature: string; impact: number }[];
   }
 
   const MALIGNANT_LESION_TYPES = ["Melanoma (Malignant)", "Basal cell carcinoma (Malignant)", "Actinic keratoses and intraepithelial carcinoma (Malignant)"]; // Malignant lesion types
@@ -107,6 +107,10 @@
               With this prediction, we advise you to visit a doctor for a medical checkup on your skin.
             </p>
           {/if}
+          <div class="mt-6 flex flex-col lg:items-start items-center">
+            <p class="text-sm text-tertiary mb-2">How did the model predict this?</p>
+            <FeatureImpact scan={requestData.request_id}/>
+          </div>
           <div class="mt-10 w-full flex justify-center">
             <button 
               on:click={() => goto("/upload")} 
