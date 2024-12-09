@@ -1,0 +1,16 @@
+# sudo nano /etc/systemd/system/skinscan.service
+
+[Unit]
+Description=ScinScan Container Service
+After=docker.service
+Requires=docker.service
+
+[Service]
+WorkingDirectory=/home/user/projects/dit826/group6
+ExecStart=/bin/bash deploy.sh
+ExecStop=/usr/bin/docker-compose down
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
