@@ -46,8 +46,7 @@
         error = "Failed to fetch request data.";
       }
     } catch (err) {
-      console.error(err);
-      error = "An error occurred while fetching request data.";
+        goto("/upload")
     }
   }
 
