@@ -235,3 +235,41 @@ def update_requests_in_db(
     finally:
         # Close database connection
         conn.close()
+
+
+def compute_grad_cam(model, image, predicted_class_index, last_conv_layer_name="conv2d"):
+    """
+    Compute Grad-CAM for a single image (Impact of different areas of the image as a heatmap).
+
+    Args:
+        model: Trained TensorFlow model.
+        image: Preprocessed image (single image in batch format).
+        predicted_class_index: Index of the predicted class.
+        last_conv_layer_name: Name of the last convolutional layer in the model.
+
+    Returns:
+        Heatmap as a 2D numpy array.
+    """
+    grad_model = tf.keras.models.Model(
+        inputs=model.input,
+        outputs=[model.get_layer(last_conv_layer_name).output, model.output]
+    )
+
+    with tf.GradientTape() as tape:
+        conv_outputs, predictions = grad_model(image)
+        loss = predictions[:, predicted_class_index]
+
+    # Compute gradients of the predicted class with respect to the feature maps
+    grads = tape.gradient(loss, conv_outputs)
+
+    # Compute the mean intensity of gradients for each channel
+    pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
+
+    # Multiply each channel by its importance and sum
+    conv_outputs = conv_outputs[0]
+    heatmap = tf.reduce_sum(conv_outputs * pooled_grads, axis=-1)
+
+    # Normalize heatmap
+    heatmap = np.maximum(heatmap, 0)  # ReLU
+    heatmap /= tf.reduce_max(heatmap)
+    return heatmap.numpy()
