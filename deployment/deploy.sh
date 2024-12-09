@@ -1,12 +1,8 @@
 #!/bin/bash
 
-REGISTRY_URL="registry.git.chalmers.se"
-REGISTRY_USER=""
-REGISTRY_PASSWORD=""
-
 # login to the container registry
 echo "Logging in to the container registry..."
-echo "$REGISTRY_PASSWORD" | docker login "$REGISTRY_URL" -u "$REGISTRY_USER" --password-stdin
+docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$REGISTRY_URL"
 if [ $? -ne 0 ]; then
   echo "Error: Login to container registry failed."
   exit 1

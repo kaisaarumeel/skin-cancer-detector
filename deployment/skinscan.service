@@ -1,5 +1,3 @@
-# sudo nano /etc/systemd/system/skinscan.service
-
 [Unit]
 Description=ScinScan Container Service
 After=docker.service
