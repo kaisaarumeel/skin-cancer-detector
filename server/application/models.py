@@ -211,6 +211,9 @@ class Requests(models.Model):
     impact_localization = models.FloatField(blank=True, null=True)
     impact_sex = models.FloatField(blank=True, null=True)
 
+    # Binary field for storing Grad-CAM heatmap
+    heatmap = models.BinaryField(blank=True, null=True)
+
     # Foreign Keys
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
 

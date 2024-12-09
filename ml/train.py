@@ -185,7 +185,7 @@ def train(
     # for the next layer
     x = pretrained.output
     # Add a GlobalAveragePooling2D layer to reduce the number of parameters
-    x = GlobalAveragePooling2D()(x)
+    x = GlobalAveragePooling2D(name="last_cnn_layer")(x)
     # Add a Dense layer with ReLU activation to map the convolutional features
     # to the output space
     x = Dense(256, activation="relu")(x)

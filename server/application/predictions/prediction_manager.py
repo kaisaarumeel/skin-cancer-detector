@@ -107,13 +107,21 @@ def manage_predictions():
         # Calculate imapct values for tabular features using SHAP
         tabular_features_impacts = explainer(tabular_features)
 
+        
+
         for i, job in enumerate(jobs_batch):
             feature_impacts = [{"feature": feature, "impact": value}
                 for feature, value in zip(feature_names, tabular_features_impacts[i])]
             job.feature_impact = feature_impacts
 
+            # Compute Grad-CAM for each image
+            predicted_class_index = np.argmax(predictions[i])
+            heatmap = compute_grad_cam(model, resized_images[i:i+1], predicted_class_index)
 
-        # TODO: Update the 'update_requests_in_db' function to include the feature impacts
+            # Encode heatmap as binary
+            job.heatmap_binary = encode_heatmap_to_binary(heatmap)
+            # TODO: Write a function for turning heatmap map to binary
+        
 
         # Update the requests table in the database with the results
         update_requests_in_db(
@@ -206,12 +214,15 @@ def update_requests_in_db(
             impact_localization = impacts.get("localization", None)
             impact_sex = impacts.get("sex", None)
 
+            # Extract binary heatmap from the job
+            heatmap_binary = getattr(job, "heatmap_binary", None)
+
             # Update database query
             cursor.execute(
                 """
                 UPDATE requests
                 SET probability = ?, lesion_type = ?, model_id = ?, 
-                    impact_age = ?, impact_localization = ?, impact_sex = ?
+                    impact_age = ?, impact_localization = ?, impact_sex = ?, heatmap = ?
                 WHERE request_id = ?;
                 """,
                 (
@@ -221,6 +232,7 @@ def update_requests_in_db(
                     impact_age,
                     impact_localization,
                     impact_sex,
+                    heatmap_binary,
                     request_id,
                 ),
             )
@@ -237,7 +249,7 @@ def update_requests_in_db(
         conn.close()
 
 
-def compute_grad_cam(model, image, predicted_class_index, last_conv_layer_name="conv2d"):
+def compute_grad_cam(model, image, predicted_class_index, last_conv_layer_name="last_cnn_layer"):
     """
     Compute Grad-CAM for a single image (Impact of different areas of the image as a heatmap).
 
