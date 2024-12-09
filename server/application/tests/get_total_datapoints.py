@@ -19,11 +19,52 @@ class GetTotalDataPointsTests(TestCase):
         )
 
         # Create some sample data points
-        Data.objects.create(name="datapoint1", value=10)
-        Data.objects.create(name="datapoint2", value=20)
-        Data.objects.create(name="datapoint3", value=30)
-        Data.objects.create(name="datapoint4", value=40)
-        Data.objects.create(name="datapoint5", value=50)
+        # Create some sample data points
+        Data.objects.create(
+            image_id="datapoint1",
+            created_at=1700000000,
+            image=b"dummy_binary_data_1",
+            age=45,
+            sex="male",
+            localization="face",
+            lesion_type="mel",
+        )
+        Data.objects.create(
+            image_id="datapoint2",
+            created_at=1700000001,
+            image=b"dummy_binary_data_2",
+            age=30,
+            sex="female",
+            localization="neck",
+            lesion_type="nv",
+        )
+        Data.objects.create(
+            image_id="datapoint3",
+            created_at=1700000002,
+            image=b"dummy_binary_data_3",
+            age=60,
+            sex="male",
+            localization="back",
+            lesion_type="bcc",
+        )
+        Data.objects.create(
+            image_id="datapoint4",
+            created_at=1700000003,
+            image=b"dummy_binary_data_4",
+            age=25,
+            sex="female",
+            localization="hand",
+            lesion_type="akiec",
+        )
+        Data.objects.create(
+            image_id="datapoint5",
+            created_at=1700000004,
+            image=b"dummy_binary_data_5",
+            age=50,
+            sex="male",
+            localization="abdomen",
+            lesion_type="df",
+        )
 
     def test_get_total_data_points(self):
         """Test retrieving total data points"""
