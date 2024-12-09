@@ -102,7 +102,7 @@ deploy-app:
   stage: deploy
   image: docker:24.0.2
   variables:
-  before-script:
+  before_script:
     - apk add --no-cache openssh  # Install SSH client in the docker image
     - echo "$SSH_PRIVATE_KEY" | base64 -d > /root/.ssh/id_rsa # Decode and save the SSH private key
     - chmod 600 /root/.ssh/id_rs
