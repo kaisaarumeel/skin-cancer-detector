@@ -88,7 +88,7 @@ function handleDrop(event: DragEvent) {
       });
 
       if (response.status === 201) {
-        const requestId = response.data?.request_id; // Assuming the API returns the ID of the created request
+        const requestId = response.data?.request_id; 
         if (requestId) {
           goto(`/results/${requestId}`); // Navigate to the results page with the request ID
         } else {
