@@ -36,7 +36,7 @@ from .views.is_admin import IsAdmin
 from .views.get_specific_request import GetSpecificRequest
 from .views.get_requests_by_username import GetRequestsByUsername
 from .views.delete_user import DeleteUser
-from .views.get_number_of_datapoints import GetTotalDataPoints
+from .views.get_total_datapoints import GetTotalDataPoints
 
 
 urlpatterns = [
