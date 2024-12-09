@@ -51,9 +51,7 @@
 ></div>
 
 <dialog
-    class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 rounded-lg shadow-xl bg-white p-6 w-11/12 max-w-4xl {showFeatureImpact
-        ? 'block'
-        : 'hidden'}"
+    class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 rounded-lg shadow-xl bg-white p-4 w-11/12 max-w-4xl max-h-[90vh] overflow-auto {showFeatureImpact ? 'block' : 'hidden'}"
     open={showFeatureImpact}
 >
     {#if errorOccurred}
@@ -94,7 +92,7 @@
                     </div>
                     <p class="text-sm text-tertiary">
                         Highlighted areas show regions that influenced the
-                        decision of the the AI model.
+                        decision of the AI model.
                     </p>
                 </div>
 
@@ -104,21 +102,19 @@
                     </h3>
                     <div class="space-y-3">
                         {#each (impact as Impact).feature_impact as feature}
-                            <div
-                                class="flex items-center space-x-4 p-3 rounded-lg bg-primary"
-                            >
-                                <div class="flex-1">
-                                    <span class="font-medium text-white"
-                                        >{feature.feature}</span
-                                    >
-                                </div>
-                                <div class="text-right">
-                                    <span class="font-mono text-white font-bold">
-                                        {Number(feature.impact.toFixed(2))*100}%
-                                    </span>
-                                </div>
+                        <div class="flex items-center space-x-4 p-3 rounded-lg bg-primary">
+                            <div class="flex-1">
+                                <span class="font-light text-white">
+                                    {feature.feature.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')}
+                                </span>
                             </div>
-                        {/each}
+                            <div class="text-right">
+                                <span class="font-light text-white font-bold">
+                                    {Number(feature.impact.toFixed(2)) * 100}%
+                                </span>
+                            </div>
+                        </div>
+                    {/each}
                     </div>
                 </div>
             </div>
@@ -132,9 +128,10 @@
     {/if}
 </dialog>
 
+
 <div>
     <button
-        class="px-2 py-1 bg-primary text-white rounded-lg hover:opacity-75 transition-opacity"
+        class="bg-primary text-white px-6 py-3 font-light rounded-md cursor-pointer transition-colors hover:bg-secondary shadow-md"
         on:click={() => (showFeatureImpact = !showFeatureImpact)}
     >
         Show Explanation

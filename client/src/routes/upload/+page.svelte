@@ -87,10 +87,13 @@ function handleDrop(event: DragEvent) {
         "image": base64Image
       });
 
-      if(response.status == 201)
-      {
-        // TODO: Add get results endpoint/logic here
-        goto('/results');
+      if (response.status === 201) {
+        const requestId = response.data?.request_id; 
+        if (requestId) {
+          goto(`/results/${requestId}`); // Navigate to the results page with the request ID
+        } else {
+          console.error("Request ID is missing from the response.");
+        }
       }
     }
     catch(err){
