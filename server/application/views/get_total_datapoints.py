@@ -13,9 +13,7 @@ class GetTotalDataPoints(View):
 
             # Return the count in a JSON response
             return JsonResponse(
-                {
-                    "total_data_points": total_data_points
-                },
+                {"total_data_points": total_data_points},
                 status=200,
             )
 
