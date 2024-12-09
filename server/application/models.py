@@ -206,6 +206,11 @@ class Requests(models.Model):
         null=True,
     )
 
+    # Feature impact fields
+    impact_age = models.FloatField(blank=True, null=True)
+    impact_localization = models.FloatField(blank=True, null=True)
+    impact_sex = models.FloatField(blank=True, null=True)
+
     # Foreign Keys
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
 
