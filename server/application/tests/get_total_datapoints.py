@@ -55,4 +55,4 @@ class GetTotalDataPointsTests(TestCase):
         """Test access without admin privileges"""
         # Make GET request without logging in
         response = self.client.get(reverse("api-get-total-data-points"))
-        self.assertEqual(response.status_code, 403)  # Forbidden for unauthorized users
+        self.assertEqual(response.status_code, 401)  # Forbidden for unauthorized users
