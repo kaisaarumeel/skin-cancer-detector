@@ -9,6 +9,8 @@ from pathlib import Path
 import tensorflow as tf
 import numpy as np
 
+import io
+from PIL import Image
 import shap
 
 # Custom modules
@@ -120,7 +122,6 @@ def manage_predictions():
 
             # Encode heatmap as binary
             job.heatmap_binary = encode_heatmap_to_binary(heatmap)
-            # TODO: Write a function for turning heatmap map to binary
         
 
         # Update the requests table in the database with the results
@@ -285,3 +286,11 @@ def compute_grad_cam(model, image, predicted_class_index, last_conv_layer_name="
     heatmap = np.maximum(heatmap, 0)  # ReLU
     heatmap /= tf.reduce_max(heatmap)
     return heatmap.numpy()
+
+def encode_heatmap_to_binary(heatmap):
+    heatmap = (heatmap * 255).astype(np.uint8)  # Normalize
+    img = Image.fromarray(heatmap)
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+    buffer.seek(0)
+    return buffer.read()
