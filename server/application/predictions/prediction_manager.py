@@ -200,14 +200,29 @@ def update_requests_in_db(
                 [predicted_class_index]
             )[0]
 
+            # Extract individual feature impacts
+            impacts = {impact['feature']: impact['impact'] for impact in job.feature_impact}
+            impact_age = impacts.get("age", None)
+            impact_localization = impacts.get("localization", None)
+            impact_sex = impacts.get("sex", None)
+
             # Update database query
             cursor.execute(
                 """
                 UPDATE requests
-                SET probability = ?, lesion_type = ?, model_id = ?
+                SET probability = ?, lesion_type = ?, model_id = ?, 
+                    impact_age = ?, impact_localization = ?, impact_sex = ?
                 WHERE request_id = ?;
                 """,
-                (probability, predicted_label, model_version, request_id),
+                (
+                    probability,
+                    predicted_label,
+                    model_version,
+                    impact_age,
+                    impact_localization,
+                    impact_sex,
+                    request_id,
+                ),
             )
 
         # Commit database transaction
