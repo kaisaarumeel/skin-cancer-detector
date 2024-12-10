@@ -5,6 +5,7 @@
   import { routeGuard } from '../../routeGuard';  // Import the route guard
   import { onMount } from "svelte";
   import { API } from '../../api'; // Import the API instance
+  import { isAxiosError } from "axios";
 
   // Check if the user is logged in when the page is loaded
   onMount(() => {
@@ -107,6 +108,7 @@
       errorMessage = "No localization is selected.";
       return;
     }
+    
     try {
       const base64Image = await fileToBase64(selectedFile); // convert image to the base64 format
       const response = await API.post('/api/create-request/', {
@@ -122,9 +124,21 @@
           console.error("Request ID is missing from the response.");
         }
       }
-    }
-    catch(err){
-      console.error(err)
+    } catch(error) {
+      // Check if the error was from server or network
+      if (isAxiosError(error)) {
+        // Safely access the data field and assert its type
+        const errorResponse = error.response?.data as { err?: string } | undefined;
+        // Check if the "err" property exists and is a string
+        if (typeof errorResponse?.err === "string") {
+          // Use it as error message
+          errorMessage = errorResponse.err;
+        } else {
+          // Unknown error
+          errorMessage = "An unknown server error occured.";
+        }
+      }
+      console.error(error)
     }
   }
 
