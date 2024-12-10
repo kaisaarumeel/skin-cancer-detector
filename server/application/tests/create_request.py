@@ -31,6 +31,9 @@ class CreateRequestTests(TestCase):
         self.invalid_image_path = os.path.join(
             os.path.dirname(__file__), "test_data", "invalid_test_image_format.gif"
         )
+        self.invalid_image_rgba_path = os.path.join(
+            os.path.dirname(__file__), "test_data", "valid_test_image_rgba.png"
+        )
 
     def encode_image_to_base64(self, file_path):
         """Helper method to encode an image to Base64 and include the data URI prefix"""
@@ -196,3 +199,22 @@ class CreateRequestTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertIn("Unsupported image format", response.json()["err"])
+
+    def test_create_request_image_not_in_RGB_colour_space(self):
+        """Test upload with image in RGBA colour space"""
+        self.client.force_login(self.test_user)
+
+        data = {
+            "localization": "face",
+            "image": self.encode_image_to_base64(self.invalid_image_rgba_path),
+        }
+        response = self.client.post(
+            reverse("api-create-request"),
+            json.dumps(data),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()["err"], "Image must have 3 colour channels (RGB)."
+        )
