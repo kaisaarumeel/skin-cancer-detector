@@ -73,10 +73,10 @@ def manage_predictions():
                 )
                 # Skip this loop iteration to attempt to reload the model
                 continue
-            
+
             # Reload the explainer based on the new reloaded model
             explainer = shap.Explainer(model)
-            
+
             # Reload the feature scaler and encoders
             tabular_scaler = get_scaler(hyperparameters)
             localization_encoder, lesion_type_encoder = get_encoders(hyperparameters)
@@ -105,24 +105,25 @@ def manage_predictions():
 
         # Run inference on the prepared batch
         predictions = model.predict([resized_images, tabular_features])
-        
+
         # Calculate imapct values for tabular features using SHAP
         tabular_features_impacts = explainer(tabular_features)
 
-        
-
         for i, job in enumerate(jobs_batch):
-            feature_impacts = [{"feature": feature, "impact": value}
-                for feature, value in zip(feature_names, tabular_features_impacts[i])]
+            feature_impacts = [
+                {"feature": feature, "impact": value}
+                for feature, value in zip(feature_names, tabular_features_impacts[i])
+            ]
             job.feature_impact = feature_impacts
 
             # Compute Grad-CAM for each image
             predicted_class_index = np.argmax(predictions[i])
-            heatmap = compute_grad_cam(model, resized_images[i:i+1], predicted_class_index)
+            heatmap = compute_grad_cam(
+                model, resized_images[i : i + 1], predicted_class_index
+            )
 
             # Encode heatmap as binary
             job.heatmap_binary = encode_heatmap_to_binary(heatmap)
-        
 
         # Update the requests table in the database with the results
         update_requests_in_db(
@@ -210,7 +211,9 @@ def update_requests_in_db(
             )[0]
 
             # Extract individual feature impacts
-            impacts = {impact['feature']: impact['impact'] for impact in job.feature_impact}
+            impacts = {
+                impact["feature"]: impact["impact"] for impact in job.feature_impact
+            }
             impact_age = impacts.get("age", None)
             impact_localization = impacts.get("localization", None)
             impact_sex = impacts.get("sex", None)
@@ -250,7 +253,9 @@ def update_requests_in_db(
         conn.close()
 
 
-def compute_grad_cam(model, image, predicted_class_index, last_conv_layer_name="last_cnn_layer"):
+def compute_grad_cam(
+    model, image, predicted_class_index, last_conv_layer_name="last_cnn_layer"
+):
     """
     Compute Grad-CAM for a single image (Impact of different areas of the image as a heatmap).
 
@@ -265,7 +270,7 @@ def compute_grad_cam(model, image, predicted_class_index, last_conv_layer_name="
     """
     grad_model = tf.keras.models.Model(
         inputs=model.input,
-        outputs=[model.get_layer(last_conv_layer_name).output, model.output]
+        outputs=[model.get_layer(last_conv_layer_name).output, model.output],
     )
 
     with tf.GradientTape() as tape:
@@ -286,6 +291,7 @@ def compute_grad_cam(model, image, predicted_class_index, last_conv_layer_name="
     heatmap = np.maximum(heatmap, 0)  # ReLU
     heatmap /= tf.reduce_max(heatmap)
     return heatmap.numpy()
+
 
 def encode_heatmap_to_binary(heatmap):
     heatmap = (heatmap * 255).astype(np.uint8)  # Normalize
