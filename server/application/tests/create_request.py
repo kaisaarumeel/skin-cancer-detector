@@ -32,7 +32,7 @@ class CreateRequestTests(TestCase):
             os.path.dirname(__file__), "test_data", "invalid_test_image_format.gif"
         )
         self.invalid_image_rgba_path = os.path.join(
-            os.path.dirname(__file__), "test_data", "valid_test_image_rgba.png"
+            os.path.dirname(__file__), "test_data", "invalid_test_image_rgba.png"
         )
 
     def encode_image_to_base64(self, file_path):
