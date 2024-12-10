@@ -24,19 +24,46 @@
   let selectedFile: File | null = null;
   let fileName = "No file chosen";
   let localization = "";
+  let errorMessage = "";
 
-  let fileError = "";
-  let localizationError = "";
+
+  // Check if a file is an acceptable image type (PNG, JPG, or JPEG)
+  async function isValidImageType(file: File): Promise<string> {
+    // Valid image file types
+    const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+
+    // Reject if file is not of a valid format, else resolve
+    return new Promise((resolve, reject) => {
+      if (!validTypes.includes(file.type)) {
+        reject("Invalid file type. Please upload a PNG, JPG, or JPEG image.");
+      } else {
+        resolve("");
+      }
+    });
+  }
 
   // Function to handle the upload file event (via file input or drag-and-drop)
-  function handleFileChange(event: Event) {
+  async function handleFileChange(event: Event) {
     const input = event.target as HTMLInputElement; // Type assertion
-    selectedFile = input.files?.[0] || null;
-    if (selectedFile) {
-      fileName = selectedFile.name;
-      fileError = "";
-    } else {
+    const file = input.files?.[0] || null;
+
+    if (!file) {
       fileName = "No file chosen";
+      errorMessage = "Please upload an image file of type JPG, JPEG, PNG."
+      return;
+    }
+    
+    // Check that the file is an acceptable image type
+    try {
+      const result = await isValidImageType(file);
+      selectedFile = file;
+      fileName = selectedFile.name;
+      errorMessage = result;
+
+    } catch (error) {
+      selectedFile = null;
+      fileName = "No file chosen";
+      errorMessage = error as string;
     }
   }
 
@@ -46,24 +73,24 @@
   }
 
   // Handle drop event
-  function handleDrop(event: DragEvent) {
+  async function handleDrop(event: DragEvent) {
     event.preventDefault();
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       const file = files[0];
       
-      // Check if the file is an acceptable type (PNG, JPG, or JPEG)
-      const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-      if (!validTypes.includes(file.type)) {
-        fileError = "Invalid file type. Please upload a PNG, JPG, or JPEG image.";
+      // Check that the file is an acceptable image type
+      try {
+        const result = await isValidImageType(file);
+        selectedFile = file;
+        fileName = selectedFile.name;
+        errorMessage = result;
+
+      } catch (error) {
         selectedFile = null;
         fileName = "No file chosen";
-        return;
+        errorMessage = error as string;
       }
-
-      selectedFile = file;
-      fileName = selectedFile.name;
-      fileError = ""; 
     }
   }
 
@@ -72,12 +99,12 @@
   async function handleAnalyze(event: Event) {
     if (!selectedFile) {
       console.error("No file selected");
-      fileError = "No file is selected.";
+      errorMessage = "No file is selected.";
       return;
     }
     if (!localization) {
       console.error("No localization selected");
-      localizationError = "No localization is selected.";
+      errorMessage = "No localization is selected.";
       return;
     }
     try {
@@ -193,11 +220,8 @@
 
       <button on:click={handleAnalyze} class="w-1/2 p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-10 hover:bg-secondary shadow-l">Analyze</button>
 
-      {#if fileError}
-        <p class="text-red-500 text-sm mt-2 ">{fileError}</p>
-      {/if}
-      {#if localizationError}
-        <p class="text-red-500 text-sm mt-2">{localizationError}</p>
+      {#if errorMessage}
+        <p class="text-red-500 text-sm mt-2 ">{errorMessage}</p>
       {/if}
     </div>
   </div>
