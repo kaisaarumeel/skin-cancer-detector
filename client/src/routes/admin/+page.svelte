@@ -35,7 +35,7 @@
 
   <div class="p-6 flex flex-row gap-4 flex-wrap lg:flex-nowrap">
     <!-- Left Column -->
-    <div class="flex flex-col gap-6 w-full lg:w-2/3">
+    <div class="flex flex-col gap-6 w-full lg:w-1/2">
       <div>
         <ModelVersions></ModelVersions>
       </div>
@@ -48,7 +48,7 @@
     </div>
 
     <!-- Right Column -->
-    <div class="flex flex-col gap-6 w-full lg:flex-grow">
+    <div class="flex flex-col gap-6 w-full lg:flex-grow lg:w-1/2">
       <div>
         <AdminUpload></AdminUpload>
       </div>
