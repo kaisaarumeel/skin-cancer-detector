@@ -104,7 +104,7 @@
     role="button"
     aria-label="File upload drop zone"
     tabindex="0"
-    class={`mt-4 w-full h-full min-h-40 border-2 ${
+    class={`mt-4 w-full h-full min-h-20 border-2 ${
       isDragging ? "border-secondary bg-primary" : "border-gray-300 bg-gray-50"
     } rounded-md flex flex-col items-center justify-center text-tertiary`}
     on:dragover={handleDragOver}
