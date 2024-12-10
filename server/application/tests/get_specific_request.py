@@ -62,6 +62,10 @@ class GetSpecificRequestTests(TestCase):
             lesion_type="nv",
             user=self.normal_user,
             model=self.model_version,
+            impact_age=0.1,
+            impact_sex=0.2,
+            impact_localization=0.3,
+            heatmap=b"dummy_heatmap_data",
         )
 
         # Create a request for another user
@@ -73,6 +77,10 @@ class GetSpecificRequestTests(TestCase):
             lesion_type="mel",
             user=self.other_user,
             model=self.model_version,
+            impact_age=0.15,
+            impact_sex=0.25,
+            impact_localization=0.35,
+            heatmap=b"other_dummy_heatmap_data",
         )
 
         # Create a request for another user with null fields
@@ -84,6 +92,10 @@ class GetSpecificRequestTests(TestCase):
             lesion_type=None,
             user=self.normal_user,
             model=None,
+            impact_age=None,
+            impact_sex=None,
+            impact_localization=None,
+            heatmap=None,
         )
 
     def encode_image_to_base64(self, file_path):
@@ -110,6 +122,16 @@ class GetSpecificRequestTests(TestCase):
         self.assertEqual(
             base64.b64decode(response_data["request"]["image"]), self.user_request.image
         )
+        self.assertIn("feature_impact", response_data["request"])
+        self.assertEqual(len(response_data["request"]["feature_impact"]), 3)
+        self.assertIn("pixel_impact", response_data["request"])
+        if self.user_request.heatmap:
+            self.assertEqual(
+                base64.b64decode(response_data["request"]["pixel_impact"]),
+                self.user_request.heatmap,
+            )
+        else:
+            self.assertIsNone(response_data["request"]["pixel_impact"])
 
     def test_admin_access_any_user_request(self):
         """Test if an admin can access any user's request"""
@@ -170,3 +192,40 @@ class GetSpecificRequestTests(TestCase):
         self.assertIsNone(response_data["request"]["probability"])
         self.assertIsNone(response_data["request"]["model_version"])
         self.assertIsNone(response_data["request"]["lesion_type"])
+        self.assertIn("feature_impact", response_data["request"])
+        self.assertEqual(len(response_data["request"]["feature_impact"]), 3)
+        for impact in response_data["request"]["feature_impact"]:
+            self.assertIsNone(impact["impact"])
+
+        self.assertIn("pixel_impact", response_data["request"])
+        self.assertIsNone(response_data["request"]["pixel_impact"])
+
+    def test_feature_and_pixel_impact(self):
+        """Test if feature impacts and pixel impact are returned correctly"""
+        self.client.force_login(self.admin_user)
+        response = self.client.get(
+            reverse("api-get-specific-request", args=[self.user_request.request_id])
+        )
+        self.assertEqual(response.status_code, 200)
+
+        response_data = response.json()
+        self.assertIn("request", response_data)
+
+        # Check feature impact
+        self.assertIn("feature_impact", response_data["request"])
+        self.assertEqual(len(response_data["request"]["feature_impact"]), 3)
+        for impact in response_data["request"]["feature_impact"]:
+            self.assertIn("feature", impact)
+            self.assertIn("impact", impact)
+            self.assertIsNotNone(impact["feature"])
+            self.assertIsNotNone(impact["impact"])
+
+        # Check pixel impact
+        self.assertIn("pixel_impact", response_data["request"])
+        if self.user_request.heatmap:
+            self.assertEqual(
+                base64.b64decode(response_data["request"]["pixel_impact"]),
+                self.user_request.heatmap,
+            )
+        else:
+            self.assertIsNone(response_data["request"]["pixel_impact"])
