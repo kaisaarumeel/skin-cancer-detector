@@ -73,6 +73,12 @@ class CreateRequest(View):
         # for consistency with the rest of the program
         image_array = np.array(image, np.uint8)
 
+        # Ensure the image is in the RGB colour space with the correct dimensions
+        if image.mode != "RGB" or image_array.ndim != 3 or image_array.shape[-1] != 3:
+            return JsonResponse(
+                {"err": "Image must have 3 colour channels (RGB)."}, status=400
+            )
+
         # Get the corresponding user from the database
         user = Users.objects.get(username=request.user.username)
 
