@@ -45,27 +45,27 @@
     event.preventDefault();
   }
 
-// Handle drop event
-function handleDrop(event: DragEvent) {
-  event.preventDefault();
-  const files = event.dataTransfer?.files;
-  if (files && files.length > 0) {
-    const file = files[0];
-    
-    // Check if the file is an acceptable type (PNG, JPG, or JPEG)
-    const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-    if (!validTypes.includes(file.type)) {
-      fileError = "Invalid file type. Please upload a PNG, JPG, or JPEG image.";
-      selectedFile = null;
-      fileName = "No file chosen";
-      return;
-    }
+  // Handle drop event
+  function handleDrop(event: DragEvent) {
+    event.preventDefault();
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      
+      // Check if the file is an acceptable type (PNG, JPG, or JPEG)
+      const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+      if (!validTypes.includes(file.type)) {
+        fileError = "Invalid file type. Please upload a PNG, JPG, or JPEG image.";
+        selectedFile = null;
+        fileName = "No file chosen";
+        return;
+      }
 
-    selectedFile = file;
-    fileName = selectedFile.name;
-    fileError = ""; 
+      selectedFile = file;
+      fileName = selectedFile.name;
+      fileError = ""; 
+    }
   }
-}
 
 
   // Function to handle analyze button click
