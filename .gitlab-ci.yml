@@ -105,6 +105,7 @@ deploy-app:
     - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/skinscan # decode and save the SSH private key
     - chmod 600 ~/.ssh/skinscan # set up ssh directory permissions
     - ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts # add server key to known hosts
+    - eval $(ssh-agent -s) # start SSH agent in shell session
     - ssh-add ~/.ssh/skinscan
   script:
     - cd deployment
