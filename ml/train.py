@@ -178,7 +178,7 @@ def train(
 
     # Utilize a pre-trained model for abstract feature extraction
     pretrained = DenseNet121(
-        weights="imagenet", include_top=False, input_tensor=image_input,name="pretrained"
+        weights="imagenet", include_top=False, input_tensor=image_input
     )
 
     # Set the pre-trained model's output to be the input
