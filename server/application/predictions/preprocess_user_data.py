@@ -34,6 +34,13 @@ def preprocess_images(image_list, target_input_shape):
 
     # Process all images
     for image in image_list:
+
+        # Convert to RGB if the image has 4 channels (e.g., RGBA)
+        if image.shape[-1] == 4:
+            image = cv2.cvtColor(image, cv2.COLOR_RGBA2RGB)
+        elif image.shape[-1] == 1:  # Grayscale to RGB
+            image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+
         # Resize the image to the model's input dimensions
         resized_image = cv2.resize(
             image, target_input_shape, interpolation=cv2.INTER_AREA

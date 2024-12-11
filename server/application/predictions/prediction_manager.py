@@ -76,6 +76,7 @@ def manage_predictions():
             tabular_scaler = get_scaler(hyperparameters)
             localization_encoder, lesion_type_encoder = get_encoders(hyperparameters)
 
+
         # Dequeue the Jobs to be processed, up to the max limit
         jobs_batch = [
             PREDICTION_JOBS.get()
@@ -97,10 +98,31 @@ def manage_predictions():
         tabular_features, feature_names = extract_tabular_features(
             jobs_batch, tabular_scaler, localization_encoder
         )
+        
+        print("Initializing shap...")
+        
+        if explainer is None:
+            def tabular_predict(tabular_data):
+                # Create dummy images with the correct shape for the model
+                num_samples = tabular_data.shape[0]
+                dummy_images = np.zeros((num_samples, 224, 224, 3))  # Adjust shape as needed
+                return model.predict([dummy_images, tabular_data])
+
+            explainer = shap.KernelExplainer(
+                tabular_predict, tabular_features
+            )
+
+        print("Shap is initialized")
+    
+        # Confirm resized images match model requirements
+        #if resized_images.shape[1:] != (224, 224, 3):  # Adjust to your model's input
+        #    raise ValueError(
+        #        f"Resized images shape mismatch: got {resized_images.shape}, expected (None, 224, 224, 3)"
+        #)
 
         # Run inference on the prepared batch
         predictions = model.predict([resized_images, tabular_features])
-
+        print("PREDICTION COMPLETED,")
         for i, job in enumerate(jobs_batch):
             predicted_class_index = np.argmax(predictions[i])
             
@@ -117,6 +139,17 @@ def manage_predictions():
             )
             # Encode heatmap as binary
             job.heatmap_binary = encode_heatmap_to_binary(heatmap)
+            print("Heat map is processed.")
+            
+            
+            # Compute SHAP values for the tabular features
+            shap_values = explainer.shap_values(tabular_features[i].reshape(1, -1))
+
+            # Map SHAP values to feature names
+            job.feature_impact = [
+                {"feature": feature_names[j], "impact": shap_values[0][j]}
+                for j in range(len(feature_names))
+            ]
 
         # Update the requests table in the database with the results
         update_requests_in_db(
