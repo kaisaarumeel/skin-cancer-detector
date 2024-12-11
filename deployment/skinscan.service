@@ -1,17 +1,16 @@
 [Unit]
-Description=ScinScan Container Service
+Description=Skinscan Service
 After=docker.service
 Requires=docker.service
 
 [Service]
-WorkingDirectory=/home/user/projects/dit826/group6
-ExecStart=/bin/bash deploy.sh
-ExecStop=/usr/bin/docker-compose down
+WorkingDirectory=/services/skinscan/
+ExecStart=docker-compose up -d
+ExecStop=docker-compose down
 Restart=always
 RestartSec=5
-StandardOutput=tty
-StandardError=tty
-TTYPath=/dev/tty1
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target
