@@ -101,6 +101,7 @@ deploy-app:
   stage: deploy
   image: docker:24.0.2
   before_script:
+    - mkdir /root/.ssh/
     - echo "$SSH_PRIVATE_KEY" | base64 -d > /root/.ssh/skinscan # decode and save the SSH private key
     - chmod 600 /root/.ssh/skinscan # set up ssh directory permissions
     - ssh-keyscan -H $SERVER_IP >> /root/.ssh/known_hosts # add server key to known hosts
