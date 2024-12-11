@@ -101,14 +101,14 @@ deploy-app:
   stage: deploy
   image: docker:24.0.2
   before_script:
-    - mkdir /root/.ssh/
-    - echo "$SSH_PRIVATE_KEY" | base64 -d > /root/.ssh/skinscan # decode and save the SSH private key
-    - chmod 600 /root/.ssh/skinscan # set up ssh directory permissions
-    - ssh-keyscan -H $SERVER_IP >> /root/.ssh/known_hosts # add server key to known hosts
+    - mkdir ~/.ssh/
+    - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/skinscan # decode and save the SSH private key
+    - chmod 600 ~/.ssh/skinscan # set up ssh directory permissions
+    - ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts # add server key to known hosts
   script:
     - cd deployment
     # move service files to server
-    - sudo scp -i ~/.ssh/skinscan docker-compose.yml skinscan.service $SERVER_USER@$SERVER_IP:/services/skinscan/
+    - scp -i ~/.ssh/skinscan docker-compose.yml skinscan.service $SERVER_USER@$SERVER_IP:/services/skinscan/
     - | # connect to server via ssh and execute commands
       ssh $SERVER_USER@$SERVER_IP <<EOF
         # export environmental variables

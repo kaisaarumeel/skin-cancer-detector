@@ -1,5 +1,5 @@
 # add remote host key to known hosts
-+ssh-keyscan -H 164.92.176.222 >> ~/.ssh/known_hosts
+ssh-keyscan -H 164.92.176.222 >> ~/.ssh/known_hosts
 
 # connect to remote host via ssh
 ssh -i ~/.ssh/skinscan root@164.92.176.222
@@ -28,10 +28,12 @@ sudo nano authorized_keys
 # paste the following into the authorized_keys file:
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEo6wrpeWMnPCwj1jExh9xytQvUN/IQDFZJl7POQ+Knp
 
-# create project folder to prepare for pipeline
+# create project folder to prepare for pipeline and set permissions
 cd ~
 sudo mkdir services
 sudo mkdir skinscan
+sudo chmod -R 777 /services/skinscan/
+sudo chown -R $SERVER_USER:$SERVER_USER /services/skinscan/
 
 # open the server's firewall for port 80
 sudo ufw allow from any to 164.92.176.222 port 80 proto tcp
