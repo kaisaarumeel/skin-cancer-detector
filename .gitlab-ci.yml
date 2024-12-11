@@ -119,7 +119,7 @@ deploy-app:
         # authenticate sudo for this session
         echo "$SERVER_USER_PWD" | sudo -S true
         # login to repo container registry and start service
-        sudo docker login -u $rokanas -p $CI_REGISTRY_TOKEN $CI_REGISTRY
+        sudo docker login -u rokanas -p $CI_REGISTRY_TOKEN $CI_REGISTRY
         sudo mv /services/skinscan/skinscan.service /etc/systemd/system/skinscan.service
         sudo systemctl daemon-reload
         sudo systemctl restart skinscan.service
