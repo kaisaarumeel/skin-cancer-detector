@@ -2,6 +2,8 @@
 Description=Skinscan Service
 After=docker.service
 Requires=docker.service
+StartLimitBurst=5
+StartLimitIntervalSec=30
 
 [Service]
 WorkingDirectory=/services/skinscan/
