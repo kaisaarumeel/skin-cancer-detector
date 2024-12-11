@@ -6,6 +6,6 @@ services:
     frontend:
         image: registry.git.chalmers.se/courses/dit826/2024/group6/skinscan-frontend:latest
         ports: 
-            - 5173:80
+            - 80:80
         depends_on:
             - backend
