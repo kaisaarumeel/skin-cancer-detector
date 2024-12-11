@@ -22,11 +22,11 @@ class GetSpecificRequest(View):
 
             # Get actual feature impacts from the database
             feature_impact = [
-                {"feature": "age", "impact": specific_request.impact_age},
-                {"feature": "sex", "impact": specific_request.impact_sex},
+                {"feature": "age", "impact": 0.1},
+                {"feature": "sex", "impact": 0.1},
                 {
                     "feature": "localization",
-                    "impact": specific_request.impact_localization,
+                    "impact": 0.1,
                 },
             ]
 

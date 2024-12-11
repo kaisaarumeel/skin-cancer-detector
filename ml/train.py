@@ -178,14 +178,14 @@ def train(
 
     # Utilize a pre-trained model for abstract feature extraction
     pretrained = DenseNet121(
-        weights="imagenet", include_top=False, input_tensor=image_input
+        weights="imagenet", include_top=False, input_tensor=image_input,name="pretrained"
     )
 
     # Set the pre-trained model's output to be the input
     # for the next layer
     x = pretrained.output
     # Add a GlobalAveragePooling2D layer to reduce the number of parameters
-    x = GlobalAveragePooling2D(name="last_cnn_layer")(x)
+    x = GlobalAveragePooling2D()(x)
     # Add a Dense layer with ReLU activation to map the convolutional features
     # to the output space
     x = Dense(256, activation="relu")(x)
