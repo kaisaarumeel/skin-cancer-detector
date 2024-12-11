@@ -108,7 +108,7 @@ deploy-app:
   script:
     - cd deployment
     # move service files to server
-    - scp -i ~/.ssh/skinscan docker-compose.yml skinscan.service $SERVER_USER@$SERVER_IP:/services/skinscan/
+    - sudo scp -i ~/.ssh/skinscan docker-compose.yml skinscan.service $SERVER_USER@$SERVER_IP:/services/skinscan/
     - | # connect to server via ssh and execute commands
       ssh $SERVER_USER@$SERVER_IP <<EOF
         # export environmental variables
