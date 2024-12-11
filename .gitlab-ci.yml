@@ -113,6 +113,11 @@ deploy-app:
     - scp -i ~/.ssh/skinscan docker-compose.yml skinscan.service $SERVER_USER@$SERVER_IP:/services/skinscan/
     - | # connect to server via ssh and execute commands
       ssh $SERVER_USER@$SERVER_IP <<EOF
+        # export environmental variables
+        export CI_REGISTRY_USER=$CI_REGISTRY_USER
+        export CI_REGISTRY_PASSWORD=$CI_REGISTRY_PASSWORD
+        export CI_REGISTRY=$CI_REGISTRY
+        export SERVER_USER_PWD=$SERVER_USER_PWD
         # authenticate sudo for this session
         echo "$SERVER_USER_PWD" | sudo -S true
         # login to repo container registry and start service
