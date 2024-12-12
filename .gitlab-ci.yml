@@ -74,7 +74,7 @@ backend-build:
   rules: 
     # Only run on push to main or with explicit tag
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main)/
-    - if: '$CI_COMMIT_TAG =~ /(?=.*build)(?=.*backend)/'
+    - if: $CI_COMMIT_TAG =~ /build/ && $CI_COMMIT_TAG =~ /backend/
 
 frontend-build:
   stage: frontend-build
@@ -95,7 +95,7 @@ frontend-build:
   rules: 
     # Only run on push to main or with explicit tag
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main)/
-    - if: '$CI_COMMIT_TAG =~ /(?=.*build)(?=.*frontend)/'
+    - if: $CI_COMMIT_TAG =~ /build/ && $CI_COMMIT_TAG =~ /frontend/
 
 deploy-app:
   stage: deploy
