@@ -40,7 +40,7 @@ AUTH_USER_MODEL = "application.Users"
 
 # Middleware
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
+    #"corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -149,19 +149,19 @@ if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # CORS settings (for prod.)
-CORS_ALLOWED_ORIGINS = [
-    #"http://localhost:3000",
-    #"http://127.0.0.1:3000",
-    #"http://localhost:5173",
-    #"http://127.0.0.1:5173",
-    "http://164.92.176.222",
-    "http://164.92.176.222:80",
-    "http://localhost:80",
-    "http://localhost:8000",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     #"http://localhost:3000",
+#     #"http://127.0.0.1:3000",
+#     #"http://localhost:5173",
+#     #"http://127.0.0.1:5173",
+#     "http://164.92.176.222",
+#     "http://164.92.176.222:80",
+#     "http://localhost:80",
+#     "http://localhost:8000",
+# ]
 # Allow all origins for testing purposes
 #CORS_ORIGIN_ALLOW_ALL = False
-CORS_ALLOW_CREDENTIALS = True
+#CORS_ALLOW_CREDENTIALS = True
 
 # Logging configuration
 LOGGING = {
