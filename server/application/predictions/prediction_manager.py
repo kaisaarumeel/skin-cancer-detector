@@ -25,6 +25,9 @@ abs_db_path = "../db_app.sqlite3"
 # Event to signal model reload
 model_reload_event = threading.Event()
 
+# Expiry time for pending jobs (in seconds)
+JOB_EXPIRY_TIME = 15 * 60  # 15 minutes
+
 
 def manage_predictions():
     global PREDICTION_JOBS  # Global Job queue
@@ -69,11 +72,24 @@ def manage_predictions():
             tabular_scaler = get_scaler(hyperparameters)
             localization_encoder, lesion_type_encoder = get_encoders(hyperparameters)
 
-        # Dequeue the Jobs to be processed, up to the max limit
-        jobs_batch = [
-            PREDICTION_JOBS.get()
-            for _ in range(min(BATCH_SIZE, PREDICTION_JOBS.qsize()))
-        ]
+        # Initialize current time for expiration checks
+        current_time = time.time()  # Current UNIX timestamp
+        jobs_batch = []
+
+        # Dequeue valid jobs and check for expired ones
+        while not PREDICTION_JOBS.empty() and len(jobs_batch) < BATCH_SIZE:
+            job = PREDICTION_JOBS.get()  # Dequeue the next job from the queue
+
+            # Check if the job is expired using start_time
+            if current_time - job.start_time > JOB_EXPIRY_TIME:
+                print(f"Job {job.job_id} expired. Deleting from database...")
+
+                # Delete the expired job from the database
+                delete_job_from_db(job.job_id)
+
+                continue  # Skip expired jobs
+
+            jobs_batch.append(job)
 
         # If there are no Jobs to be processed, skip this loop iteration
         if not jobs_batch:
@@ -198,4 +214,20 @@ def update_requests_in_db(
         # TODO error handling of processed jobs, add to some other queue?
     finally:
         # Close database connection
+        conn.close()
+
+
+def delete_job_from_db(job_id):
+    """Delete a job from the database based on its job_id."""
+    conn = sqlite3.connect(abs_db_path)
+    cursor = conn.cursor()
+    try:
+        # Execute DELETE query
+        cursor.execute("DELETE FROM requests WHERE request_id = ?", (job_id,))
+        conn.commit()
+        print(f"Job {job_id} deleted successfully.")
+    except Exception as e:
+        conn.rollback()
+        print(f"Error deleting job {job_id}: {e}")
+    finally:
         conn.close()
