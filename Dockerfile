@@ -30,9 +30,5 @@ EXPOSE 8000
 # Set env variable so python output goes directly to terminal
 ENV PYTHONUNBUFFERED=1
 
-# commands to run migrations and start server
-CMD . venv/bin/activate && \
-    python server/manage.py makemigrations && \
-    python server/manage.py migrate && \
-    python server/manage.py migrate --database=db_images && \
-    echo "n" | python server/manage.py runserver 0.0.0.0:8000
+# start server
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "skinscan.wsgi:application"]

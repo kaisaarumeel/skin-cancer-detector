@@ -49,6 +49,7 @@ backend-api-tests:
   script:
     # Run backend tests
     - cd server
+    - python manage.py makemigrations
     - python manage.py test --verbosity=2
   rules:
     # Only run on main and develop branches
@@ -67,6 +68,7 @@ backend-build:
     DOCKER_TLS_CERTDIR: ""
     DOCKER_DRIVER: overlay2
   script:
+    - python /server/manage.py makemigrations
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull $CI_REGISTRY/courses/dit826/2024/group6/skinscan-backend:latest || true
     - docker build --build-arg SECRET_KEY=$(echo $BACKEND_SECRET_KEY | base64 -d) -t $CI_REGISTRY/courses/dit826/2024/group6/skinscan-backend:latest .

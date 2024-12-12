@@ -51,6 +51,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "skinscan.urls"
+WSGI_APPLICATINO = "skinscan.wsgi.application"
 
 TEMPLATES = [
     {
