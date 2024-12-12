@@ -90,7 +90,7 @@ frontend-build:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull $CI_REGISTRY/courses/dit826/2024/group6/skinscan-frontend:latest || true
-    - docker build -f client/Dockerfile --build-arg VITE_BACKEND_SKINSCAN=http://$SERVER_IP:8000 -t $CI_REGISTRY/courses/dit826/2024/group6/skinscan-frontend:latest client
+    - docker build -f client/Dockerfile --no-cache --build-arg VITE_BACKEND_SKINSCAN=http://$SERVER_IP:8000 -t $CI_REGISTRY/courses/dit826/2024/group6/skinscan-frontend:latest client
     - docker push $CI_REGISTRY/courses/dit826/2024/group6/skinscan-frontend:latest
   rules: 
     # Only run on push to main or with explicit tag
