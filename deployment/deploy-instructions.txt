@@ -1,3 +1,5 @@
+# save private key in your .ssh folder
+
 # add remote host key to known hosts
 ssh-keyscan -H 164.92.176.222 >> ~/.ssh/known_hosts
 

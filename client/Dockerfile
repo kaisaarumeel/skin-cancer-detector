@@ -13,6 +13,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # expose default port
 EXPOSE 80
+ENV CLIENT_API_BASE_URL=http://164.92.176.222:8000
 
 # run nginx as main process using config file
 CMD ["nginx", "-g", "daemon off;"]
