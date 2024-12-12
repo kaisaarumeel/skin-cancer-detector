@@ -14,6 +14,10 @@ load_dotenv(dotenv_path)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = str(os.getenv("SECRET_KEY"))
 
+# Ensure SECRET_KEY is set, or raise an error
+if (SECRET_KEY == "None"):
+    raise ValueError("The SECRET_KEY environment variable is not set.")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", True) == True  # True unless injected with False
 ALLOWED_HOSTS = ["*"]
@@ -145,14 +149,16 @@ if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # CORS settings (for prod.)
-# CORS_ALLOWED_ORIGINS = [
-#     #"http://localhost:3000",
-#     #"http://127.0.0.1:3000",
-#     #"http://localhost:5173",
-#     #"http://127.0.0.1:5173",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    #"http://localhost:3000",
+    #"http://127.0.0.1:3000",
+    #"http://localhost:5173",
+    #"http://127.0.0.1:5173",
+    "http://164.92.176.222",
+    "http://164.92.176.222:80",
+]
 # Allow all origins for testing purposes
-CORS_ORIGIN_ALLOW_ALL = True
+#CORS_ORIGIN_ALLOW_ALL = False
 CORS_ALLOW_CREDENTIALS = True
 
 # Logging configuration
