@@ -7,7 +7,8 @@ StartLimitIntervalSec=30
 
 [Service]
 WorkingDirectory=/services/skinscan/
-ExecStart=VITE_BACKEND_SKINSCAN=$VITE_BACKEND_SKINSCAN SECRET_KEY=$SECRET_KEY docker-compose up  
+EnvironmentFile=.env
+ExecStart=docker-compose up  
 ExecStop=docker-compose down
 Restart=on-failure
 RestartSec=5
