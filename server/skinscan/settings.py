@@ -156,6 +156,8 @@ CORS_ALLOWED_ORIGINS = [
     #"http://127.0.0.1:5173",
     "http://164.92.176.222",
     "http://164.92.176.222:80",
+    "http://localhost:80",
+    "http://localhost:8000",
 ]
 # Allow all origins for testing purposes
 #CORS_ORIGIN_ALLOW_ALL = False
