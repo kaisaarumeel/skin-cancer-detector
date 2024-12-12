@@ -7,9 +7,9 @@ StartLimitIntervalSec=30
 
 [Service]
 WorkingDirectory=/services/skinscan/
-ExecStart=docker-compose up -d
+ExecStart=docker-compose up
 ExecStop=docker-compose down
-Restart=always
+Restart=on-failure
 RestartSec=5
 StandardOutput=journal
 StandardError=journal
