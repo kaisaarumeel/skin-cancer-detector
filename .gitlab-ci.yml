@@ -115,12 +115,11 @@ deploy-app:
       ssh $SERVER_USER@$SERVER_IP <<EOF
         # authenticate sudo for this session
         echo "$SERVER_USER_PWD" | sudo -S true
-        # Create environment file dynamically and set permissions
+        # Create environment file dynamically
         sudo bash -c 'cat > /services/.env <<EOL
-        VITE_BACKEND_SKINSCAN=http://$SERVER_IP:8000
-        SECRET_KEY=$(echo $BACKEND_SECRET_KEY | base64 -d)
-        EOL'
-        sudo chmod 600 /services/skinscan/.env
+VITE_BACKEND_SKINSCAN=http://$SERVER_IP:8000
+SECRET_KEY=$(echo $BACKEND_SECRET_KEY | base64 -d)
+EOL'
         # login to repo container registry and start service
         sudo docker login -u rokanas -p $CI_REGISTRY_TOKEN $CI_REGISTRY
         sudo mv /services/skinscan/skinscan.service /etc/systemd/system/skinscan.service
