@@ -1,6 +1,9 @@
 # base image for ML with CUDA
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 as backend
 
+ARG SECRET_KEY
+ENV SECRET_KEY=${SECRET_KEY}
+
 # install python and required tools
 RUN apt-get update && apt-get install -y \
     python3.11 python3.11-venv python3-pip \

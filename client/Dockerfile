@@ -4,6 +4,7 @@ WORKDIR /app
 COPY ./ ./
 ARG VITE_BACKEND_SKINSCAN
 ENV VITE_BACKEND_SKINSCAN=${VITE_BACKEND_SKINSCAN}
+RUN echo "Building with VITE_BACKEND_SKINSCAN=${VITE_BACKEND_SKINSCAN}"
 RUN npm install && npm run build
 
 # serve built app with lightweight web server

@@ -3,9 +3,13 @@ services:
         image: registry.git.chalmers.se/courses/dit826/2024/group6/skinscan-backend:latest
         ports: 
             - 8000:8000
+        environment:
+            - SECRET_KEY=${SECRET_KEY}
     frontend:
         image: registry.git.chalmers.se/courses/dit826/2024/group6/skinscan-frontend:latest
         ports: 
             - 80:80
         depends_on:
             - backend
+        environment:
+            - VITE_BACKEND_SKINSCAN=${VITE_BACKEND_SKINSCAN}
