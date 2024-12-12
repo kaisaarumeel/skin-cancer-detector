@@ -19,10 +19,12 @@ COPY requirements.txt ./requirements.txt
 RUN python3.11 -m venv venv
 RUN . venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt
 
-# copy django server, machine learning files and db
+# copy django server, machine learning files, db and migrations script
 COPY server/ ./server/
 COPY ml/ ./ml/
 COPY db_app.sqlite3 ./db_app.sqlite3
+COPY migrations.sh ./migrations.sh
+RUN chmod +x ./migrations.sh
 
 # expose port for django
 EXPOSE 8000
@@ -31,4 +33,5 @@ EXPOSE 8000
 ENV PYTHONUNBUFFERED=1
 
 # start server
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "skinscan.wsgi:application"]
+ENTRYPOINT ["./migrations.sh"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "server.skinscan.wsgi:application"]
