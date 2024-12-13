@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "corsheaders",
-    "server.application",
+    "application",
 ]
 
 # Custom User Model for authentication
