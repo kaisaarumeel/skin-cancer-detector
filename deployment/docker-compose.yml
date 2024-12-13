@@ -5,6 +5,8 @@ services:
             - 8000:8000
         environment:
             - SECRET_KEY=${SECRET_KEY}
+            - SETUP_PROMPT_1=${SETUP_PROMPT_1}
+            - SETUP_PROMPT_2=${SETUP_PROMPT_2}
     frontend:
         image: registry.git.chalmers.se/courses/dit826/2024/group6/skinscan-frontend:latest
         ports: 
@@ -13,4 +15,3 @@ services:
             - backend
         environment:
             - VITE_BACKEND_SKINSCAN=${VITE_BACKEND_SKINSCAN}
-            

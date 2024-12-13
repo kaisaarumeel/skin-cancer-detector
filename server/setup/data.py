@@ -19,15 +19,15 @@ def assert_or_get_training_data():
     current_training_count = Data.objects.using("db_images").count()
 
     print("Current training data size is", current_training_count)
-    # get user input
-    user_input = input("Do you want to download the dataset? [y/n]: ")
-    if user_input.lower() != "y":
+
+    first_prompt=os.environ.get("SETUP_FIRST_PROMPT", "n").lower()
+    if first_prompt !="y":
         print("Data validated")
         return
 
-    # Prompt the user if they want to delete the current data
-    user_input = input("Do you want to delete the current data? [y/n]: ")
-    if user_input.lower() == "y":
+    # delete the current data
+    second_prompt = os.environ.get("SETUP_SECOND_PROMPT", "y").lower()
+    if second_prompt == "y":
         print("Deleting current data, this might take some time...")
         Data.objects.using("db_images").all().delete()
 

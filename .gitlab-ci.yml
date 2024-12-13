@@ -101,6 +101,9 @@ frontend-build:
 deploy-app:
   stage: deploy
   image: docker:24.0.2
+  variables:
+    SETUP_PROMPT_1: "n"
+    SETUP_PROMPT_2: ""
   before_script:
     - mkdir ~/.ssh/
     - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/skinscan # decode and save the SSH private key
@@ -111,14 +114,14 @@ deploy-app:
   script:
     - cd deployment
     # move service files to server
-    - scp -i ~/.ssh/skinscan docker-compose.yml skinscan.service $SERVER_USER@$SERVER_IP:/services/skinscan/
+    - scp -i ~/.ssh/skinscan docker-compose.yml skinscan.service create_env.sh $SERVER_USER@$SERVER_IP:/services/skinscan/
     - | # connect to server via ssh and execute commands
       ssh $SERVER_USER@$SERVER_IP <<EOF
         # authenticate sudo for this session
         echo "$SERVER_USER_PWD" | sudo -S true
         # Create environment file dynamically
         sudo chmod +x create_env.sh
-        sudo /services/skinscan/create_env.sh "http://$SERVER_IP:8000" "$BACKEND_SECRET_KEY"
+        sudo /services/skinscan/create_env.sh "http://$SERVER_IP:8000" "$BACKEND_SECRET_KEY" "$SETUP_PROMPT_1" "$SETUP_PROMPT_2"
         # login to repo container registry and start service
         sudo docker login -u rokanas -p $CI_REGISTRY_TOKEN $CI_REGISTRY
         sudo mv /services/skinscan/skinscan.service /etc/systemd/system/skinscan.service
@@ -129,3 +132,15 @@ deploy-app:
     # Only run on push to main or with explicit tag
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main)/
     - if: $CI_COMMIT_TAG =~ /deploy/
+    - if: $CI_COMMIT_TAG =~ /setup-n/
+      variables:
+        SETUP_PROMPT_1: "n"
+        SETUP_PROMPT_2: "y"
+    - if: $CI_COMMIT_TAG =~ /setup-yn/
+      variables:
+        SETUP_PROMPT_1: "y"
+        SETUP_PROMPT_2: "n"
+    - if: $CI_COMMIT_TAG =~ /setup-yy/
+      variables:
+        SETUP_PROMPT_1: "y"
+        SETUP_PROMPT_2: "y"
