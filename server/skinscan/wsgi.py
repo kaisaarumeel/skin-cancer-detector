@@ -8,9 +8,13 @@ https://docs.djangoproject.com/en/5.1/howto/deployment/wsgi/
 """
 
 import os
-
 from django.core.wsgi import get_wsgi_application
+from ..setup.setup import setup
+from ..application.predictions.prediction_manager import start_prediction_manager
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "server.skinscan.settings")
+
+setup()
+start_prediction_manager()
 
 application = get_wsgi_application()
