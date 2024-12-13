@@ -25,8 +25,6 @@ RUN . venv/bin/activate && \
 COPY server/ ./server/
 COPY ml/ ./ml/
 COPY db_app.sqlite3 ./db_app.sqlite3
-COPY migrations.sh ./migrations.sh
-RUN chmod +x ./migrations.sh
 
 # expose port for django
 EXPOSE 8000
