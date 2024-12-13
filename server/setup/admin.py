@@ -1,6 +1,6 @@
 from django.contrib.auth.hashers import make_password
 
-from application.models import Users
+from ..application.models import Users
 
 
 def create_admin_user(username, password, age, sex):
