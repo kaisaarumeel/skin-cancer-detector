@@ -102,8 +102,8 @@ deploy-app:
   stage: deploy
   image: docker:24.0.2
   variables:
-    SETUP_PROMPT_1: "n"
-    SETUP_PROMPT_2: ""
+    SETUP_PROMPT_1: "n" # default values
+    SETUP_PROMPT_2: "y"
   before_script:
     - mkdir ~/.ssh/
     - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/skinscan # decode and save the SSH private key
@@ -112,8 +112,6 @@ deploy-app:
     - eval $(ssh-agent -s) # start SSH agent in shell session
     - ssh-add ~/.ssh/skinscan
   script:
-    - echo "SETUP_PROMPT_1 $SETUP_PROMPT_1"
-    - echo "SETUP_PROMPT_2 $SETUP_PROMPT_2"
     - cd deployment
     # move service files to server
     - scp -i ~/.ssh/skinscan docker-compose.yml skinscan.service create_env.sh $SERVER_USER@$SERVER_IP:/services/skinscan/

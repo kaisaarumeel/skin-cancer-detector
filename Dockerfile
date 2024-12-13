@@ -17,7 +17,9 @@ WORKDIR /app
 # copy and install python dependencies
 COPY requirements.txt ./requirements.txt
 RUN python3.11 -m venv venv
-RUN . venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt
+RUN . venv/bin/activate && \
+    pip install --upgrade pip && \
+    pip install -r requirements.txt
 
 # copy django server, machine learning files, db and migrations script
 COPY server/ ./server/
