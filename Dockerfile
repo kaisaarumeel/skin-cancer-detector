@@ -14,6 +14,8 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
+ENV PYTHONPATH="/app:$PYTHONPATH"
+
 # copy and install python dependencies
 COPY requirements.txt ./requirements.txt
 RUN python3.11 -m venv venv
