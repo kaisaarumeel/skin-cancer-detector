@@ -112,6 +112,8 @@ deploy-app:
     - eval $(ssh-agent -s) # start SSH agent in shell session
     - ssh-add ~/.ssh/skinscan
   script:
+    - echo "SETUP_PROMPT_1 $SETUP_PROMPT_1"
+    - echo "SETUP_PROMPT_2 $SETUP_PROMPT_2"
     - cd deployment
     # move service files to server
     - scp -i ~/.ssh/skinscan docker-compose.yml skinscan.service create_env.sh $SERVER_USER@$SERVER_IP:/services/skinscan/
@@ -130,18 +132,16 @@ deploy-app:
         sudo systemctl restart skinscan.service
       EOF
   rules: 
-    # Only run on push to main or with explicit tag
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /(main)/
-    - if: $CI_COMMIT_TAG =~ /deploy/
-    - if: $CI_COMMIT_TAG =~ /setup-n/
+    # Only run with explicit tag
+    - if: $CI_COMMIT_TAG =~ /deploy-n/
       variables:
         SETUP_PROMPT_1: "n"
         SETUP_PROMPT_2: "y"
-    - if: $CI_COMMIT_TAG =~ /setup-yn/
+    - if: $CI_COMMIT_TAG =~ /deploy-yn/
       variables:
         SETUP_PROMPT_1: "y"
         SETUP_PROMPT_2: "n"
-    - if: $CI_COMMIT_TAG =~ /setup-yy/
+    - if: $CI_COMMIT_TAG =~ /deploy-yy/
       variables:
         SETUP_PROMPT_1: "y"
         SETUP_PROMPT_2: "y"
