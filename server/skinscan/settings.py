@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "corsheaders",
-    "application",
+    "server.application",
 ]
 
 # Custom User Model for authentication
@@ -51,7 +51,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "skinscan.urls"
-WSGI_APPLICATINO = "skinscan.wsgi.application"
+WSGI_APPLICATION = "skinscan.wsgi.application"
 
 TEMPLATES = [
     {
@@ -84,7 +84,7 @@ DATABASES = {
 }
 
 # Path to database router that restricts migrations to the two databases
-DATABASE_ROUTERS = {"utils.db_router.MigrationRouter"}
+DATABASE_ROUTERS = ["server.utils.db_router.MigrationRouter"]
 
 # List of models that should only be added as tables to the image DB
 # The database router will restrict migrations to the DBs using this list
