@@ -36,7 +36,8 @@ ENV PYTHONUNBUFFERED=1
 
 # make migrations and start server
 CMD sh -c ". venv/bin/activate && \
-    python server/manage.py makemigrations && \
-    python server/manage.py migrate && \
-    python server/manage.py migrate --database=db_images && \
-    gunicorn --bind 0.0.0.0:8000 --workers 3 server.skinscan.wsgi:application"
+    cd server \
+    python manage.py makemigrations && \
+    python manage.py migrate && \
+    python manage.py migrate --database=db_images && \
+    gunicorn --bind 0.0.0.0:8000 --workers 3 skinscan.wsgi:application"
