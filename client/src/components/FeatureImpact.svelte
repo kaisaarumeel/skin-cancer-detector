@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { API } from "../api";
+    import colorscale_jet from "../media/colorscale_jet.jpg"
 
     // Create interfaces for the impact data
     interface FeatureImpact {
@@ -9,7 +10,7 @@
     }
 
     interface Impact {
-        pixel_impact: string;
+        pixel_impact_visualized: string;
         feature_impact: FeatureImpact[];
     }
 
@@ -27,7 +28,17 @@
             if (impact === undefined) {
                 throw new Error("No impact data found");
             }
-            impact.pixel_impact = `data:image/png;base64,${impact.pixel_impact}`;
+            impact.feature_impact = Object.entries(
+                JSON.parse(response.data.request.feature_impact) as Record<
+                    string,
+                    number
+                >,
+            ).map(([feature, impact]) => ({
+                feature,
+                impact,
+            }));
+            console.log(impact);
+            impact.pixel_impact_visualized = `data:image/png;base64,${impact.pixel_impact_visualized}`;
         } catch (err: unknown) {
             console.error(err);
             errorOccurred = true;
@@ -87,22 +98,28 @@
                     </h3>
                     <div class="border rounded-lg overflow-hidden">
                         <img
-                            src={impact.pixel_impact}
+                            src={impact.pixel_impact_visualized}
                             alt="AI explanation visualization"
                             class="w-full h-auto"
                         />
                     </div>
+                    <img src={colorscale_jet} class="rounded-md w-full h-auto" />
+
                     <p class="text-sm text-tertiary">
                         Highlighted areas show regions that influenced the
-                        decision of the the AI model.
+                        decision of the the AI model with red being the strongest impact. 
                     </p>
                 </div>
 
-                <div class="space-y-4">
+                <div class="">
                     <h3 class="text-lg font-semibold text-tertiary">
                         Feature Contributions
                     </h3>
-                    <div class="space-y-3">
+                    <p class="text-sm text-tertiary">
+                        The relative impact that certain
+                        features would have on the result if they were modified.
+                    </p>
+                    <div class="space-y-3 mt-4">
                         {#each (impact as Impact).feature_impact as feature}
                             <div
                                 class="flex items-center space-x-4 p-3 rounded-lg bg-primary"
@@ -113,8 +130,10 @@
                                     >
                                 </div>
                                 <div class="text-right">
-                                    <span class="font-mono text-white font-bold">
-                                        {Number(feature.impact.toFixed(2))*100}%
+                                    <span
+                                        class="font-mono text-white font-bold"
+                                    >
+                                        {feature.impact.toFixed(3)}%
                                     </span>
                                 </div>
                             </div>

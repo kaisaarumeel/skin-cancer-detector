@@ -206,10 +206,8 @@ class Requests(models.Model):
         null=True,
     )
 
-    # Feature impact fields
-    impact_age = models.FloatField(blank=True, null=True)
-    impact_localization = models.FloatField(blank=True, null=True)
-    impact_sex = models.FloatField(blank=True, null=True)
+    # Feature impact field
+    feature_impact = models.TextField(blank=True, null=True)
 
     # Binary field for storing Grad-CAM heatmap
     heatmap = models.BinaryField(blank=True, null=True)

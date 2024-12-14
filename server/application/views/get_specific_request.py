@@ -20,18 +20,9 @@ class GetSpecificRequest(View):
             ):
                 return JsonResponse({"err": "access denied"}, status=403)
 
-            # Get actual feature impacts from the database
-            feature_impact = [
-                {"feature": "age", "impact": 0.1},
-                {"feature": "sex", "impact": 0.1},
-                {
-                    "feature": "localization",
-                    "impact": 0.1,
-                },
-            ]
 
-            # Get actual pixel impact (binary-encoded Grad-CAM heatmap)
-            pixel_impact = (
+            # Encode the visualized image as base64
+            pixel_impact_visualized = (
                 base64.b64encode(specific_request.heatmap).decode("utf-8")
                 if specific_request.heatmap
                 else None
@@ -48,8 +39,8 @@ class GetSpecificRequest(View):
                 "model_version": (
                     specific_request.model.version if specific_request.model else None
                 ),
-                "feature_impact": feature_impact,
-                "pixel_impact": pixel_impact,
+                "feature_impact": specific_request.feature_impact,
+                "pixel_impact_visualized": pixel_impact_visualized,
             }
 
             return JsonResponse({"request": request_data}, status=200)

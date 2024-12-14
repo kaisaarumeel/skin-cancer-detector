@@ -5,13 +5,12 @@ import base64
 import pickle
 import sqlite3
 from pathlib import Path
-
+import json
 import tensorflow as tf
 import numpy as np
 
 import io
 from PIL import Image
-import shap
 
 # Custom modules
 from application.views.jobs.state import PREDICTION_JOBS
@@ -76,7 +75,6 @@ def manage_predictions():
             tabular_scaler = get_scaler(hyperparameters)
             localization_encoder, lesion_type_encoder = get_encoders(hyperparameters)
 
-
         # Dequeue the Jobs to be processed, up to the max limit
         jobs_batch = [
             PREDICTION_JOBS.get()
@@ -98,65 +96,72 @@ def manage_predictions():
         tabular_features, feature_names = extract_tabular_features(
             jobs_batch, tabular_scaler, localization_encoder
         )
-        
-        print("Initializing shap...")
-        
-        if explainer is None:
-            def tabular_predict(tabular_data):
-                # Create dummy images with the correct shape for the model
-                num_samples = tabular_data.shape[0]
-                dummy_images = np.zeros((num_samples, 224, 224, 3))  # Adjust shape as needed
-                return model.predict([dummy_images, tabular_data])
-
-            explainer = shap.KernelExplainer(
-                tabular_predict, tabular_features
-            )
-
-        print("Shap is initialized")
-    
-        # Confirm resized images match model requirements
-        #if resized_images.shape[1:] != (224, 224, 3):  # Adjust to your model's input
-        #    raise ValueError(
-        #        f"Resized images shape mismatch: got {resized_images.shape}, expected (None, 224, 224, 3)"
-        #)
 
         # Run inference on the prepared batch
         predictions = model.predict([resized_images, tabular_features])
         print("PREDICTION COMPLETED,")
         for i, job in enumerate(jobs_batch):
             predicted_class_index = np.argmax(predictions[i])
-            
+
             # Prepare single-sample inputs for Grad-CAM
-            image_input = np.expand_dims(resized_images[i], axis=0)  # Add batch dimension
-            tabular_input = np.expand_dims(tabular_features[i], axis=0)  # Add batch dimension
-            
+            image_input = np.expand_dims(
+                resized_images[i], axis=0
+            )  # Add batch dimension
+            tabular_input = np.expand_dims(
+                tabular_features[i], axis=0
+            )  # Add batch dimension
+
             # Compute Grad-CAM with both inputs
             heatmap = compute_grad_cam(
-                model, 
+                model,
                 [image_input, tabular_input],
                 predicted_class_index,
-                original_image_shape=(224, 224)  # Or whatever your original image size is
+                original_image_shape=(
+                    224,
+                    224,
+                ),  # Or whatever your original image size is
             )
+
+            # We can calculate the importance of the image 
+            # by taking the mean activation value for each pixel
+            image_importance = np.mean(heatmap[0])
+
+            # Compute feature importance for tabular data
+            tabular_importances = compute_tabular_importance(
+                model, [image_input, tabular_input], predicted_class_index
+            )
+
+            # Combine all importance values
+            all_importances = np.concatenate([[image_importance], tabular_importances])
+            
+            # Calculate relative percentages
+            total_importance = np.sum(np.abs(all_importances))
+            relative_importances = (np.abs(all_importances) / total_importance) * 100
+
             # Encode heatmap as binary
             job.heatmap_binary = encode_heatmap_to_binary(heatmap)
             print("Heat map is processed.")
-            
-            
-            # Compute SHAP values for the tabular features
-            shap_values = explainer.shap_values(tabular_features[i].reshape(1, -1))
 
-            # Map SHAP values to feature names
-            job.feature_impact = [
-                {"feature": feature_names[j], "impact": shap_values[0][j]}
-                for j in range(len(feature_names))
-            ]
 
+
+            # Map importance values to feature names
+            job.feature_impact = {
+                "image": float(relative_importances[0]),
+                **{
+                    name: float(importance)
+                    for name, importance in zip(feature_names, relative_importances[1:])
+                }
+            }
+            
+            print(f"Feature impacts for job {job.job_id}:", job.feature_impact)
         # Update the requests table in the database with the results
         update_requests_in_db(
             abs_db_path, jobs_batch, predictions, lesion_type_encoder, model_version
         )
 
         ### END OF LOOP
+
+
 ############################### HELPER FUNCTIONS ###############################
 
 
@@ -234,14 +239,9 @@ def update_requests_in_db(
                 [predicted_class_index]
             )[0]
 
-            # Extract individual feature impacts
-            #impacts = {
-            #    impact["feature"]: impact["impact"] for impact in job.feature_impact
-            #}
-            impacts={}
-            impact_age = impacts.get("age", None)
-            impact_localization = impacts.get("localization", None)
-            impact_sex = impacts.get("sex", None)
+            # Convert job.feature_impact to JSON string
+            ser_feature_impact = json.dumps(job.feature_impact)
+
 
             # Extract binary heatmap from the job
             heatmap_binary = getattr(job, "heatmap_binary", None)
@@ -251,16 +251,14 @@ def update_requests_in_db(
                 """
                 UPDATE requests
                 SET probability = ?, lesion_type = ?, model_id = ?, 
-                    impact_age = ?, impact_localization = ?, impact_sex = ?, heatmap = ?
+                    feature_impact = ?, heatmap = ?
                 WHERE request_id = ?;
                 """,
                 (
                     probability,
                     predicted_label,
                     model_version,
-                    impact_age,
-                    impact_localization,
-                    impact_sex,
+                    ser_feature_impact,
                     heatmap_binary,
                     request_id,
                 ),
@@ -276,77 +274,127 @@ def update_requests_in_db(
     finally:
         # Close database connection
         conn.close()
+
+
+def compute_tabular_importance(model, inputs, predicted_class_index):
+    # By utilizing the gradient tape we track the gradient/derivative
+    # and can calculate its importance
+
+    # Ensure inputs are tensors with valid data types
+    image_input = tf.convert_to_tensor(inputs[0], dtype=tf.float32)
+    tabular_input = tf.convert_to_tensor(inputs[1], dtype=tf.float32)
+
+    # Create new tape to record all tensor operations
+    with tf.GradientTape() as tape:
+        # Ensure we only watch the tabular_input tensor
+        tape.watch(tabular_input)
+        # Invoke a prediction without using the predict wrapper
+        # as that doesnt allow us to track the gradient
+        pred = model([image_input, tabular_input])
+        # Retrieve the first batch prediction
+        first_batch_prediction = pred[0, predicted_class_index]
+
+    # Calculate partial derivative with respect to
+    # each input feature in the tabular data.
+    # We do this because this tells use how much the 
+    # first batch prediction changes when we change
+    # the input feature by a small amount
+    gradients = tape.gradient(first_batch_prediction, tabular_input)
+
+    # Calculate the feature importance by taking the absolute value
+    # of all the gradients. We do this because we are only interested
+    # in the magnitude of the impact of each feature
+    feature_importance = tf.abs(gradients).numpy()[0]
+
+    return feature_importance
+
+
 def compute_grad_cam(model, inputs, predicted_class_index, original_image_shape):
     import cv2
     import numpy as np
+
     # Get the last conv layer from DenseNet121
-    last_conv_layer = model.get_layer('conv5_block16_2_conv')
-    
+    last_conv_layer = model.get_layer("conv5_block16_2_conv")
+
+    # Create an instance of the model that returns the same shape
+    # as the last conv layer and the model output.
+    # We cant reuse the model as it has a different output shape
     grad_model = tf.keras.models.Model(
-        inputs=model.inputs,
-        outputs=[
-            last_conv_layer.output,
-            model.output
-        ]
+        inputs=model.inputs, outputs=[last_conv_layer.output, model.output]
     )
 
     with tf.GradientTape() as tape:
+        # We dont need to track the features here 
+        # as that is done automatically because these layers
+        # are trainable
         conv_outputs, predictions = grad_model(inputs)
-        class_score = predictions[:, predicted_class_index]
+        # Select all probabilities for the predicted class
+        # for all samples in the batch
+        all_batch_predictions = predictions[:, predicted_class_index]
 
-    # Calculate gradients
-    grads = tape.gradient(class_score, conv_outputs)
-   
-    # Calculate importance for each conv feature from the convolutional layer
-    # by averaging the gradients across each position within the image
-    pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
+    # Calculate derivative of the predicted class
+    # with respect to the conv layer features.
+    # The higher this value the more the output would change
+    # if we change that particular feature
+    derivatives = tape.gradient(all_batch_predictions, conv_outputs)
+
+    # For each conv feature calculate its importance
+    # for the predicted class across the entire image
+    average_derivative = tf.reduce_mean(derivatives, axis=(0, 1, 2))
 
     # Reshape so that they are compatible with outputs of
     # the convolutional layer to calculate impact for each feature
-    pooled_grads = tf.reshape(pooled_grads, (1, 1, 1, -1))
-    
-    # Get a product of the importance and the conv layer output
-    weighted_conv_outputs = conv_outputs * pooled_grads
+    average_derivative = tf.reshape(average_derivative, (1, 1, 1, -1))
+
+    # Calculate the weighted sum of the conv outputs
+    # This operation basically promotes features that have
+    # high activation value for the predicted class
+    # and also a high derivative whilst suppressing others
+    weighted_conv_outputs = conv_outputs * average_derivative
 
     # Calculate the heatmap by summing all the weighted outputs
     # per pixel
     heatmap = tf.reduce_sum(weighted_conv_outputs, axis=-1)
-    
+
     # Convert heatmap to numpy array
     heatmap = heatmap.numpy()
-    
+
     # Remove negatives
     heatmap = np.maximum(heatmap, 0)
 
     # Normalize heatmap by rescaling it from 0 to 1
-    heatmap = heatmap / (np.max(heatmap) + 1e-7) # Use 1e-7 to avoid division by zero
-    
+    heatmap = heatmap / (np.max(heatmap) + 1e-7)  # Use 1e-7 to avoid division by zero
+
     # Convert heatmap to 0-255 range
     heatmap = np.uint8(255 * heatmap)
 
     # Resize heatmap to match original image size
     heatmap = cv2.resize(heatmap, (original_image_shape[1], original_image_shape[0]))
-    
+
     # Take the first channel only for heatmap
-    heatmap = heatmap[:,:,0] 
+    heatmap = heatmap[:, :, 0]
 
     # Convert heatmap to RGB
     heatmap_colored = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
-    
+
     # Get the original image from inputs
     original_img = inputs[0][0]  # Already a numpy array, just remove batch dimension
-    
+
     # Normalize image so 0-255 range as it was rescaled to -1 to 1
     # for model input earlier
     original_img = (original_img * 255).astype(np.uint8)
-    
+
     # Add the heatmap as a layer on top of the original image
+    # with a weight of 0.6 for the original image and 0.4 for the heatmap.
+    # The weights is how much each layer should be visible
     layered = cv2.addWeighted(original_img, 0.6, heatmap_colored, 0.4, 0)
-    
+
     return heatmap, heatmap_colored, layered
+
 
 def encode_heatmap_to_binary(heatmap_tuple):
     import cv2
+
     layered_image = heatmap_tuple[2]
-    _, encoded_img = cv2.imencode('.png', layered_image)
+    _, encoded_img = cv2.imencode(".png", layered_image)
     return encoded_img.tobytes()
