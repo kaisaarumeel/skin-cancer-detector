@@ -27,13 +27,11 @@ abs_db_path = "../db_app.sqlite3"
 model_reload_event = threading.Event()
 
 
-
 def manage_predictions():
     global PREDICTION_JOBS  # Global Job queue
     BATCH_SIZE = 64  # Max number of jobs to process in one batch
     INTERVAL = 3  # TODO decide actual time / make dynamic?
-    JOB_EXPIRY_TIME = 15 * 60 # Expiry time for pending jobs (in seconds)
-
+    JOB_EXPIRY_TIME = 15 * 60  # Expiry time for pending jobs (in seconds)
 
     # Enable repeated warnings (otherwise subsequent matching warnings are silenced)
     warnings.simplefilter("always", UserWarning)
@@ -162,8 +160,8 @@ def extract_jobs_from_queue(BATCH_SIZE, JOB_EXPIRY_TIME):
     """
     Extracts a batch of valid jobs from the queue and identifies expired jobs.
 
-    This function dequeues jobs from the global queue (`PREDICTION_JOBS`) up to the 
-    specified `BATCH_SIZE`, checks if any are expired based on `JOB_EXPIRY_TIME`, 
+    This function dequeues jobs from the global queue (`PREDICTION_JOBS`) up to the
+    specified `BATCH_SIZE`, checks if any are expired based on `JOB_EXPIRY_TIME`,
     and returns two lists:
     1. A list of valid job objects.
     2. A list of expired job IDs for deletion.
@@ -177,7 +175,7 @@ def extract_jobs_from_queue(BATCH_SIZE, JOB_EXPIRY_TIME):
             - List of valid job objects.
             - List of expired job IDs.
     """
-    
+
     current_time = time.time()  # Current UNIX timestamp
 
     jobs_batch = []  # List to collect valid jobs
