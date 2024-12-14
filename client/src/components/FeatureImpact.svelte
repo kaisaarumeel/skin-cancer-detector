@@ -28,6 +28,7 @@
             if (impact === undefined) {
                 throw new Error("No impact data found");
             }
+            // Conver the feature impact dict into an array of objects
             impact.feature_impact = Object.entries(
                 JSON.parse(response.data.request.feature_impact) as Record<
                     string,
@@ -37,7 +38,6 @@
                 feature,
                 impact,
             }));
-            console.log(impact);
             impact.pixel_impact_visualized = `data:image/png;base64,${impact.pixel_impact_visualized}`;
         } catch (err: unknown) {
             console.error(err);
@@ -103,7 +103,7 @@
                             class="w-full h-auto"
                         />
                     </div>
-                    <img src={colorscale_jet} class="rounded-md w-full h-auto" />
+                    <img alt="Color scale" src={colorscale_jet} class="rounded-md w-full h-auto" />
 
                     <p class="text-sm text-tertiary">
                         Highlighted areas show regions that influenced the

@@ -99,19 +99,19 @@ def manage_predictions():
 
         # Run inference on the prepared batch
         predictions = model.predict([resized_images, tabular_features])
-        print("PREDICTION COMPLETED,")
+
         for i, job in enumerate(jobs_batch):
             predicted_class_index = np.argmax(predictions[i])
 
             # Prepare single-sample inputs for Grad-CAM
             image_input = np.expand_dims(
                 resized_images[i], axis=0
-            )  # Add batch dimension
+            ) 
             tabular_input = np.expand_dims(
                 tabular_features[i], axis=0
-            )  # Add batch dimension
+            )  
 
-            # Compute Grad-CAM with both inputs
+            # Compute grad cam for the image
             heatmap = compute_grad_cam(
                 model,
                 [image_input, tabular_input],
@@ -119,7 +119,7 @@ def manage_predictions():
                 original_image_shape=(
                     224,
                     224,
-                ),  # Or whatever your original image size is
+                ),
             )
 
             # We can calculate the importance of the image
