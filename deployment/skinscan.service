@@ -8,7 +8,7 @@ StartLimitIntervalSec=30
 [Service]
 WorkingDirectory=/services/skinscan/
 EnvironmentFile=/services/skinscan/.env
-ExecStart=docker-compose up  
+ExecStart=docker-compose up
 ExecStop=/bin/bash -c "docker-compose down && docker system prune -a -f"
 ExecReload=/bin/bash -c "docker-compose down && docker system prune -a -f"
 Restart=on-failure
