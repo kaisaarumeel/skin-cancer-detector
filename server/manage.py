@@ -5,7 +5,7 @@ import sys
 
 import django
 
-from server.application.predictions.prediction_manager import start_prediction_manager
+from application.predictions.prediction_manager import start_prediction_manager
 
 
 def main():

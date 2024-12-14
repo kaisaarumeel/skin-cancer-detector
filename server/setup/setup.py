@@ -1,5 +1,5 @@
-from server.setup.admin import create_admin_user
-from server.setup.data import assert_or_get_training_data
+from setup.admin import create_admin_user
+from setup.data import assert_or_get_training_data
 
 
 # Setup function that is run when the server starts

@@ -4,7 +4,6 @@ services:
         ports: 
             - 8000:8000
         environment:
-            - DJANGO_SETTINGS_MODULE=server.skinscan.settings
             - SECRET_KEY=${SECRET_KEY}
             - SETUP_PROMPT_1=${SETUP_PROMPT_1}
             - SETUP_PROMPT_2=${SETUP_PROMPT_2}
