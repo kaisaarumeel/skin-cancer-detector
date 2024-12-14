@@ -17,6 +17,7 @@ from .preprocess_user_data import (
     extract_images,
     extract_tabular_features,
 )
+from application.models import Requests
 
 
 # Find the path to the database
@@ -76,6 +77,8 @@ def manage_predictions():
         current_time = time.time()  # Current UNIX timestamp
         jobs_batch = []
 
+        expired_jobs = []  # List to collect expired job IDs
+
         # Dequeue valid jobs and check for expired ones
         while not PREDICTION_JOBS.empty() and len(jobs_batch) < BATCH_SIZE:
             job = PREDICTION_JOBS.get()  # Dequeue the next job from the queue
@@ -84,12 +87,13 @@ def manage_predictions():
             if current_time - job.start_time > JOB_EXPIRY_TIME:
                 print(f"Job {job.job_id} expired. Deleting from database...")
 
-                # Delete the expired job from the database
-                delete_job_from_db(job.job_id)
+                # Collect job ID for deletion
+                expired_jobs.append(job.job_id)
+            else:
+                jobs_batch.append(job)
 
-                continue  # Skip expired jobs
-
-            jobs_batch.append(job)
+        if expired_jobs:
+            delete_jobs_from_db(expired_jobs)
 
         # If there are no Jobs to be processed, skip this loop iteration
         if not jobs_batch:
@@ -217,17 +221,10 @@ def update_requests_in_db(
         conn.close()
 
 
-def delete_job_from_db(job_id):
-    """Delete a job from the database based on its job_id."""
-    conn = sqlite3.connect(abs_db_path)
-    cursor = conn.cursor()
+def delete_jobs_from_db(job_ids):
+    """Delete jobs from the database based on their job_ids."""
     try:
-        # Execute DELETE query
-        cursor.execute("DELETE FROM requests WHERE request_id = ?", (job_id,))
-        conn.commit()
-        print(f"Job {job_id} deleted successfully.")
+        Requests.objects.filter(request_id__in=job_ids).delete()
+        print(f"Jobs {job_ids} deleted successfully.")
     except Exception as e:
-        conn.rollback()
-        print(f"Error deleting job {job_id}: {e}")
-    finally:
-        conn.close()
+        print(f"Error deleting jobs {job_ids}: {e}")
