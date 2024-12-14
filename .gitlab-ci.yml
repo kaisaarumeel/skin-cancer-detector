@@ -70,7 +70,7 @@ backend-build:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull $CI_REGISTRY/courses/dit826/2024/group6/skinscan-backend:latest || true
-    - docker build --build-arg SECRET_KEY=$(echo $BACKEND_SECRET_KEY | base64 -d) -t $CI_REGISTRY/courses/dit826/2024/group6/skinscan-backend:latest .
+    - docker build -t $CI_REGISTRY/courses/dit826/2024/group6/skinscan-backend:latest .
     - docker push $CI_REGISTRY/courses/dit826/2024/group6/skinscan-backend:latest
   rules: 
     # Only run on push to main or with explicit tag
@@ -122,7 +122,7 @@ deploy-app:
         # Create environment file dynamically
         sudo chmod +x /services/skinscan/create_env.sh
         sudo chown $SERVER_USER:$SERVER_USER /services/skinscan/create_env.sh
-        # sudo /services/skinscan/create_env.sh "http://$SERVER_IP" "$BACKEND_SECRET_KEY" "$SETUP_PROMPT_1" "$SETUP_PROMPT_2"
+        # sudo /services/skinscan/create_env.sh "$BACKEND_SECRET_KEY" "$SETUP_PROMPT_1" "$SETUP_PROMPT_2"
         # login to repo container registry and start service
         sudo docker login -u rokanas -p $CI_REGISTRY_TOKEN $CI_REGISTRY
         sudo mv /services/skinscan/skinscan.service /etc/systemd/system/skinscan.service
