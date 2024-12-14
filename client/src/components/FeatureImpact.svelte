@@ -62,7 +62,7 @@
 ></div>
 
 <dialog
-    class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 rounded-lg shadow-xl bg-white p-6 w-11/12 max-w-4xl {showFeatureImpact
+    class="overflow-y-scroll fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 rounded-lg shadow-xl bg-white p-6 w-11/12 max-w-4xl {showFeatureImpact
         ? 'block'
         : 'hidden'}"
     open={showFeatureImpact}
@@ -159,3 +159,12 @@
         Show Explanation
     </button>
 </div>
+
+
+<style>
+    @media screen and (max-width: 900px) {
+        dialog {
+            max-height: 80vh;
+        }
+    }
+</style>
