@@ -15,13 +15,17 @@ load_dotenv(dotenv_path)
 SECRET_KEY = str(os.getenv("SECRET_KEY"))
 
 # Ensure SECRET_KEY is set, or raise an error
-if (SECRET_KEY == "None"):
+if SECRET_KEY == "None":
     raise ValueError("The SECRET_KEY environment variable is not set.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", True) == True  # True unless injected with False
-ALLOWED_HOSTS = ["*"]
+if os.getenv("DEBUG") == "False":
+    DEBUG = False
+else:
+    DEBUG = True
+print("DEBUG is set to" + DEBUG)
 
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -40,7 +44,7 @@ AUTH_USER_MODEL = "application.Users"
 
 # Middleware
 MIDDLEWARE = [
-    #"corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -139,7 +143,7 @@ CSRF_TRUSTED_ORIGINS = [
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_COOKIE_SECURE = False  # Only sent over HTTPS
 CSRF_COOKIE_HTTPONLY = False  # Cookie is accessible to JavaScript in client
-SESSION_COOKIE_SECURE = False 
+SESSION_COOKIE_SECURE = False
 
 # Security settings (for production)
 if not DEBUG:
@@ -150,19 +154,19 @@ if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # CORS settings (for prod.)
-# CORS_ALLOWED_ORIGINS = [
-#     #"http://localhost:3000",
-#     #"http://127.0.0.1:3000",
-#     #"http://localhost:5173",
-#     #"http://127.0.0.1:5173",
-#     "http://164.92.176.222",
-#     "http://164.92.176.222:80",
-#     "http://localhost:80",
-#     "http://localhost:8000",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://164.92.176.222",
+    "http://164.92.176.222:80",
+    "http://localhost:80",
+    "http://localhost:8000",
+]
 # Allow all origins for testing purposes
-#CORS_ORIGIN_ALLOW_ALL = False
-#CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOW_CREDENTIALS = True
 
 # Logging configuration
 LOGGING = {
