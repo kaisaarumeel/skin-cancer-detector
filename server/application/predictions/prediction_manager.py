@@ -122,7 +122,7 @@ def manage_predictions():
                 ),  # Or whatever your original image size is
             )
 
-            # We can calculate the importance of the image 
+            # We can calculate the importance of the image
             # by taking the mean activation value for each pixel
             image_importance = np.mean(heatmap[0])
 
@@ -133,8 +133,9 @@ def manage_predictions():
 
             # Combine all importance values
             all_importances = np.concatenate([[image_importance], tabular_importances])
-            
+
             # Calculate relative percentages
+            # we dont care about direction only magnitude
             total_importance = np.sum(np.abs(all_importances))
             relative_importances = (np.abs(all_importances) / total_importance) * 100
 
@@ -142,18 +143,15 @@ def manage_predictions():
             job.heatmap_binary = encode_heatmap_to_binary(heatmap)
             print("Heat map is processed.")
 
-
-
             # Map importance values to feature names
             job.feature_impact = {
                 "image": float(relative_importances[0]),
                 **{
                     name: float(importance)
                     for name, importance in zip(feature_names, relative_importances[1:])
-                }
+                },
             }
-            
-            print(f"Feature impacts for job {job.job_id}:", job.feature_impact)
+
         # Update the requests table in the database with the results
         update_requests_in_db(
             abs_db_path, jobs_batch, predictions, lesion_type_encoder, model_version
@@ -242,7 +240,6 @@ def update_requests_in_db(
             # Convert job.feature_impact to JSON string
             ser_feature_impact = json.dumps(job.feature_impact)
 
-
             # Extract binary heatmap from the job
             heatmap_binary = getattr(job, "heatmap_binary", None)
 
@@ -296,7 +293,7 @@ def compute_tabular_importance(model, inputs, predicted_class_index):
 
     # Calculate partial derivative with respect to
     # each input feature in the tabular data.
-    # We do this because this tells use how much the 
+    # We do this because this tells use how much the
     # first batch prediction changes when we change
     # the input feature by a small amount
     gradients = tape.gradient(first_batch_prediction, tabular_input)
@@ -324,7 +321,7 @@ def compute_grad_cam(model, inputs, predicted_class_index, original_image_shape)
     )
 
     with tf.GradientTape() as tape:
-        # We dont need to track the features here 
+        # We dont need to track the features here
         # as that is done automatically because these layers
         # are trainable
         conv_outputs, predictions = grad_model(inputs)

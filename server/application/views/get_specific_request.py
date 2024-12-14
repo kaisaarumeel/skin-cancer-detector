@@ -20,13 +20,13 @@ class GetSpecificRequest(View):
             ):
                 return JsonResponse({"err": "access denied"}, status=403)
 
-
             # Encode the visualized image as base64
             pixel_impact_visualized = (
                 base64.b64encode(specific_request.heatmap).decode("utf-8")
                 if specific_request.heatmap
                 else None
             )
+
             # Map lesion type values to their corresponding display names
             def get_lesion_display(lesion_type):
                 for choice_value, choice_label in Requests.LESION_TYPE_CHOICES:
