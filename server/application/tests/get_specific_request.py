@@ -64,7 +64,7 @@ class GetSpecificRequestTests(TestCase):
             created_at=1234567890,
             probability=95,
             image=base64.b64decode(self.encoded_image),
-            localization="face", 
+            localization="face",
             lesion_type="nv",
             user=self.normal_user,
             model=self.model_version,

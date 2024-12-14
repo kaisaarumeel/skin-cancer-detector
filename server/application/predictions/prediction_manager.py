@@ -104,12 +104,8 @@ def manage_predictions():
             predicted_class_index = np.argmax(predictions[i])
 
             # Prepare single-sample inputs for Grad-CAM
-            image_input = np.expand_dims(
-                resized_images[i], axis=0
-            ) 
-            tabular_input = np.expand_dims(
-                tabular_features[i], axis=0
-            )  
+            image_input = np.expand_dims(resized_images[i], axis=0)
+            tabular_input = np.expand_dims(tabular_features[i], axis=0)
 
             # Compute grad cam for the image
             heatmap = compute_grad_cam(
