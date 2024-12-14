@@ -13,3 +13,5 @@ services:
             - 80:80
         depends_on:
             - backend
+        environment:
+            - VITE_BACKEND_SKINSCAN=${VITE_BACKEND_SKINSCAN}
