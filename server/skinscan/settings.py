@@ -23,7 +23,7 @@ if os.getenv("DEBUG") == "False":
     DEBUG = False
 else:
     DEBUG = True
-print("DEBUG is set to" + DEBUG)
+print(f"DEBUG is set to {DEBUG}")
 
 ALLOWED_HOSTS = ["*"]
 
