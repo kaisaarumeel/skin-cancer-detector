@@ -27,6 +27,12 @@ class GetSpecificRequest(View):
                 if specific_request.heatmap
                 else None
             )
+            # Map lesion type values to their corresponding display names
+            def get_lesion_display(lesion_type):
+                for choice_value, choice_label in Requests.LESION_TYPE_CHOICES:
+                    if lesion_type == choice_value:
+                        return choice_label
+                return lesion_type  # Return the original value if not found
 
             request_data = {
                 "request_id": specific_request.request_id,
@@ -34,7 +40,7 @@ class GetSpecificRequest(View):
                 "image": base64.b64encode(specific_request.image).decode("utf-8"),
                 "probability": specific_request.probability,
                 "localization": specific_request.localization,
-                "lesion_type": specific_request.lesion_type,
+                "lesion_type": get_lesion_display(specific_request.lesion_type),
                 "user": specific_request.user.username,
                 "model_version": (
                     specific_request.model.version if specific_request.model else None

@@ -96,7 +96,7 @@
                 <th class="border-b border-gray-200 p-3 sm:p-4 text-left font-light">Date</th>
                 <th class="border-b border-gray-200 p-3 sm:p-4 text-left font-light">Body Part</th>
                 <th class="border-b border-gray-200 p-3 sm:p-4 text-left font-light">Predicted Lesion Type</th>
-                <th class="border-b border-gray-200 p-3 sm:p-4 text-left font-light">Probability</th> <!-- New column for Probability -->
+                <th class="border-b border-gray-200 p-3 sm:p-4 text-left font-light">Probability</th> 
                 <th class="border-b border-gray-200 p-3 sm:p-4 text-center font-light">Actions</th>
               </tr>
             </thead>
