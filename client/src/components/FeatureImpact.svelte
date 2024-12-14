@@ -82,7 +82,7 @@
     {:else if impact}
         <div class="space-y-6">
             <div class="flex justify-between items-center">
-                <h2 class="text-2xl text-tertiary">Diagnosis Explanation</h2>
+                <h2 class="text-2xl font-light text-tertiary">Diagnosis Explanation</h2>
                 <button
                     class="text-gray-500 hover:text-gray-700"
                     on:click={() => (showFeatureImpact = false)}
@@ -93,7 +93,7 @@
 
             <div class="grid md:grid-cols-2 gap-6">
                 <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-tertiary">
+                    <h3 class="text-lg font-medium text-tertiary">
                         Visual Explanation
                     </h3>
                     <div class="border rounded-lg overflow-hidden">
@@ -112,7 +112,7 @@
                 </div>
 
                 <div class="">
-                    <h3 class="text-lg font-semibold text-tertiary">
+                    <h3 class="text-lg font-medium text-tertiary">
                         Feature Contributions
                     </h3>
                     <p class="text-sm text-tertiary">
@@ -125,13 +125,16 @@
                                 class="flex items-center space-x-4 p-3 rounded-lg bg-primary"
                             >
                                 <div class="flex-1">
-                                    <span class="font-medium text-white"
-                                        >{feature.feature}</span
-                                    >
+                                    <span class="font-medium text-white">
+                                        {feature.feature
+                                            .split(' ') // Split the feature name into words
+                                            .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
+                                            .join(' ')} 
+                                    </span>                                    
                                 </div>
                                 <div class="text-right">
                                     <span
-                                        class="font-mono text-white font-bold"
+                                        class="text-white font-medium"
                                     >
                                         {feature.impact.toFixed(3)}%
                                     </span>

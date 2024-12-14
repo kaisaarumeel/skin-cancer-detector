@@ -154,7 +154,7 @@
               {#if expandedScanId === scan.id}
                 <tr>
                   <td colspan="5" class="border-b p-6 bg-gray-100">
-                    <div class="flex flex-col lg:flex-row items-center gap-6">
+                    <div class="flex flex-row items-start gap-6">
                       <div>
                         <img
                           src={scan.image}
