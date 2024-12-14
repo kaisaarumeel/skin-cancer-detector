@@ -122,7 +122,7 @@ deploy-app:
         # Create environment file dynamically
         sudo chmod +x /services/skinscan/create_env.sh
         sudo chown $SERVER_USER:$SERVER_USER /services/skinscan/create_env.sh
-        # sudo /services/skinscan/create_env.sh "$BACKEND_SECRET_KEY" "$SETUP_PROMPT_1" "$SETUP_PROMPT_2"
+        sudo /services/skinscan/create_env.sh "$BACKEND_SECRET_KEY" "$SETUP_PROMPT_1" "$SETUP_PROMPT_2"
         # login to repo container registry and start service
         sudo docker login -u rokanas -p $CI_REGISTRY_TOKEN $CI_REGISTRY
         sudo mv /services/skinscan/skinscan.service /etc/systemd/system/skinscan.service
