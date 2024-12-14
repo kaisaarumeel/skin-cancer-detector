@@ -187,12 +187,13 @@ def extract_jobs_from_queue(BATCH_SIZE, JOB_EXPIRY_TIME):
 
         # Check if the job is expired using its start_time
         if current_time - job.start_time > JOB_EXPIRY_TIME:
+            job_id = job.parameters["request_id"]
             print(
-                f"Job {job.job_id} expired. Deleting corresponding Request record from database..."
+                f"Job {job_id} expired. Deleting corresponding Request record from database..."
             )
 
             # Collect job ID for deletion
-            expired_jobs.append(job.job_id)
+            expired_jobs.append(job_id)
         else:
             # Append valid job objects to the batch
             jobs_batch.append(job)
