@@ -206,6 +206,12 @@ class Requests(models.Model):
         null=True,
     )
 
+    # Feature impact field
+    feature_impact = models.TextField(blank=True, null=True)
+
+    # Binary field for storing Grad-CAM heatmap
+    heatmap = models.BinaryField(blank=True, null=True)
+
     # Foreign Keys
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
 
