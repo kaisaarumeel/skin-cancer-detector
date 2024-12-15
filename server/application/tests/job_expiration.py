@@ -5,6 +5,7 @@ from application.predictions.prediction_manager import (
     extract_jobs_from_queue,
 )
 import time
+import threading
 from queue import Empty
 from application.views.jobs.state import PREDICTION_JOBS
 
@@ -138,8 +139,44 @@ class JobExpirationTests(TransactionTestCase):
             self.assertIsNotNone(PREDICTION_JOBS.get(block=False))
         except Empty:
             self.fail(
-                "Expected queue.get(block=False) to return a job, but it raised queue.Empty."
+                "Expected queue.get(block=False) to return a job, but it raised: queue.Empty."
             )
+
+    def test_extract_empty_queue(self):
+        """ "
+        Test that the thread doesn't hang if the extract function is called when the queue is empty.
+        """
+        TIMEOUT = 5  # seconds
+
+        # Assert that the queue is empty before starting test
+        self.assertTrue(PREDICTION_JOBS.empty())
+
+        # List variables to hold the results
+        jobs_batch = []
+        expired_jobs = []
+
+        # Wrapper function is needed to share the result variables between the two threads
+        def target_wrapper():
+            nonlocal jobs_batch, expired_jobs
+            jobs_batch, expired_jobs = extract_jobs_from_queue(
+                1, 900
+            )  # batch size, job expiry time
+
+        # Run in daemon to ensure child thread gets terminated even if it hangs
+        thread = threading.Thread(daemon=True, target=target_wrapper)
+        thread.start()
+
+        # Wait until the thread terminates or timeout happens
+        thread.join(TIMEOUT)
+
+        if thread.is_alive():
+            self.fail(
+                "The 'extract_jobs_from_queue' function timed out / hanged when called with an empty queue."
+            )
+
+        # Assert that the function returned empty lists
+        self.assertEqual(jobs_batch, [])
+        self.assertEqual(expired_jobs, [])
 
     def test_delete_jobs_from_db(self):
         """
