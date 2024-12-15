@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from ..models import Data  # Replace with your actual model name
+from ..models import Data  
 from django.views import View
 from ..decorators import admin_only
 
