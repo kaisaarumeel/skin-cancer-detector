@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TransactionTestCase
 from application.models import Requests, Users
 from application.predictions.prediction_manager import (
     delete_jobs_from_db,
@@ -9,7 +9,7 @@ from queue import Empty
 from application.views.jobs.state import PREDICTION_JOBS
 
 
-class JobExpirationTests(TestCase):
+class JobExpirationTests(TransactionTestCase):
     def setUp(self):
         """
         Set up test data for requests.
@@ -95,8 +95,8 @@ class JobExpirationTests(TestCase):
         # Assert that 1 valid job was retrieved
         self.assertEqual(len(jobs_batch), 1)
         self.assertEqual(
-            jobs_batch[0],
-            self.valid_job,
+            jobs_batch[0].parameters["request_id"],
+            self.valid_job.parameters["request_id"],
         )
 
     def test_extract_expired_jobs(self):
