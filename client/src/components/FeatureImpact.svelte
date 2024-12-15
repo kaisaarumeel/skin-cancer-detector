@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { API } from "../api";
+    import colorscale_jet from "../media/colorscale_jet.jpg"
 
     // Create interfaces for the impact data
     interface FeatureImpact {
@@ -9,7 +10,7 @@
     }
 
     interface Impact {
-        pixel_impact: string;
+        pixel_impact_visualized: string;
         feature_impact: FeatureImpact[];
     }
 
@@ -27,7 +28,17 @@
             if (impact === undefined) {
                 throw new Error("No impact data found");
             }
-            impact.pixel_impact = `data:image/png;base64,${impact.pixel_impact}`;
+            // Conver the feature impact dict into an array of objects
+            impact.feature_impact = Object.entries(
+                JSON.parse(response.data.request.feature_impact) as Record<
+                    string,
+                    number
+                >,
+            ).map(([feature, impact]) => ({
+                feature,
+                impact,
+            }));
+            impact.pixel_impact_visualized = `data:image/png;base64,${impact.pixel_impact_visualized}`;
         } catch (err: unknown) {
             console.error(err);
             errorOccurred = true;
@@ -51,7 +62,9 @@
 ></div>
 
 <dialog
-    class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 rounded-lg shadow-xl bg-white p-4 w-11/12 max-w-4xl max-h-[90vh] overflow-auto {showFeatureImpact ? 'block' : 'hidden'}"
+    class="overflow-y-scroll fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 rounded-lg shadow-xl bg-white p-6 w-11/12 max-w-4xl {showFeatureImpact
+        ? 'block'
+        : 'hidden'}"
     open={showFeatureImpact}
 >
     {#if errorOccurred}
@@ -69,7 +82,7 @@
     {:else if impact}
         <div class="space-y-6">
             <div class="flex justify-between items-center">
-                <h2 class="text-2xl text-tertiary">Diagnosis Explanation</h2>
+                <h2 class="text-2xl font-light text-tertiary">Diagnosis Explanation</h2>
                 <button
                     class="text-gray-500 hover:text-gray-700"
                     on:click={() => (showFeatureImpact = false)}
@@ -80,41 +93,54 @@
 
             <div class="grid md:grid-cols-2 gap-6">
                 <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-tertiary">
+                    <h3 class="text-lg font-medium text-tertiary">
                         Visual Explanation
                     </h3>
                     <div class="border rounded-lg overflow-hidden">
                         <img
-                            src={impact.pixel_impact}
+                            src={impact.pixel_impact_visualized}
                             alt="AI explanation visualization"
                             class="w-full h-auto"
                         />
                     </div>
+                    <img alt="Color scale" src={colorscale_jet} class="rounded-md w-full h-auto" />
+
                     <p class="text-sm text-tertiary">
                         Highlighted areas show regions that influenced the
-                        decision of the AI model.
+                        decision of the the AI model with red being the strongest impact. 
                     </p>
                 </div>
 
-                <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-tertiary">
+                <div class="">
+                    <h3 class="text-lg font-medium text-tertiary">
                         Feature Contributions
                     </h3>
-                    <div class="space-y-3">
+                    <p class="text-sm text-tertiary">
+                        The relative impact that certain
+                        features would have on the result if they were modified.
+                    </p>
+                    <div class="space-y-3 mt-4">
                         {#each (impact as Impact).feature_impact as feature}
-                        <div class="flex items-center space-x-4 p-3 rounded-lg bg-primary">
-                            <div class="flex-1">
-                                <span class="font-light text-white">
-                                    {feature.feature.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')}
-                                </span>
+                            <div
+                                class="flex items-center space-x-4 p-3 rounded-lg bg-primary"
+                            >
+                                <div class="flex-1">
+                                    <span class="font-medium text-white">
+                                        {feature.feature
+                                            .split(' ') // Split the feature name into words
+                                            .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
+                                            .join(' ')} 
+                                    </span>                                    
+                                </div>
+                                <div class="text-right">
+                                    <span
+                                        class="text-white font-medium"
+                                    >
+                                        {feature.impact.toFixed(3)}%
+                                    </span>
+                                </div>
                             </div>
-                            <div class="text-right">
-                                <span class="font-light text-white font-bold">
-                                    {Number(feature.impact.toFixed(2)) * 100}%
-                                </span>
-                            </div>
-                        </div>
-                    {/each}
+                        {/each}
                     </div>
                 </div>
             </div>
@@ -128,12 +154,20 @@
     {/if}
 </dialog>
 
-
 <div>
     <button
-        class="bg-primary text-white px-6 py-3 font-light rounded-md cursor-pointer transition-colors hover:bg-secondary shadow-md"
+        class="px-2 py-1 bg-primary text-white rounded-lg hover:opacity-75 transition-opacity"
         on:click={() => (showFeatureImpact = !showFeatureImpact)}
     >
         Show Explanation
     </button>
 </div>
+
+
+<style>
+    @media screen and (max-width: 900px) {
+        dialog {
+            max-height: 80vh;
+        }
+    }
+</style>

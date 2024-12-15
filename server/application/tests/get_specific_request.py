@@ -3,6 +3,7 @@ from django.urls import reverse
 from ..models import Model, Requests, Users
 import base64
 import os
+import json
 
 
 class GetSpecificRequestTests(TestCase):
@@ -53,6 +54,11 @@ class GetSpecificRequestTests(TestCase):
 
         self.encoded_image = self.encode_image_to_base64(self.valid_image_path)
 
+        # Sample feature impact JSON
+        self.feature_impact_json = json.dumps(
+            {"image": 45.5, "age": 15.2, "location": 39.3}
+        )
+
         # Create a request for the normal user
         self.user_request = Requests.objects.create(
             created_at=1234567890,
@@ -62,6 +68,8 @@ class GetSpecificRequestTests(TestCase):
             lesion_type="nv",
             user=self.normal_user,
             model=self.model_version,
+            feature_impact=self.feature_impact_json,
+            heatmap=b"dummy_heatmap_data",
         )
 
         # Create a request for another user
@@ -73,6 +81,8 @@ class GetSpecificRequestTests(TestCase):
             lesion_type="mel",
             user=self.other_user,
             model=self.model_version,
+            feature_impact=self.feature_impact_json,
+            heatmap=b"other_dummy_heatmap_data",
         )
 
         # Create a request for another user with null fields
@@ -80,14 +90,16 @@ class GetSpecificRequestTests(TestCase):
             created_at=1234567892,
             probability=None,
             image=base64.b64decode(self.encoded_image),
-            localization="ear",
+            localization="ear",  # Using choice key
             lesion_type=None,
             user=self.normal_user,
             model=None,
+            feature_impact=None,
+            heatmap=None,
         )
 
     def encode_image_to_base64(self, file_path):
-        """Helper method to encode an image to Base64 and include the data URI prefix"""
+        """Helper method to encode an image to Base64"""
         with open(file_path, "rb") as img_file:
             return base64.b64encode(img_file.read()).decode("utf-8")
 
@@ -106,10 +118,27 @@ class GetSpecificRequestTests(TestCase):
         )
         self.assertEqual(response_data["request"]["user"], self.normal_user.username)
 
+        # Check image
         self.assertIn("image", response_data["request"])
         self.assertEqual(
             base64.b64decode(response_data["request"]["image"]), self.user_request.image
         )
+
+        # Check impacts
+        self.assertIn("feature_impact", response_data["request"])
+        feature_impact = json.loads(response_data["request"]["feature_impact"])
+        self.assertIsInstance(feature_impact, dict)
+        self.assertIn("image", feature_impact)
+
+        # Check heatmap
+        self.assertIn("pixel_impact_visualized", response_data["request"])
+        if self.user_request.heatmap:
+            self.assertEqual(
+                base64.b64decode(response_data["request"]["pixel_impact_visualized"]),
+                self.user_request.heatmap,
+            )
+        else:
+            self.assertIsNone(response_data["request"]["pixel_impact_visualized"])
 
     def test_admin_access_any_user_request(self):
         """Test if an admin can access any user's request"""
@@ -170,3 +199,34 @@ class GetSpecificRequestTests(TestCase):
         self.assertIsNone(response_data["request"]["probability"])
         self.assertIsNone(response_data["request"]["model_version"])
         self.assertIsNone(response_data["request"]["lesion_type"])
+        self.assertIn("feature_impact", response_data["request"])
+        self.assertIsNone(response_data["request"]["feature_impact"])
+        self.assertIsNone(response_data["request"]["pixel_impact_visualized"])
+
+    def test_feature_and_pixel_impact(self):
+        """Test if feature impacts and pixel impact are returned correctly"""
+        self.client.force_login(self.admin_user)
+        response = self.client.get(
+            reverse("api-get-specific-request", args=[self.user_request.request_id])
+        )
+        self.assertEqual(response.status_code, 200)
+
+        response_data = response.json()
+        self.assertIn("request", response_data)
+
+        # Check feature impact
+        self.assertIn("feature_impact", response_data["request"])
+        feature_impact = json.loads(response_data["request"]["feature_impact"])
+        self.assertIsInstance(feature_impact, dict)
+        self.assertIn("image", feature_impact)
+        self.assertIsInstance(feature_impact["image"], float)
+
+        # Check pixel impact
+        self.assertIn("pixel_impact_visualized", response_data["request"])
+        if self.user_request.heatmap:
+            self.assertEqual(
+                base64.b64decode(response_data["request"]["pixel_impact_visualized"]),
+                self.user_request.heatmap,
+            )
+        else:
+            self.assertIsNone(response_data["request"]["pixel_impact_visualized"])
