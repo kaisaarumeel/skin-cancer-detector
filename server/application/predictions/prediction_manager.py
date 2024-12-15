@@ -240,7 +240,7 @@ def extract_jobs_from_queue(BATCH_SIZE, JOB_EXPIRY_TIME):
         job = PREDICTION_JOBS.get()  # Dequeue the next job from the queue
 
         # Check if the job is expired using its start_time
-        if current_time - job.start_time < JOB_EXPIRY_TIME:
+        if current_time - job.start_time > JOB_EXPIRY_TIME:
             job_id = job.parameters["request_id"]
             print(
                 f"Job {job_id} expired. Deleting corresponding Request record from database..."
