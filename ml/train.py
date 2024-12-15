@@ -15,7 +15,7 @@ from tensorflow.keras.layers import (
 )
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.metrics import Recall, Precision
-from tensorflow.keras.applications import DenseNet121
+from tensorflow.keras.applications import DenseNet201
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.losses import categorical_crossentropy
 
@@ -177,7 +177,7 @@ def train(
     set_status(job, "Creating model")
 
     # Utilize a pre-trained model for abstract feature extraction
-    pretrained = DenseNet121(
+    pretrained = DenseNet201(
         weights="imagenet", include_top=False, input_tensor=image_input
     )
 
