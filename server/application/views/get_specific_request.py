@@ -12,7 +12,9 @@ class GetSpecificRequest(View):
             specific_request = Requests.objects.filter(request_id=request_id).first()
 
             if not specific_request:
-                return JsonResponse({"err": "Request not found"}, status=404)
+                return JsonResponse(
+                    {"err": "Request not found", "expired": True}, status=404
+                )
 
             if (
                 not request.user.is_admin
