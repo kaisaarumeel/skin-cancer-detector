@@ -19,6 +19,7 @@
   let requestData: RequestData | null = null;
   let error: string | null = null;
   let intervalId: ReturnType<typeof setInterval> | null = null;
+  let showModal: boolean = false; // Controls modal visibility
 
   // Function to check if the lesion type is malignant
   function isMalignant(lesionType: string | null): boolean {
@@ -34,7 +35,6 @@
           ...data,
           image: `data:image/jpeg;base64,${data.image}`, // Convert to Base64
         } as RequestData;
-        console.log(requestData);
         error = null; // Clear any previous errors
 
         // Stop fetching if lesion_type and probability are not null
@@ -42,11 +42,31 @@
           clearInterval(intervalId!);
           intervalId = null;
         }
+      } else if (response.status === 404) {
+        // Handle expired request
+        if (response.data?.expired) {
+          if (intervalId) {
+            clearInterval(intervalId);
+            intervalId = null;
+          }
+          error = "The requested job has expired and is no longer available.";
+          showModal = true; // Show the modal
+        } else {
+          error = "The requested job could not be found.";
+          showModal = true; // Show the modal
+        }
       } else {
+        // Handle other errors
         error = "Failed to fetch request data.";
+        showModal = true; // Show the modal
       }
     } catch (err) {
-        goto("/upload")
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+      error = "An unexpected error occurred while fetching data.";
+      showModal = true; // Show the modal
     }
   }
 
@@ -67,6 +87,11 @@
       }
     });
   });
+
+  function closeModalAndRedirect() {
+    showModal = false;
+    goto("/upload");
+  }
 </script>
 
 <div class="h-screen flex flex-col">
@@ -122,6 +147,19 @@
       </div>
     {/if}
   </div>
+
+  <!-- Modal -->
+  {#if showModal}
+    <div class="modal-overlay">
+      <div class="modal-content">
+        <h2 class="modal-title">Error</h2>
+        <p class="modal-message">{error}</p>
+        <div class="modal-actions">
+          <button class="button-primary" on:click={closeModalAndRedirect}>Try Again</button>
+        </div>
+      </div>
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -139,4 +177,52 @@
     animation: spin 1.5s linear infinite;
   }
 
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .modal-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+
+  .modal-message {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    color: #666;
+  }
+
+  .modal-actions .button-primary {
+    background-color: #6b46c1;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  .modal-actions .button-primary:hover {
+    background-color: #805ad5;
+  }
 </style>
