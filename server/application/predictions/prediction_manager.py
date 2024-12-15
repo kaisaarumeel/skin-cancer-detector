@@ -240,7 +240,7 @@ def extract_jobs_from_queue(BATCH_SIZE, JOB_EXPIRY_TIME):
         job = PREDICTION_JOBS.get()  # Dequeue the next job from the queue
 
         # Check if the job is expired using its start_time
-        if current_time - job.start_time > JOB_EXPIRY_TIME:
+        if current_time - job.start_time < JOB_EXPIRY_TIME:
             job_id = job.parameters["request_id"]
             print(
                 f"Job {job_id} expired. Deleting corresponding Request record from database..."
@@ -316,6 +316,7 @@ def update_requests_in_db(
         # Close database connection
         conn.close()
 
+
 def delete_jobs_from_db(job_ids):
     """Delete jobs from the database based on their job_ids."""
     try:
@@ -323,6 +324,7 @@ def delete_jobs_from_db(job_ids):
         print(f"Jobs {job_ids} deleted successfully.")
     except Exception as e:
         print(f"Error deleting jobs {job_ids}: {e}")
+
 
 def compute_tabular_importance(model, inputs, predicted_class_index):
     # By utilizing the gradient tape we track the gradient/derivative
