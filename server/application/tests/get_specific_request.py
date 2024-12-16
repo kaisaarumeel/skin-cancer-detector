@@ -41,7 +41,6 @@ class GetSpecificRequestTests(TestCase):
             is_active=True,
         )
 
-
         self.valid_image_path = os.path.join(
             os.path.dirname(__file__), "test_data", "valid_test_image.jpg"
         )

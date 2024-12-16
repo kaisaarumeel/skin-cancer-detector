@@ -26,7 +26,6 @@ class GetRequestsByUsernameTests(TestCase):
             is_active=True,
         )
 
-
         # Create requests
         Requests.objects.create(
             created_at=1234567890,
