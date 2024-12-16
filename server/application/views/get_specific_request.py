@@ -45,7 +45,7 @@ class GetSpecificRequest(View):
                 "lesion_type": get_lesion_display(specific_request.lesion_type),
                 "user": specific_request.user.username,
                 "model_version": (
-                    specific_request.model.version if specific_request.model else None
+                    specific_request.model if specific_request.model else None
                 ),
                 "feature_impact": specific_request.feature_impact,
                 "pixel_impact_visualized": pixel_impact_visualized,
@@ -54,6 +54,7 @@ class GetSpecificRequest(View):
             return JsonResponse({"request": request_data}, status=200)
 
         except Exception as e:
+            print(e)
             return JsonResponse(
                 {"err": f"Error retrieving the request: {str(e)}"}, status=500
             )

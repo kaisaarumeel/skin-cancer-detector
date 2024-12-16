@@ -40,7 +40,7 @@ class GetRequestsByUsername(View):
                     "lesion_type": get_lesion_display(req.lesion_type),
                     "user": req.user.username,
                     "image": base64.b64encode(req.image).decode("utf-8"),
-                    "model_version": req.model.version if req.model else None,
+                    "model_version": req.model if req.model else None,
                 }
                 for req in user_requests
             ]

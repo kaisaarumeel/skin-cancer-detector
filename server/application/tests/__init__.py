@@ -11,3 +11,4 @@ from .get_requests_by_username import GetRequestsByUsernameTests
 from .predictions import PreprocessDataTests
 from .delete_user import DeleteUserTests
 from .job_expiration import JobExpirationTests
+from .get_total_datapoints import GetTotalDataPointsTests

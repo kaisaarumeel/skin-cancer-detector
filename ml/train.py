@@ -15,7 +15,7 @@ from tensorflow.keras.layers import (
 )
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.metrics import Recall, Precision
-from tensorflow.keras.applications import DenseNet121
+from tensorflow.keras.applications import DenseNet169
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.losses import categorical_crossentropy
 
@@ -57,16 +57,16 @@ def train(
     app_table_name="models",
     row_limit=None,
     start_row=0,
-    test_size=0.2,
+    test_size=0.1,
     random_state=666,
-    input_size=(224, 224, 3),
+    input_size=(255, 255, 3),
     num_classes=7,
     dropout_rate=0.0,
     loss_function="categorical_crossentropy",
     num_epochs=10,
     batch_size=16,
     learning_rate=1e-5,
-    malignant_multiplier=20.0,
+    malignant_multiplier=15.0,
 ):
     # Custom status callback for job status update
     status_callback = StatusUpdateCallback(job, set_status)
@@ -177,7 +177,7 @@ def train(
     set_status(job, "Creating model")
 
     # Utilize a pre-trained model for abstract feature extraction
-    pretrained = DenseNet121(
+    pretrained = DenseNet169(
         weights="imagenet", include_top=False, input_tensor=image_input
     )
 

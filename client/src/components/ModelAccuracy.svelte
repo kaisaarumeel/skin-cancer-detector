@@ -2,10 +2,15 @@
   import { onMount, onDestroy } from "svelte";
   import { models, activeModel, type Model } from "../stores/modelStore";
   import { Chart, LineController, LineElement, PointElement, CategoryScale, LinearScale, Tooltip } from "chart.js";
+  import { API } from "../api";
+  import { type AxiosResponse } from "axios";
 
   // register required chart components
   Chart.register(LineController, LineElement, PointElement, CategoryScale, LinearScale, Tooltip);
 
+  let totalDataSize: number;
+  let trainingDataSize: number;
+  let testingDataSize: number;
   let chart: Chart | null = null;
   let dataReady = false;
 
@@ -18,6 +23,19 @@
 
   let graphData: GraphDataPoint[] = [];
   let previousGraphData: GraphDataPoint[] = []; // for checking when to refresh graph data
+
+  async function getDataSetSize() {
+    try {
+      const response: AxiosResponse<{ total_data_points: string }> = await API.get('/api/get-total-datapoints/');
+      totalDataSize = +response.data.total_data_points;
+      if ($activeModel) {
+        testingDataSize = $activeModel.hyperparameters["Test size"] * totalDataSize;
+        trainingDataSize = totalDataSize - testingDataSize;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   function drawChart() {
     const canvas = document.getElementById("lineChart") as HTMLCanvasElement | null;
@@ -49,7 +67,7 @@
             pointBackgroundColor: "rgba(183, 169, 212)",
             pointRadius: 3,
             pointHoverRadius: 3,
-            tension: 0.4,
+            tension: 0,
           },
           {
             label: "Recall",
@@ -59,7 +77,7 @@
             pointBackgroundColor: "rgba(133, 255, 175)",
             pointRadius: 3,
             pointHoverRadius: 3,
-            tension: 0.4,
+            tension: 0,
           },
         ],
       },
@@ -108,10 +126,14 @@
     }
   }
 
+  // reactive statement to detect changes in the activeModel
+  $: if ($activeModel) {
+    // recalculate the data size used during training tihi
+    getDataSetSize();
+  }
+
 
   onMount(() => {
-    //drawChart(); // Initial chart draw
-
     let resizeTimeout: ReturnType<typeof setTimeout>;
     const resizeListener = () => {
       clearTimeout(resizeTimeout);
@@ -198,16 +220,16 @@
               <table class="w-full">
                 <tbody>
                   <tr>
-                    <td class="text-sm text-tertiary font-regular">Training set size:</td>
-                    <td class="text-sm text-tertiary font-regular">16GB</td>
+                    <td class="text-sm text-tertiary font-regular">Total dataset size:</td>
+                    <td class="text-sm text-tertiary font-regular">{totalDataSize}</td>
                   </tr>
                   <tr>
-                    <td class="text-sm text-tertiary font-regular">Validation set size:</td>
-                    <td class="text-sm text-tertiary font-regular">2GB</td>
+                    <td class="text-sm text-tertiary font-regular">Training dataset size:</td>
+                    <td class="text-sm text-tertiary font-regular">{trainingDataSize} ({100 - $activeModel.hyperparameters["Test size"] * 100})%</td>
                   </tr>
                   <tr>
-                    <td class="text-sm text-tertiary font-regular">Test set size:</td>
-                    <td class="text-sm text-tertiary font-regular">2GB</td>
+                    <td class="text-sm text-tertiary font-regular">Test dataset size:</td>
+                    <td class="text-sm text-tertiary font-regular">{testingDataSize} ({$activeModel.hyperparameters["Test size"] * 100 })%</td>
                   </tr>
                 </tbody>
               </table>
