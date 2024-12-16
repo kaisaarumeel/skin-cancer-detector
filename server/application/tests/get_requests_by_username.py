@@ -18,7 +18,7 @@ class GetRequestsByUsernameTests(TestCase):
         )
 
         # Create another test user
-        self.other_user = Users.objects.create(
+        self.user_no_requests = Users.objects.create(
             username="otheruser",
             password="testpassword",
             age=30,
@@ -62,16 +62,12 @@ class GetRequestsByUsernameTests(TestCase):
 
     def test_get_requests_by_username_empty(self):
         """Test retrieving empty requests by username"""
-        self.client.force_login(self.other_user)
+        self.client.force_login(self.user_no_requests)
         response = self.client.get(reverse("api-get-requests-by-username"))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 404)
 
         response_data = response.json()
-        self.assertIn("requests", response_data)
-
-        # check the response contains two requests
-        requests = response_data["requests"]
-        self.assertEqual(len(requests), 0)
+        self.assertEqual("No requests history found.", response_data["err"])
 
     def test_get_requests_unauthenticated(self):
         """Test retrieving requests without logging in"""
