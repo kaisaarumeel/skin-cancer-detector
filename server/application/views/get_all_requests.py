@@ -22,7 +22,7 @@ class GetAllRequests(View):
                     "lesion_type": req.lesion_type,
                     "user": req.user.username,
                     "model_version": (
-                        req.model.version if req.model else None
+                        req.model if req.model else None
                     ),  # Assuming model is related to request
                 }
                 for req in requests
