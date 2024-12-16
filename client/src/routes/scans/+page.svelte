@@ -89,7 +89,7 @@
     </h1>
 
     {#if error}
-      <p class="text-red-500">Error: {error}</p>
+      <p class="text-red-500">{error}</p>
     {:else if scanHistory.length > 0}
       <div class="overflow-x-auto w-full">
         <table class="min-w-full">
