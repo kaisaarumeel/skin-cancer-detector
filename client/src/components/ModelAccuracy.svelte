@@ -49,7 +49,7 @@
             pointBackgroundColor: "rgba(183, 169, 212)",
             pointRadius: 3,
             pointHoverRadius: 3,
-            tension: 0.4,
+            tension: 0,
           },
           {
             label: "Recall",
@@ -59,7 +59,7 @@
             pointBackgroundColor: "rgba(133, 255, 175)",
             pointRadius: 3,
             pointHoverRadius: 3,
-            tension: 0.4,
+            tension: 0,
           },
         ],
       },
