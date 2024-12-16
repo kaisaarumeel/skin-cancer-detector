@@ -6,10 +6,11 @@ from django.views import View
 from django.db import transaction, DatabaseError
 from ..models import Users, Requests
 from ..decorators import login_required, load_json
-from .jobs.state import PREDICTION_JOBS
+from .jobs.state import PREDICTION_JOBS, MGR_INIT
 from .jobs.job import Job
 from io import BytesIO
 from PIL import Image
+from application.predictions.prediction_manager import start_prediction_manager
 
 
 def fix_base64_padding(base64_str):
@@ -24,7 +25,13 @@ class CreateRequest(View):
     @login_required
     @load_json
     def post(self, request):
+        global MGR_INIT
         global PREDICTION_JOBS
+
+        if not MGR_INIT:
+            start_prediction_manager()
+            MGR_INIT = True
+
         data = request.data
 
         if not data:
@@ -44,6 +51,7 @@ class CreateRequest(View):
             return JsonResponse({"err": "Invalid localization value."}, status=400)
         if not image_base64:
             return JsonResponse({"err": "No image file provided"}, status=400)
+        image_data = None
         try:
             image_base64 = fix_base64_padding(image_base64)
             image_data = base64.b64decode(image_base64)
@@ -65,6 +73,12 @@ class CreateRequest(View):
         # for consistency with the rest of the program
         image_array = np.array(image, np.uint8)
 
+        # Ensure the image is in the RGB colour space with the correct dimensions
+        if image.mode != "RGB" or image_array.ndim != 3 or image_array.shape[-1] != 3:
+            return JsonResponse(
+                {"err": "Image must have 3 colour channels (RGB)."}, status=400
+            )
+
         # Get the corresponding user from the database
         user = Users.objects.get(username=request.user.username)
 
@@ -81,19 +95,15 @@ class CreateRequest(View):
                     image=image_data,
                     localization=localization,
                     user=user,
+                    model=None,
                 )
 
                 # Retrieve the generated request id from the database insertion
                 request_id = new_request.request_id
 
         except DatabaseError as e:
-            message = (
-                "An error occured when processing the request. Please try again later."
-            )
-            # Show full stacktrace only to admin users
-            if user.is_admin:
-                message = f"Database insertion error: {str(e)}"
-            return JsonResponse({"err": message}, status=500)
+
+            return JsonResponse({"err": str(e)}, status=500)
 
         # Wrap all relevant request parameters in an object
         parameters = {
@@ -107,7 +117,6 @@ class CreateRequest(View):
         # Create new Job and add it to the global queue
         job = Job(job_id=request_id, start_time=created_at, parameters=parameters)
         PREDICTION_JOBS.put(job)
-
         return JsonResponse(
             {
                 "msg": "Request created successfully! Results pending.",

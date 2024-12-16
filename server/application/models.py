@@ -174,10 +174,10 @@ class Requests(models.Model):
         # Upper limbs
         ("acral", "Acral (Fingers/Toes)"),
         ("hand", "Hand"),
-        ("upper_extremity", "Upper Extremity (Arm)"),
+        ("upper extremity", "Upper Extremity (Arm)"),
         # Lower limbs
         ("foot", "Foot"),
-        ("lower_extremity", "Lower Extremity (Leg)"),
+        ("lower extremity", "Lower Extremity (Leg)"),
         # Other locations
         ("genital", "Genital Area"),
     ]
@@ -190,21 +190,27 @@ class Requests(models.Model):
 
     LESION_TYPE_CHOICES = [
         # Benign lesions
-        ("nv", "Melanocytic nevi"),
-        ("bkl", "Benign keratosis-like lesions"),
-        ("df", "Dermatofibroma"),
-        ("vasc", "Vascular lesions"),
+        ("nv", "Melanocytic nevi (Benign)"),
+        ("bkl", "Benign keratosis-like lesion (Benign)"),
+        ("df", "Dermatofibroma (Benign)"),
+        ("vasc", "Vascular lesion (Benign)"),
         # Malignant/Potentially Malignant lesions
-        ("mel", "Melanoma"),
-        ("bcc", "Basal cell carcinoma"),
-        ("akiec", "Actinic keratoses and intraepithelial carcinoma"),
+        ("mel", "Melanoma (Malignant)"),
+        ("bcc", "Basal cell carcinoma (Malignant)"),
+        ("akiec", "Actinic keratoses and intraepithelial carcinoma (Malignant)"),
     ]
     lesion_type = models.CharField(
         max_length=5,
         choices=LESION_TYPE_CHOICES,
-        blank=False,
-        null=False,
+        blank=True,
+        null=True,
     )
+
+    # Feature impact field
+    feature_impact = models.TextField(blank=True, null=True)
+
+    # Binary field for storing Grad-CAM heatmap
+    heatmap = models.BinaryField(blank=True, null=True)
 
     # Foreign Keys
     user = models.ForeignKey(Users, on_delete=models.CASCADE)

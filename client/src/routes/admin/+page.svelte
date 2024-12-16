@@ -9,6 +9,7 @@
     import { routeGuard } from '../../routeGuard';
     import { API } from '../../api'; 
     import { getCSRFToken } from '../../stores/csrfStore'; // Import CSRF token
+    import ResultsDistribution from '../../components/ResultsDistribution.svelte';
 
     onMount(() => {
       routeGuard(true); // Enable admin check in the routeguard
@@ -29,42 +30,40 @@
         console.error('Error logging out:', err);
       }
     }
+</script>
 
-  </script>
-  
-  <div class="h-screen flex flex-col">
-    <header class="bg-primary shadow h-16 p-4 flex justify-between">
-      <h1 class="text-xl font-extralight text-white">Admin Dashboard</h1>
-      <button class="pr-20 font-light text-white" on:click={handleLogout}>Log out</button>
-    </header>
-  
-    <div class="p-6 flex flex-row gap-2 flex-wrap">
-      <div class="gap-6 grow max-w-full lg:max-w-lg">
-        <div>
-          <AdminUpload></AdminUpload>
+<div class="h-screen flex flex-col">
+  <header class="bg-primary shadow h-16 p-4 flex justify-between">
+    <h1 class="text-xl font-extralight text-white">Admin Dashboard</h1>
+    <button class="pr-20 font-light text-white" on:click={handleLogout}>Log out</button>
+  </header>
 
-        </div>
-        <div class="mt-2">
-          <Retrain></Retrain>
-
-        </div>
+  <div class="p-6 flex flex-row gap-4 flex-wrap lg:flex-nowrap">
+    <!-- Left Column -->
+    <div class="flex flex-col gap-6 w-full lg:w-1/2">
+      <div>
+        <ModelVersions></ModelVersions>
       </div>
-      <div class="h-fit grow">
-        <div class="w-full">
-          <ModelVersions></ModelVersions>
-
-        </div>
-        <div class="mt-2">
-          <ModelAccuracy></ModelAccuracy>
-
-        </div>
-
+      <div>
+        <ModelAccuracy></ModelAccuracy>
       </div>
-
-    </div>
-    <div class="px-6 pb-6">
-      <UserList></UserList>
+      <div>
+        <ResultsDistribution></ResultsDistribution>
+      </div>
     </div>
 
+    <!-- Right Column -->
+    <div class="flex flex-col gap-6 w-full lg:flex-grow lg:w-1/2">
+      <div>
+        <AdminUpload></AdminUpload>
+      </div>
+      <div>
+        <Retrain></Retrain>
+      </div>
+      <div>
+        <UserList></UserList>
+      </div>
+    </div>
   </div>
-  
+
+</div>

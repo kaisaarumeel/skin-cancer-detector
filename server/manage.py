@@ -5,10 +5,9 @@ import sys
 
 import django
 
-from application.predictions.prediction_manager import start_prediction_manager
-
 
 def main():
+    global PREDICTION_JOBS
     """Run administrative tasks."""
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skinscan.settings")
     try:
@@ -27,8 +26,6 @@ def main():
         from setup import setup
 
         setup.setup()
-        # Start prediction manager in a separate thread
-        start_prediction_manager()
 
     # Start the server
     execute_from_command_line(sys.argv)

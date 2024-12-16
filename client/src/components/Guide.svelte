@@ -7,10 +7,10 @@
     export let currentStep = 1;
 
     const steps = [
-      { title: "Step 1", description: "Upload only photos of moles." },
-      { title: "Step 2", description: "Make sure the image is perpendicular to the mole." },
+      { title: "Step 1", description: "Upload only photos of skin lesions." },
+      { title: "Step 2", description: "Make sure the image is perpendicular to the lesion." },
       { title: "Step 3", description: "Have only skin be visible in the photo." },
-      { title: "Step 4", description: "Make sure the image has good lighting and is clearly focused on the mole." },
+      { title: "Step 4", description: "Make sure the image has good lighting and is clearly focused on the lesion." },
     ];
     
     function nextStep() {

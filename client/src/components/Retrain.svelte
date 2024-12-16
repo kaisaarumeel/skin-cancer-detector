@@ -98,6 +98,12 @@
   // This function will poll new jobs from the API every 5 seconds
   function startPolling(): void {
     pollingInterval = setInterval(async () => {
+      // Verify that we are on admin page by checking if "admin"
+      // is in the URL
+      if (!window.location.href.includes("admin")) {
+        clearInterval(pollingInterval);
+        return;
+      }
       await fetchJobs();
     }, 5000);
   }
