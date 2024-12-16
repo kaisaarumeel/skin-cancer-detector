@@ -243,7 +243,7 @@ def update_requests_in_db(
             cursor.execute(
                 """
                 UPDATE requests
-                SET probability = ?, lesion_type = ?, model_id = ?, 
+                SET probability = ?, lesion_type = ?, model = ?, 
                     feature_impact = ?, heatmap = ?
                 WHERE request_id = ?;
                 """,

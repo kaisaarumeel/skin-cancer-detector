@@ -41,13 +41,6 @@ class GetSpecificRequestTests(TestCase):
             is_active=True,
         )
 
-        # Create a model version
-        self.model_version = Model.objects.create(
-            created_at=1234567890,
-            weights=b"test_weights",
-            hyperparameters="default",
-        )
-
         self.valid_image_path = os.path.join(
             os.path.dirname(__file__), "test_data", "valid_test_image.jpg"
         )
@@ -67,7 +60,7 @@ class GetSpecificRequestTests(TestCase):
             localization="face",
             lesion_type="nv",
             user=self.normal_user,
-            model=self.model_version,
+            model=1,
             feature_impact=self.feature_impact_json,
             heatmap=b"dummy_heatmap_data",
         )
@@ -80,7 +73,7 @@ class GetSpecificRequestTests(TestCase):
             localization="ear",
             lesion_type="mel",
             user=self.other_user,
-            model=self.model_version,
+            model=2,
             feature_impact=self.feature_impact_json,
             heatmap=b"other_dummy_heatmap_data",
         )

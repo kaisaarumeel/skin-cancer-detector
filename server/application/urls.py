@@ -36,6 +36,7 @@ from .views.is_admin import IsAdmin
 from .views.get_specific_request import GetSpecificRequest
 from .views.get_requests_by_username import GetRequestsByUsername
 from .views.delete_user import DeleteUser
+from .views.get_total_datapoints import GetTotalDataPoints
 from .views.get_csrf_token import GetCSRFToken
 
 
@@ -72,5 +73,10 @@ urlpatterns = [
         name="api-get-requests-by-username",
     ),
     path("delete-user/<str:username>/", DeleteUser.as_view(), name="api-delete-user"),
+    path(
+        "get-total-datapoints/",
+        GetTotalDataPoints.as_view(),
+        name="api-get-total-datapoints",
+    ),
     path("get-csrf-token/", GetCSRFToken.as_view(), name="api-get-csrf-token"),
 ]
