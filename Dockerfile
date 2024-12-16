@@ -37,4 +37,4 @@ CMD sh -c ". venv/bin/activate && \
     python manage.py makemigrations && \
     python manage.py migrate && \
     python manage.py migrate --database=db_images && \
-    gunicorn --bind 0.0.0.0:8000 --workers 3 skinscan.wsgi:application"
+    gunicorn --bind 0.0.0.0:8000 --workers 3 wsgi:application"
