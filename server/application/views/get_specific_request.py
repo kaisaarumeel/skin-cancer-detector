@@ -13,14 +13,14 @@ class GetSpecificRequest(View):
 
             if not specific_request:
                 return JsonResponse(
-                    {"err": "Request not found", "expired": True}, status=404
+                    {"err": "Request has expired. Please try again."}, status=404
                 )
 
             if (
                 not request.user.is_admin
                 and specific_request.user.username != request.user.username
             ):
-                return JsonResponse({"err": "access denied"}, status=403)
+                return JsonResponse({"err": "Access denied."}, status=403)
 
             # Encode the visualized image as base64
             pixel_impact_visualized = (

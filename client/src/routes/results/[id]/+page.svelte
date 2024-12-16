@@ -6,6 +6,7 @@
   import { goto } from "$app/navigation";
   import TopBar from "../../../components/TopBar.svelte";
   import FeatureImpact from '../../../components/FeatureImpact.svelte';
+  import { isAxiosError } from "axios";
 
   interface RequestData {
     request_id: number;
@@ -17,7 +18,7 @@
   const MALIGNANT_LESION_TYPES = ["Melanoma (Malignant)", "Basal cell carcinoma (Malignant)", "Actinic keratoses and intraepithelial carcinoma (Malignant)"]; // Malignant lesion types
   let requestId: string = $page.params.id;
   let requestData: RequestData | null = null;
-  let error: string | null = null;
+  let errorMessage: string | null = null;
   let intervalId: ReturnType<typeof setInterval> | null = null;
   let showModal: boolean = false; // Controls modal visibility
 
@@ -35,38 +36,31 @@
           ...data,
           image: `data:image/jpeg;base64,${data.image}`, // Convert to Base64
         } as RequestData;
-        error = null; // Clear any previous errors
+        errorMessage = null; // Clear any previous errors
 
         // Stop fetching if lesion_type and probability are not null
         if (requestData.lesion_type !== null && requestData.probability !== null) {
           clearInterval(intervalId!);
           intervalId = null;
         }
-      } else if (response.status === 404) {
-        // Handle expired request
-        if (response.data?.expired) {
-          if (intervalId) {
-            clearInterval(intervalId);
-            intervalId = null;
-          }
-          error = "The requested job has expired and is no longer available.";
-          showModal = true; // Show the modal
-        } else {
-          error = "The requested job could not be found.";
-          showModal = true; // Show the modal
-        }
-      } else {
-        // Handle other errors
-        error = "Failed to fetch request data.";
-        showModal = true; // Show the modal
       }
     } catch (err) {
       if (intervalId) {
         clearInterval(intervalId);
         intervalId = null;
       }
-      error = "An unexpected error occurred while fetching data.";
-      showModal = true; // Show the modal
+      if (isAxiosError(err)) {
+        // Safely access the data field and assert its type
+        const errorResponse = err.response?.data as { err?: string } | undefined;
+        // Check if the "err" property exists and is a string
+        if (typeof errorResponse?.err === "string") {
+          // Use it as error message
+          errorMessage = errorResponse.err;
+        } else {
+          errorMessage = "An unexpected error occurred while fetching data.";
+        }
+        showModal = true; // Show the modal
+      }
     }
   }
 
@@ -100,13 +94,15 @@
   </div>
   <div class="w-full p-4 flex flex-col items-center justify-center">
     <h1 class="text-secondary text-xl sm:text-2xl font-extralight mb-4">Scan Result</h1>
-    {#if error}
-      <p class="text-red-500">{error}</p>
+    {#if errorMessage && !showModal}
+      <p class="text-red-500">{errorMessage}</p>
     {:else if !requestData || requestData.lesion_type === null || requestData.probability === null}
-      <div class="flex flex-col items-center mt-20">
-        <p class="text-tertiary mb-10">Loading...</p>
-        <div class="spinner"></div> 
-      </div>
+      {#if !showModal}
+        <div class="flex flex-col items-center mt-20">
+          <p class="text-tertiary mb-10">Loading...</p>
+          <div class="spinner"></div> 
+        </div>
+      {/if}
     {:else}
       <div class="flex flex-col lg:flex-row items-center mt-10 lg:items-center lg:justify-center w-full p-4">
         <!-- Image Section -->
@@ -152,8 +148,8 @@
   {#if showModal}
     <div class="modal-overlay">
       <div class="modal-content">
-        <h2 class="modal-title">Error</h2>
-        <p class="modal-message">{error}</p>
+        <h2 class="modal-title text-red-500">Error</h2>
+        <p class="modal-message">{errorMessage}</p>
         <div class="modal-actions">
           <button class="button-primary" on:click={closeModalAndRedirect}>Try Again</button>
         </div>
@@ -209,7 +205,7 @@
   .modal-message {
     font-size: 1rem;
     margin-bottom: 1.5rem;
-    color: #666;
+    color: #EF4444;
   }
 
   .modal-actions .button-primary {
