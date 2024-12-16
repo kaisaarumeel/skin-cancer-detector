@@ -44,7 +44,7 @@ AUTH_USER_MODEL = "application.Users"
 
 # Middleware
 MIDDLEWARE = [
-    #"corsheaders.middleware.CorsMiddleware",   # Disable CORS until we have a domain
+    # "corsheaders.middleware.CorsMiddleware",   # Disable CORS until we have a domain
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -162,8 +162,8 @@ if not DEBUG:
 #     "http://localhost:80",
 #     "http://localhost:8000",
 # ]
-#CORS_ORIGIN_ALLOW_ALL = True
-#CORS_ALLOW_CREDENTIALS = True
+# CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOW_CREDENTIALS = True
 
 # Logging configuration
 LOGGING = {

@@ -52,6 +52,4 @@ class GetRequestsByUsername(View):
 
         except Exception as e:
             print(e)
-            return JsonResponse(
-                {"err": "Error retrieving the requests."}, status=500
-            )
+            return JsonResponse({"err": "Error retrieving the requests."}, status=500)

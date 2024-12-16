@@ -8,5 +8,5 @@ class Logout(View):
         # Log out the user
         logout(request)
         response = JsonResponse({"msg": "Successfully logged out"}, status=200)
-        response.delete_cookie('csrftoken')
+        response.delete_cookie("csrftoken")
         return response

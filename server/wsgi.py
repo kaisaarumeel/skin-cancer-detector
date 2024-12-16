@@ -15,4 +15,5 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skinscan.settings")
 application = get_wsgi_application()
 
 from setup.setup import setup
+
 setup()

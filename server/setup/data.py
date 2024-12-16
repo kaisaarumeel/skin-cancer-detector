@@ -20,8 +20,8 @@ def assert_or_get_training_data():
 
     print("Current training data size is", current_training_count)
 
-    first_prompt=os.environ.get("SETUP_FIRST_PROMPT", "n").lower()
-    if first_prompt !="y":
+    first_prompt = os.environ.get("SETUP_FIRST_PROMPT", "n").lower()
+    if first_prompt != "y":
         print("Data validated")
         return
 
