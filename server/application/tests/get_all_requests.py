@@ -37,13 +37,6 @@ class GetAllRequestsTests(TestCase):
             is_active=True,
         )
 
-        # Create a model (auto-generated version)
-        self.model_version = Model.objects.create(
-            created_at=1234567890,
-            weights=b"test_weights",
-            hyperparameters="default",
-        )
-
         # Create requests
         Requests.objects.create(
             created_at=1234567890,
@@ -52,7 +45,7 @@ class GetAllRequestsTests(TestCase):
             localization="face",
             lesion_type="nv",
             user=self.test_user,
-            model=self.model_version,
+            model=1,
         )
 
         Requests.objects.create(
@@ -62,7 +55,7 @@ class GetAllRequestsTests(TestCase):
             localization="arm",
             lesion_type="mel",
             user=self.other_user,
-            model=self.model_version,
+            model=2,
         )
 
     def test_get_all_requests(self):
