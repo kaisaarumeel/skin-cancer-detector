@@ -64,10 +64,10 @@ class GetRequestsByUsernameTests(TestCase):
         """Test retrieving empty requests by username"""
         self.client.force_login(self.user_no_requests)
         response = self.client.get(reverse("api-get-requests-by-username"))
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
 
         response_data = response.json()
-        self.assertEqual("No requests history found.", response_data["err"])
+        self.assertEqual(response_data["requests"], [])
 
     def test_get_requests_unauthenticated(self):
         """Test retrieving requests without logging in"""

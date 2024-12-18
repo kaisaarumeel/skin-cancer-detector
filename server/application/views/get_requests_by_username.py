@@ -15,8 +15,9 @@ class GetRequestsByUsername(View):
                 "-created_at"
             )  # Order by the date created in descending order (latest first)
 
+            # If there are no requests (empty list) return early to prevent errors
             if not user_requests:
-                return JsonResponse({"err": "No requests history found."}, status=404)
+                return JsonResponse({"requests": list(user_requests)}, status=200)
 
             # Map localization values to their corresponding display names from the choices
             def get_localization_display(localization):
