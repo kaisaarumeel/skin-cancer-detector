@@ -8,12 +8,15 @@ https://docs.djangoproject.com/en/5.1/howto/deployment/wsgi/
 """
 
 import os
+import django
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skinscan.settings")
 
-application = get_wsgi_application()
+django.setup()
 
 from setup.setup import setup
 
 setup()
+
+application = get_wsgi_application()
