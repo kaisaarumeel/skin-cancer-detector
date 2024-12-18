@@ -148,7 +148,7 @@
   {#if showModal}
     <div class="modal-overlay">
       <div class="modal-content">
-        <h2 class="modal-title text-red-500">Error</h2>
+        <h2 class="modal-title">Error</h2>
         <p class="modal-message">{errorMessage}</p>
         <div class="modal-actions">
           <button class="button-primary" on:click={closeModalAndRedirect}>Try Again</button>
