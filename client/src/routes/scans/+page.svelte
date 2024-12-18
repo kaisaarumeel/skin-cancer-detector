@@ -22,7 +22,7 @@
   async function fetchScanHistory() {
     error = null;
     try {
-      const response = await API.get("/api/get-requests-by-username");
+      const response = await API.get("/api/get-requests-by-username/");
       scanHistory = response.data.requests.map((req: any) => ({
         id: req.request_id,
         date: formatDate(req.created_at),
