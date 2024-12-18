@@ -11,6 +11,14 @@ def progress_callback(op_code, cur_count, max_count, message):
     print(f"Progress: {percentage}%")
 
 
+# Set setup prompt answers using user input or env variable depending on debug mode
+def get_prompt(prompt_message, env_var):
+    if os.getenv("DEBUG") == "True":
+        return input(prompt_message)
+    else:
+        return os.environ.get(env_var, "n")
+
+
 def assert_or_get_training_data():
     # Load relevant model
     from application.models import Data
@@ -20,14 +28,22 @@ def assert_or_get_training_data():
 
     print("Current training data size is", current_training_count)
 
-    prompt_1 = os.environ.get("SETUP_PROMPT_1", "n").lower()
-    if prompt_1 != "y":
+    # Get the first prompt
+    prompt_1 = get_prompt(
+        "Do you want to download the dataset? [y/n]: ", "SETUP_PROMPT_1"
+    )
+
+    if prompt_1.lower() != "y":
         print("Data validated")
         return
 
+    # Get the second prompt
+    prompt_2 = get_prompt(
+        "Do you want to delete the current data? [y/n]: ", "SETUP_PROMPT_2"
+    )
+
     # delete the current data
-    prompt_2 = os.environ.get("SETUP_PROMPT_2", "y").lower()
-    if prompt_2 == "y":
+    if prompt_2.lower() == "y":
         print("Deleting current data, this might take some time...")
         Data.objects.using("db_images").all().delete()
 
