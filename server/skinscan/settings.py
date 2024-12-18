@@ -44,7 +44,7 @@ AUTH_USER_MODEL = "application.Users"
 
 # Middleware
 MIDDLEWARE = [
-    # "corsheaders.middleware.CorsMiddleware",   # Disable CORS until we have a domain
+    "corsheaders.middleware.CorsMiddleware",   # Disable CORS until we have a domain
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -137,6 +137,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://164.92.176.222", # Production - public IP address
 ]
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_COOKIE_SECURE = False  # Only sent over HTTPS
@@ -152,19 +153,13 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
-# CORS settings (for prod.)
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
-#     "http://127.0.0.1:3000",
-#     "http://localhost:5173",
-#     "http://127.0.0.1:5173",
-#     "http://164.92.176.222",
-#     "http://164.92.176.222:80",
-#     "http://localhost:80",
-#     "http://localhost:8000",
-# ]
-# CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ALLOW_CREDENTIALS = True
+# CORS settings
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173", 
+    "http://127.0.0.1:5173",
+    "http://164.92.176.222", # Production - public IP address
+]
+CORS_ALLOW_CREDENTIALS = True
 
 # Logging configuration
 LOGGING = {
