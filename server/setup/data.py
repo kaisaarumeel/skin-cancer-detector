@@ -11,12 +11,12 @@ def progress_callback(op_code, cur_count, max_count, message):
     print(f"Progress: {percentage}%")
 
 
-# Set setup prompt answers using user input or env variable depending on debug mode
+# Set setup prompt answers using env variable or user input depending on debug mode
 def get_prompt(prompt_message, env_var):
-    if os.getenv("DEBUG") == "True":
-        return input(prompt_message)
-    else:
+    if os.getenv("DEBUG") == "False":
         return os.environ.get(env_var, "n")
+    else:
+        return input(prompt_message)
 
 
 def assert_or_get_training_data():
