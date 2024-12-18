@@ -20,14 +20,14 @@ def assert_or_get_training_data():
 
     print("Current training data size is", current_training_count)
 
-    first_prompt = os.environ.get("SETUP_FIRST_PROMPT", "n").lower()
-    if first_prompt != "y":
+    prompt_1 = os.environ.get("SETUP_PROMPT_1", "n").lower()
+    if prompt_1 != "y":
         print("Data validated")
         return
 
     # delete the current data
-    second_prompt = os.environ.get("SETUP_SECOND_PROMPT", "y").lower()
-    if second_prompt == "y":
+    prompt_2 = os.environ.get("SETUP_PROMPT_2", "y").lower()
+    if prompt_2 == "y":
         print("Deleting current data, this might take some time...")
         Data.objects.using("db_images").all().delete()
 
@@ -42,7 +42,7 @@ def assert_or_get_training_data():
     if not temp_dir.exists():
         import git
 
-        print("Downloading training data")
+        print("Downloading training data...")
         temp_dir.mkdir()
         git.Repo.clone_from(DATASET_URL, temp_dir, progress=progress_callback)
 
