@@ -232,7 +232,7 @@ class JobExpirationTests(TransactionTestCase):
 
         # Ensure that the queue is empty before starting test
         while not (PREDICTION_JOBS.empty()):
-            _ = PREDICTION_JOBS.get_nowait
+            _ = PREDICTION_JOBS.get_nowait()
 
         # List variables to hold the results
         jobs_batch = []
