@@ -3,6 +3,7 @@
   import { goto, preloadCode } from "$app/navigation";
   import { API } from "../../api";
   import { onMount, onDestroy } from "svelte";
+  import { slide } from "svelte/transition";
   import { routeGuard } from "../../routeGuard";
   import FeatureImpact from "../../components/FeatureImpact.svelte";
 
@@ -153,43 +154,43 @@
               </tr>
               {#if expandedScanId === scan.id}
                 <tr>
-                  <td colspan="5" class="border-b p-6 bg-gray-100">
-                    <div class="flex flex-row items-start gap-6">
-                      <div>
-                        <img
-                          src={scan.image}
-                          alt="Skin scan"
-                          class="h-40 w-40 object-cover border"
-                        />
-                        <div class="mt-2">
-                          {#if scan.prediction !== "Pending..."}
-                            <FeatureImpact scan={scan.id} />
-                          {/if}
+                  <td colspan="5" class="border-b bg-gray-100">
+                    <div transition:slide
+                      class="overflow-hidden"
+                      style="height: {expandedScanId === scan.id ? 'auto' : '0'}; transition: height 0.3s;"
+                    >
+                      <div class="p-6 flex flex-row items-start gap-6">
+                        <div>
+                          <img
+                            src={scan.image}
+                            alt="Skin scan"
+                            class="h-40 w-40 object-cover border"
+                          />
+                          <div class="mt-2">
+                            {#if scan.prediction !== "Pending..."}
+                              <FeatureImpact scan={scan.id} />
+                            {/if}
+                          </div>
                         </div>
-                      </div>
-                      <div class="flex-1">
-                        <p class="text-lg text-tertiary font-medium">
-                          Scan Details
-                        </p>
-                        <div class="mt-4 space-y-2">
-                          <p class="text-tertiary font-light">
-                            <strong>Created at:</strong>
-                            {scan.date}
-                          </p>
-                          <p class="text-tertiary font-light">
-                            <strong>Body Part:</strong>
-                            {scan.bodyPart}
-                          </p>
-                          <p class="text-tertiary font-light">
-                            <strong>Prediction:</strong>
-                            {scan.prediction}
-                          </p>
-                          <p class="text-tertiary font-light">
-                            <strong>Probability of the result:</strong>
-                            {scan.probability
-                              ? (scan.probability * 100).toFixed(2) + "%"
-                              : "N/A"}
-                          </p>
+                        <div class="flex-1">
+                          <p class="text-lg text-tertiary font-medium">Scan Details</p>
+                          <div class="mt-4 space-y-2">
+                            <p class="text-tertiary font-light">
+                              <strong>Created at:</strong> {scan.date}
+                            </p>
+                            <p class="text-tertiary font-light">
+                              <strong>Body Part:</strong> {scan.bodyPart}
+                            </p>
+                            <p class="text-tertiary font-light">
+                              <strong>Prediction:</strong> {scan.prediction}
+                            </p>
+                            <p class="text-tertiary font-light">
+                              <strong>Probability of the result:</strong>
+                              {scan.probability
+                                ? (scan.probability * 100).toFixed(2) + "%"
+                                : "N/A"}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
