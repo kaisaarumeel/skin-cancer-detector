@@ -20,6 +20,7 @@ from .preprocess_user_data import (
     extract_images,
     extract_tabular_features,
 )
+from application.models import Requests
 
 
 # Find the path to the database
@@ -33,6 +34,7 @@ def manage_predictions():
     global PREDICTION_JOBS  # Global Job queue
     BATCH_SIZE = 64  # Max number of jobs to process in one batch
     INTERVAL = 3  # TODO decide actual time / make dynamic?
+    JOB_EXPIRY_TIME = 15 * 60  # Expiry time for pending jobs (in seconds)
 
     # Enable repeated warnings (otherwise subsequent matching warnings are silenced)
     warnings.simplefilter("always", UserWarning)
@@ -75,11 +77,12 @@ def manage_predictions():
             tabular_scaler = get_scaler(hyperparameters)
             localization_encoder, lesion_type_encoder = get_encoders(hyperparameters)
 
-        # Dequeue the Jobs to be processed, up to the max limit
-        jobs_batch = [
-            PREDICTION_JOBS.get()
-            for _ in range(min(BATCH_SIZE, PREDICTION_JOBS.qsize()))
-        ]
+        # Extract jobs from the global queue
+        jobs_batch, expired_jobs = extract_jobs_from_queue(BATCH_SIZE, JOB_EXPIRY_TIME)
+
+        # Delete expired jobs (Request records) from the database
+        if expired_jobs:
+            delete_jobs_from_db(expired_jobs)
 
         # If there are no Jobs to be processed, skip this loop iteration
         if not jobs_batch:
@@ -207,6 +210,51 @@ def get_encoders(hyperparameters):
     return localization_encoder, lesion_type_encoder
 
 
+def extract_jobs_from_queue(BATCH_SIZE, JOB_EXPIRY_TIME):
+    """
+    Extracts a batch of valid jobs from the queue and identifies expired jobs.
+
+    This function dequeues jobs from the global queue (`PREDICTION_JOBS`) up to the
+    specified `BATCH_SIZE`, checks if any are expired based on `JOB_EXPIRY_TIME`,
+    and returns two lists:
+    1. A list of valid job objects.
+    2. A list of expired job IDs for deletion.
+
+    Args:
+        BATCH_SIZE (int): Maximum number of jobs to retrieve.
+        JOB_EXPIRY_TIME (int): Expiry time for pending jobs (seconds)
+
+    Returns:
+        tuple: A tuple containing:
+            - List of valid job objects.
+            - List of expired job IDs.
+    """
+
+    current_time = time.time()  # Current UNIX timestamp
+
+    jobs_batch = []  # List to collect valid jobs
+    expired_jobs = []  # List to collect expired job IDs
+
+    # Dequeue valid jobs and check for expired ones
+    while not PREDICTION_JOBS.empty() and len(jobs_batch) < BATCH_SIZE:
+        job = PREDICTION_JOBS.get()  # Dequeue the next job from the queue
+
+        # Check if the job is expired using its start_time
+        if current_time - job.start_time > JOB_EXPIRY_TIME:
+            job_id = job.parameters["request_id"]
+            print(
+                f"Job {job_id} expired. Deleting corresponding Request record from database..."
+            )
+
+            # Collect job ID for deletion
+            expired_jobs.append(job_id)
+        else:
+            # Append valid job objects to the batch
+            jobs_batch.append(job)
+
+    return jobs_batch, expired_jobs
+
+
 def update_requests_in_db(
     db_path, jobs_batch, predictions, lesion_type_encoder, model_version
 ):
@@ -267,6 +315,15 @@ def update_requests_in_db(
     finally:
         # Close database connection
         conn.close()
+
+
+def delete_jobs_from_db(job_ids):
+    """Delete jobs from the database based on their job_ids."""
+    try:
+        Requests.objects.filter(request_id__in=job_ids).delete()
+        print(f"Jobs {job_ids} deleted successfully.")
+    except Exception as e:
+        print(f"Error deleting jobs {job_ids}: {e}")
 
 
 def compute_tabular_importance(model, inputs, predicted_class_index):
