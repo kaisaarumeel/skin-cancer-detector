@@ -4,6 +4,7 @@
     import { API } from "../api";
     import { models, activeModel, type Model, type Hyperparameters } from "../stores/modelStore";
     import { slide } from "svelte/transition";
+    import { getCSRFToken } from '../stores/csrfStore'; // Import CSRF token
 
     let expandedModelVersion: string | null = null;
     let isConfirmingActivation: boolean = false;
@@ -41,7 +42,11 @@
 
     async function setActiveModel(model: Model): Promise<void> {
         try {
-            const response: AxiosResponse<{ message: string }> = await API.post(`api/models/swap-model/${model.version}/`);
+            const response: AxiosResponse<{ message: string }> = await API.post(`api/models/swap-model/${model.version}/`, {}, {
+                headers: {
+                    'X-CSRFToken': getCSRFToken(),
+                }
+            });
             activeModel.set(model);
         } catch (error) {
             console.error("Setting active model failed:", error);
@@ -51,7 +56,11 @@
 
     async function deleteModel(model: Model): Promise<void> {
         try {
-            const response: AxiosResponse<{ message: string }> = await API.delete(`api/models/delete-model/${model.version}/`);
+            const response: AxiosResponse<{ message: string }> = await API.delete(`api/models/delete-model/${model.version}/`, {
+                headers: {
+                    'X-CSRFToken': getCSRFToken(),
+                }
+            });
 
             // update the models list
             models.update((currentModels) => currentModels.filter((m) => m.version !== model.version));

@@ -2,7 +2,8 @@
   import { API } from "../api";
   import { onMount } from "svelte";
   import type { AxiosResponse, AxiosError } from "axios";
-    import { FIELDS } from "../scripts/fields";
+  import { FIELDS } from "../scripts/fields";
+  import { getCSRFToken } from '../stores/csrfStore'; // Import CSRF token
 
   // Interface definitions
   interface TrainingJob {
@@ -123,7 +124,11 @@
   async function deleteCompletedJobs(): Promise<void> {
     try {
       // Delete all completed jobs
-      await API.delete("/api/retrain/");
+      await API.delete("/api/retrain/", {
+        headers: {
+          'X-CSRFToken': getCSRFToken(),
+        }
+      });
       // Filter out completed jobs
       jobs = jobs.filter((job) => job.status !== "completed");
     } catch (error) {
@@ -177,9 +182,12 @@
       );
 
       // Send the retrain request
-      const response: AxiosResponse<{ success: boolean }> = await API.post(
-        "/api/retrain/",
-        payload,
+      const response: AxiosResponse<{ success: boolean }> = await API.post("/api/retrain/",
+        payload, {
+          headers: {
+            'X-CSRFToken': getCSRFToken(),
+          }
+        }
       );
       // Log the response
       console.log("Retrain successful:", response);

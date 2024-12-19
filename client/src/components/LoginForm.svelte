@@ -2,6 +2,7 @@
   import { goto } from '$app/navigation';
   import { API } from '../api'; // Import the API instance
   import type { AxiosError } from 'axios'; // Import AxiosError type
+  import { generateCSRFToken, getCSRFToken } from '../stores/csrfStore'; // Import CSRF token
 
   let username = '';
   let password = '';
@@ -12,13 +13,21 @@
     err?: string;
   };
 
+
   async function Signin() {
     errorMessage = ''; // Reset error message
     try {
+      // generate csrf token and store in browser cookie
+      await generateCSRFToken();
+
       // Make POST request to the login endpoint
       const response = await API.post('/api/login/', {
         username: username,
         password: password,
+      }, {
+        headers: {
+          'X-CSRFToken': getCSRFToken(),
+        }
       });
 
       // Handle successful response

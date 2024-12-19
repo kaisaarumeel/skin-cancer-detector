@@ -1,0 +1,19 @@
+[Unit]
+Description=Skinscan Service
+After=docker.service
+Requires=docker.service
+StartLimitBurst=5
+StartLimitIntervalSec=30
+
+[Service]
+WorkingDirectory=/services/skinscan/
+EnvironmentFile=/services/skinscan/.env
+ExecStart=docker-compose up
+ExecStop=/bin/bash -c "docker-compose down && docker system prune -a -f"
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

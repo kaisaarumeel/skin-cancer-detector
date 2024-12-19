@@ -1,11 +1,14 @@
 from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 
 from ..decorators import load_json
 from ..models import Users
 
 
+@method_decorator(csrf_exempt, name="dispatch")  # Disable CSRF for the signup view
 class Register(View):
     @load_json
     def post(self, request):

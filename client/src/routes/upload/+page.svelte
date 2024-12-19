@@ -6,6 +6,7 @@
   import { onMount } from "svelte";
   import { API } from '../../api'; // Import the API instance
   import { isAxiosError } from "axios";
+  import { getCSRFToken } from "../../stores/csrfStore";
 
   // Check if the user is logged in when the page is loaded
   onMount(() => {
@@ -114,6 +115,10 @@
       const response = await API.post('/api/create-request/', {
         "localization": localization,
         "image": base64Image
+      }, {
+        headers: {
+          'X-CSRFToken': getCSRFToken(),
+        }
       });
 
       if (response.status === 201) {

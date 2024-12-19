@@ -11,13 +11,21 @@ BASE_DIR = Path(__file__).resolve().parents[2]
 dotenv_path = BASE_DIR / ".env"
 load_dotenv(dotenv_path)
 
+# SECURITY WARNING: don't run with debug turned on in production!
+if os.getenv("DEBUG") == "False":
+    DEBUG = False
+else:
+    DEBUG = True
+print(f"DEBUG is set to {DEBUG}")
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = str(os.getenv("SECRET_KEY"))
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = ["*"]
+# Ensure SECRET_KEY is set in production, or raise an error
+if SECRET_KEY == "None" and DEBUG == False:
+    raise ValueError("The SECRET_KEY environment variable is not set.")
 
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -40,13 +48,14 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    # 'django.middleware.csrf.CsrfViewMiddleware',  # Uncomment in production
+    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 ROOT_URLCONF = "skinscan.urls"
+WSGI_APPLICATION = "wsgi.application"
 
 TEMPLATES = [
     {
@@ -64,8 +73,6 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "skinscan.wsgi.application"
-
 # Database
 DATABASES = {
     "default": {
@@ -79,7 +86,7 @@ DATABASES = {
 }
 
 # Path to database router that restricts migrations to the two databases
-DATABASE_ROUTERS = {"utils.db_router.MigrationRouter"}
+DATABASE_ROUTERS = ["utils.db_router.MigrationRouter"]
 
 # List of models that should only be added as tables to the image DB
 # The database router will restrict migrations to the DBs using this list
@@ -124,11 +131,35 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_COOKIE_AGE = 86400  # Session expires after 24 hours
 
-# CSRF settings (will need to be updated in production)
+# CSRF settings
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://164.92.176.222",  # Production - public IP address
 ]
+CSRF_COOKIE_NAME = "csrftoken"
+CSRF_COOKIE_SECURE = False  # Only sent over HTTPS
+CSRF_COOKIE_HTTPONLY = False  # Cookie is accessible to JavaScript in client
+SESSION_COOKIE_SECURE = False
+
+# Security settings (for production)
+if not DEBUG:
+    # Enable these if we setup a domain name + HTTPS
+    # SECURE_SSL_REDIRECT = True
+    # SESSION_COOKIE_SECURE = True
+    # CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# CORS settings
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://164.92.176.222",  # Production - public IP address
+]
+CORS_ALLOW_CREDENTIALS = True
 
 # Logging configuration
 LOGGING = {
@@ -144,20 +175,3 @@ LOGGING = {
         "level": "INFO",
     },
 }
-
-# Security settings (for production)
-if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-
-# CORS settings (for prod.)
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
-CORS_ALLOW_CREDENTIALS = True

@@ -1,0 +1,16 @@
+services:
+    backend:
+        image: registry.git.chalmers.se/courses/dit826/2024/group6/skinscan-backend:latest
+        ports: 
+            - 8000:8000
+        environment:
+            - DEBUG=False
+            - SECRET_KEY=${SECRET_KEY}
+            - SETUP_PROMPT_1=${SETUP_PROMPT_1}
+            - SETUP_PROMPT_2=${SETUP_PROMPT_2}
+    frontend:
+        image: registry.git.chalmers.se/courses/dit826/2024/group6/skinscan-frontend:latest
+        ports: 
+            - 80:80
+        depends_on:
+            - backend

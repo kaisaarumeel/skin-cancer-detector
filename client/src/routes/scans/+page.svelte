@@ -22,7 +22,7 @@
   async function fetchScanHistory() {
     error = null;
     try {
-      const response = await API.get("/api/get-requests-by-username");
+      const response = await API.get("/api/get-requests-by-username/");
       scanHistory = response.data.requests.map((req: any) => ({
         id: req.request_id,
         date: formatDate(req.created_at),
@@ -89,7 +89,7 @@
     </h1>
 
     {#if error}
-      <p class="text-red-500">Error: {error}</p>
+      <p class="text-red-500">{error}</p>
     {:else if scanHistory.length > 0}
       <div class="overflow-x-auto w-full">
         <table class="min-w-full">

@@ -11,6 +11,14 @@ def progress_callback(op_code, cur_count, max_count, message):
     print(f"Progress: {percentage}%")
 
 
+# Set setup prompt answers using env variable or user input depending on debug mode
+def get_prompt(prompt_message, env_var):
+    if os.getenv("DEBUG") == "False":
+        return os.environ.get(env_var, "n")
+    else:
+        return input(prompt_message)
+
+
 def assert_or_get_training_data():
     # Load relevant model
     from application.models import Data
@@ -19,15 +27,23 @@ def assert_or_get_training_data():
     current_training_count = Data.objects.using("db_images").count()
 
     print("Current training data size is", current_training_count)
-    # get user input
-    user_input = input("Do you want to download the dataset? [y/n]: ")
-    if user_input.lower() != "y":
+
+    # Get the first prompt
+    prompt_1 = get_prompt(
+        "Do you want to download the dataset? [y/n]: ", "SETUP_PROMPT_1"
+    )
+
+    if prompt_1.lower() != "y":
         print("Data validated")
         return
 
-    # Prompt the user if they want to delete the current data
-    user_input = input("Do you want to delete the current data? [y/n]: ")
-    if user_input.lower() == "y":
+    # Get the second prompt
+    prompt_2 = get_prompt(
+        "Do you want to delete the current data? [y/n]: ", "SETUP_PROMPT_2"
+    )
+
+    # delete the current data
+    if prompt_2.lower() == "y":
         print("Deleting current data, this might take some time...")
         Data.objects.using("db_images").all().delete()
 
@@ -42,7 +58,7 @@ def assert_or_get_training_data():
     if not temp_dir.exists():
         import git
 
-        print("Downloading training data")
+        print("Downloading training data...")
         temp_dir.mkdir()
         git.Repo.clone_from(DATASET_URL, temp_dir, progress=progress_callback)
 
