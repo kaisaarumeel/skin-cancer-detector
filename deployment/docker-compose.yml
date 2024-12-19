@@ -4,7 +4,7 @@ services:
         ports: 
             - 8000:8000
         environment:
-            - DEBUG="False"
+            - DEBUG=False
             - SECRET_KEY=${SECRET_KEY}
             - SETUP_PROMPT_1=${SETUP_PROMPT_1}
             - SETUP_PROMPT_2=${SETUP_PROMPT_2}
