@@ -38,7 +38,7 @@ class JobExpirationTests(TransactionTestCase):
         )
 
         # Insert expired Request record in DB and create Mock job
-        self.expired_request = Requests.objects.create(
+        self.expired_request_1 = Requests.objects.create(
             request_id=1,
             created_at=0,  # Expired (UNIX timestamp start time in 1970)
             image=b"test_image_data",
@@ -46,41 +46,79 @@ class JobExpirationTests(TransactionTestCase):
             localization="ear",
             lesion_type=None,
             user_id=self.mock_user,
-            model_id=None,
+            model=None,
         )
-        self.expired_job = MockJob(
-            self.expired_request.request_id,
-            self.expired_request.created_at,
-            {"request_id": self.expired_request.request_id},
+        self.expired_job_1 = MockJob(
+            self.expired_request_1.request_id,
+            self.expired_request_1.created_at,
+            {"request_id": self.expired_request_1.request_id},
+        )
+        # Insert second expired Request record in DB and create Mock job
+        self.expired_request_2 = Requests.objects.create(
+            request_id=2,
+            created_at=0,  # Expired (UNIX timestamp start time in 1970)
+            image=b"test_image_data",
+            probability=None,
+            localization="ear",
+            lesion_type=None,
+            user_id=self.mock_user,
+            model=None,
+        )
+        self.expired_job_2 = MockJob(
+            self.expired_request_2.request_id,
+            self.expired_request_2.created_at,
+            {"request_id": self.expired_request_2.request_id},
         )
 
         # Insert valid Request record in DB and create Mock job
-        self.valid_request = Requests.objects.create(
-            request_id=2,
+        self.valid_request_1 = Requests.objects.create(
+            request_id=3,
             created_at=current_time,  # Valid (current time)
             image=b"test_image_data",
             probability=None,
             localization="ear",
             lesion_type=None,
             user_id=self.mock_user,
-            model_id=None,
+            model=None,
         )
-        self.valid_job = MockJob(
-            self.valid_request.request_id,
-            self.valid_request.created_at,
-            {"request_id": self.valid_request.request_id},
+        self.valid_job_1 = MockJob(
+            self.valid_request_1.request_id,
+            self.valid_request_1.created_at,
+            {"request_id": self.valid_request_1.request_id},
+        )
+        # Insert second valid Request record in DB and create Mock job
+        self.valid_request_2 = Requests.objects.create(
+            request_id=4,
+            created_at=current_time,  # Valid (current time)
+            image=b"test_image_data_2",
+            probability=None,
+            localization="ear",
+            lesion_type=None,
+            user_id=self.mock_user,
+            model=None,
+        )
+        self.valid_job_2 = MockJob(
+            self.valid_request_2.request_id,
+            self.valid_request_2.created_at,
+            {"request_id": self.valid_request_2.request_id},
         )
 
     def set_up_jobs_in_queue(self):
         """
         Helper function to add Mock jobs to the global PREDICTION_JOBS queue.
         """
-        PREDICTION_JOBS.put(self.expired_job)
-        PREDICTION_JOBS.put(self.valid_job)
+        # Clean up the queue if there are any leftover jobs
+        while not (PREDICTION_JOBS.empty()):
+            _ = PREDICTION_JOBS.get_nowait()
+        # Enqueue the fresh jobs
+        PREDICTION_JOBS.put(self.expired_job_1)
+        PREDICTION_JOBS.put(self.valid_job_1)
+        PREDICTION_JOBS.put(self.expired_job_2)
+        PREDICTION_JOBS.put(self.valid_job_2)
 
     ##################################### TESTS #####################################
 
-    def test_extract_valid_jobs(self):
+    def test_extract_valid_job_single(self):
         """
         Test that extract_jobs_from_queue correctly retrieves valid jobs.
         """
@@ -93,14 +131,38 @@ class JobExpirationTests(TransactionTestCase):
         # Extract valid jobs from the global queue
         jobs_batch, _ = extract_jobs_from_queue(BATCH_SIZE, JOB_EXPIRY_TIME)
 
-        # Assert that 1 valid job was retrieved
+        # Assert that 1 valid jobs were retrieved
         self.assertEqual(len(jobs_batch), 1)
         self.assertEqual(
             jobs_batch[0].parameters["request_id"],
-            self.valid_job.parameters["request_id"],
+            self.valid_job_1.parameters["request_id"],
         )
 
-    def test_extract_expired_jobs(self):
+    def test_extract_valid_jobs_multiple(self):
+        """
+        Test that extract_jobs_from_queue correctly retrieves valid jobs.
+        """
+        BATCH_SIZE = 2
+        JOB_EXPIRY_TIME = 900  # 15 minutes
+
+        # Add Mock jobs to global queue
+        self.set_up_jobs_in_queue()
+
+        # Extract valid jobs from the global queue
+        jobs_batch, _ = extract_jobs_from_queue(BATCH_SIZE, JOB_EXPIRY_TIME)
+
+        # Assert that 2 valid jobs were retrieved
+        self.assertEqual(len(jobs_batch), 2)
+        self.assertEqual(
+            jobs_batch[0].parameters["request_id"],
+            self.valid_job_1.parameters["request_id"],
+        )
+        self.assertEqual(
+            jobs_batch[1].parameters["request_id"],
+            self.valid_job_2.parameters["request_id"],
+        )
+
+    def test_extract_expired_job_single(self):
         """
         Test that extract_jobs_from_queue correctly identifies expired jobs.
         """
@@ -115,7 +177,25 @@ class JobExpirationTests(TransactionTestCase):
 
         # Assert that the expired job was identified correctly
         self.assertEqual(len(expired_jobs), 1)  # One expired job
-        self.assertEqual(expired_jobs[0], self.expired_job.parameters["request_id"])
+        self.assertEqual(expired_jobs[0], self.expired_job_1.parameters["request_id"])
+
+    def test_extract_expired_jobs_multiple(self):
+        """
+        Test that extract_jobs_from_queue correctly identifies expired jobs.
+        """
+        BATCH_SIZE = 2
+        JOB_EXPIRY_TIME = 900  # 15 minutes
+
+        # Add Mock jobs to global queue
+        self.set_up_jobs_in_queue()
+
+        # Extract expired jobs from the global queue
+        _, expired_jobs = extract_jobs_from_queue(BATCH_SIZE, JOB_EXPIRY_TIME)
+
+        # Assert that the expired job was identified correctly
+        self.assertEqual(len(expired_jobs), 2)  # two expired jobs
+        self.assertEqual(expired_jobs[0], self.expired_job_1.parameters["request_id"])
+        self.assertEqual(expired_jobs[1], self.expired_job_2.parameters["request_id"])
 
     def test_batch_size_limit_is_respected(self):
         """
@@ -126,7 +206,7 @@ class JobExpirationTests(TransactionTestCase):
 
         # Populate the global job queue
         for _ in range(0, BATCH_SIZE + 1):
-            PREDICTION_JOBS.put(self.valid_job)
+            PREDICTION_JOBS.put(self.valid_job_1)
 
         # Extract valid jobs from the global queue
         jobs_batch, _ = extract_jobs_from_queue(BATCH_SIZE, JOB_EXPIRY_TIME)
@@ -147,6 +227,8 @@ class JobExpirationTests(TransactionTestCase):
         Test that the thread doesn't hang if the extract function is called when the queue is empty.
         """
         TIMEOUT = 5  # seconds
+        BATCH_SIZE = 1
+        JOB_EXPIRY_TIME = 900  # 15 minutes
 
         # Assert that the queue is empty before starting test
         self.assertTrue(PREDICTION_JOBS.empty())
@@ -159,8 +241,8 @@ class JobExpirationTests(TransactionTestCase):
         def target_wrapper():
             nonlocal jobs_batch, expired_jobs
             jobs_batch, expired_jobs = extract_jobs_from_queue(
-                1, 900
-            )  # batch size, job expiry time
+                BATCH_SIZE, JOB_EXPIRY_TIME
+            )
 
         # Run in daemon to ensure child thread gets terminated even if it hangs
         thread = threading.Thread(daemon=True, target=target_wrapper)
@@ -178,22 +260,75 @@ class JobExpirationTests(TransactionTestCase):
         self.assertEqual(jobs_batch, [])
         self.assertEqual(expired_jobs, [])
 
-    def test_delete_jobs_from_db(self):
+    def test_extract_jobs_batch_size_zero(self):
         """
-        Test that delete_jobs_from_db successfully deletes jobs from the database.
+        Test that a batch size of 0 doesn't break the job extractions function.
         """
-        # Pass job ids of the expired job to delete
-        delete_jobs_from_db([self.expired_job.parameters["request_id"]])
+        BATCH_SIZE = 0
+        JOB_EXPIRY_TIME = 900  # 15 minutes
+
+        self.set_up_jobs_in_queue()
+        try:
+            jobs_batch, expired_jobs = extract_jobs_from_queue(
+                BATCH_SIZE, JOB_EXPIRY_TIME
+            )
+        except Exception as e:
+            self.fail(
+                f"extract_jobs_from_queue threw an exception due to batch size being 0 {e}"
+            )
+
+        # Assert nothing was returned
+        self.assertEqual(len(jobs_batch), 0)
+        self.assertEqual(len(expired_jobs), 0)
+
+    def test_delete_single_job_from_db(self):
+        """
+        Test that delete_jobs_from_db successfully deletes a list with a single job from the database.
+        """
+        # Pass job id of the expired job to delete
+        delete_jobs_from_db([self.expired_job_1.parameters["request_id"]])
 
         # Check if the expired job was deleted from the database
         with self.assertRaises(Requests.DoesNotExist):
-            Requests.objects.get(request_id=self.expired_job.parameters["request_id"])
+            Requests.objects.get(request_id=self.expired_job_1.parameters["request_id"])
 
-        # Check if the valid job still exists
-        valid_job = Requests.objects.get(
-            request_id=self.valid_job.parameters["request_id"]
+        # Check if the valid jobs still exist
+        valid_job_1 = Requests.objects.get(
+            request_id=self.valid_job_1.parameters["request_id"]
         )
-        self.assertIsNotNone(valid_job)
+        self.assertIsNotNone(valid_job_1)
+        valid_job_2 = Requests.objects.get(
+            request_id=self.valid_job_2.parameters["request_id"]
+        )
+        self.assertIsNotNone(valid_job_2)
+
+    def test_delete_multiple_jobs_from_db(self):
+        """
+        Test that delete_jobs_from_db successfully deletes a list of multiple jobs from the database.
+        """
+        # Pass job ids of the expired jobs to delete
+        delete_jobs_from_db(
+            [
+                self.expired_job_1.parameters["request_id"],
+                self.expired_job_2.parameters["request_id"],
+            ]
+        )
+
+        # Check if the expired jobs were deleted from the database
+        with self.assertRaises(Requests.DoesNotExist):
+            Requests.objects.get(request_id=self.expired_job_1.parameters["request_id"])
+        with self.assertRaises(Requests.DoesNotExist):
+            Requests.objects.get(request_id=self.expired_job_2.parameters["request_id"])
+
+        # Check if the valid jobs still exist
+        valid_job_1 = Requests.objects.get(
+            request_id=self.valid_job_1.parameters["request_id"]
+        )
+        self.assertIsNotNone(valid_job_1)
+        valid_job_2 = Requests.objects.get(
+            request_id=self.valid_job_2.parameters["request_id"]
+        )
+        self.assertIsNotNone(valid_job_2)
 
     def test_delete_non_existent_job(self):
         """
@@ -207,7 +342,7 @@ class JobExpirationTests(TransactionTestCase):
                 f"delete_jobs_from_db raised an exception for non-existent job: {e}"
             )
 
-    def test_delete_with_empty_job_ids(self):
+    def test_delete_with_empty_job_id_list(self):
         """
         Test that calling delete_jobs_from_db with an empty list does nothing.
         """
@@ -216,7 +351,7 @@ class JobExpirationTests(TransactionTestCase):
             # Ensure no jobs are deleted
             self.assertEqual(
                 Requests.objects.count(),
-                2,  # Two jobs were created in setUp
+                4,  # Two jobs were created in setup
                 "No jobs should be deleted when an empty list is passed.",
             )
         except Exception as e:
