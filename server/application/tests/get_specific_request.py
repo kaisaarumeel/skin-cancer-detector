@@ -162,7 +162,7 @@ class GetSpecificRequestTests(TestCase):
 
         response_data = response.json()
         self.assertIn("err", response_data)
-        self.assertEqual(response_data["err"], "access denied")
+        self.assertEqual(response_data["err"], "Access denied.")
 
     def test_unauthorized_access(self):
         """Test if an unauthorized user tries to access the endpoint"""

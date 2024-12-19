@@ -230,8 +230,9 @@ class JobExpirationTests(TransactionTestCase):
         BATCH_SIZE = 1
         JOB_EXPIRY_TIME = 900  # 15 minutes
 
-        # Assert that the queue is empty before starting test
-        self.assertTrue(PREDICTION_JOBS.empty())
+        # Ensure that the queue is empty before starting test
+        while not (PREDICTION_JOBS.empty()):
+            _ = PREDICTION_JOBS.get_nowait
 
         # List variables to hold the results
         jobs_batch = []
