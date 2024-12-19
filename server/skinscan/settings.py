@@ -11,19 +11,19 @@ BASE_DIR = Path(__file__).resolve().parents[2]
 dotenv_path = BASE_DIR / ".env"
 load_dotenv(dotenv_path)
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = str(os.getenv("SECRET_KEY"))
-
-# Ensure SECRET_KEY is set, or raise an error
-if SECRET_KEY == "None":
-    raise ValueError("The SECRET_KEY environment variable is not set.")
-
 # SECURITY WARNING: don't run with debug turned on in production!
 if os.getenv("DEBUG") == "False":
     DEBUG = False
 else:
     DEBUG = True
 print(f"DEBUG is set to {DEBUG}")
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = str(os.getenv("SECRET_KEY"))
+
+# Ensure SECRET_KEY is set in production, or raise an error
+if SECRET_KEY == "None" and DEBUG == False:
+    raise ValueError("The SECRET_KEY environment variable is not set.")
 
 ALLOWED_HOSTS = ["*"]
 
