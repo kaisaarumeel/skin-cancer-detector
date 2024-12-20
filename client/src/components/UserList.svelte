@@ -122,7 +122,7 @@
   <p class="text-sm text-tertiary mt-2">View and manage user accounts.</p>
   <ul class="mt-4 w-full space-y-2 max-h-96 overflow-y-auto">
     {#each users as user (user.id)}
-      <li class="flex flex-col bg-gray-100 py-2 px-4 rounded-md">
+      <li class="flex flex-col bg-gray-100 py-2 px-2 rounded-md">
         <div class="flex justify-between items-center w-full">
           <button
             type="button"
