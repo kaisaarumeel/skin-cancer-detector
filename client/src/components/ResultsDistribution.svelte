@@ -9,6 +9,7 @@
     Tooltip,
   } from "chart.js";
   import { API } from "../api";
+  import { userRequests, type UserRequest } from '../stores/requestStore';
 
   // Register required chart components
   Chart.register(
@@ -23,15 +24,9 @@
   let dataReady = false;
   let chartData: { type: string; percentage: number }[] = [];
 
-  interface Request {
-    lesion_type: string;
-  }
-
-  let requests: Request[] = [];
-
-  function processRequestData(requests: Request[]) {
+  function processRequestData(currentRequests: UserRequest[]) {
     // Count the number of each lesion type
-    const distributionMap = requests.reduce((acc, request) => {
+    const distributionMap = currentRequests.reduce((acc, request) => {
       // Either set it to 1 or increment the count
       acc.set(request.lesion_type, (acc.get(request.lesion_type) || 0) + 1);
       return acc;
@@ -115,16 +110,23 @@
     });
   }
 
-  async function fetchAndDisplayData() {
+  async function fetchAndPopulateStore() {
     try {
-      // Retrieve all requests
       const response = await API.get("/api/get-all-requests/");
-      requests = response.data.requests;
-      chartData = processRequestData(requests);
-      dataReady = true;
+      const retrievedRequests = response.data.requests;
+      userRequests.set(retrievedRequests); // Populate the store
     } catch (err: unknown) {
       console.error("Error fetching request data:", err);
-      dataReady = false;
+    }
+  }
+
+  // Update the chart data when the store changes
+  $: {
+    const currentRequests = $userRequests;
+    chartData = processRequestData(currentRequests);
+    dataReady = chartData.length > 0;
+    if (dataReady) {
+      setTimeout(drawChart, 0);
     }
   }
 
@@ -134,8 +136,7 @@
   }
 
   onMount(async () => {
-    // Retrieve and display data
-    await fetchAndDisplayData();
+    await fetchAndPopulateStore();
   });
 </script>
 

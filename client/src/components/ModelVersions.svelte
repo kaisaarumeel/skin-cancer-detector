@@ -155,7 +155,7 @@
                                 </span>
                             </div>
                             {#if $activeModel && $activeModel.version === model.version}
-                                <span class="text-green-600 text-xs font-regular">(Current)</span>
+                                <span class="text-green-600 text-xs font-regular"><strong>ACTIVE</strong></span>
                             {/if}
                         </button>
                         
