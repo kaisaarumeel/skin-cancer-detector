@@ -101,11 +101,13 @@ def manage_predictions():
         )
 
         try:
-            predictions,valid_indices = process_predictions(model, resized_images, tabular_features)
+            predictions, valid_indices = process_predictions(
+                model, resized_images, tabular_features
+            )
 
             for batch_idx, original_idx in enumerate(valid_indices):
                 job = jobs_batch[original_idx]
-                prediction = predictions[batch_idx]                
+                prediction = predictions[batch_idx]
                 predicted_class_index = np.argmax(prediction)
 
                 # Prepare single-sample inputs for Grad-CAM
@@ -133,12 +135,16 @@ def manage_predictions():
                 )
 
                 # Combine all importance values
-                all_importances = np.concatenate([[image_importance], tabular_importances])
+                all_importances = np.concatenate(
+                    [[image_importance], tabular_importances]
+                )
 
                 # Calculate relative percentages
                 # we dont care about direction only magnitude
                 total_importance = np.sum(np.abs(all_importances))
-                relative_importances = (np.abs(all_importances) / total_importance) * 100
+                relative_importances = (
+                    np.abs(all_importances) / total_importance
+                ) * 100
 
                 # Encode heatmap as binary
                 job.heatmap_binary = encode_heatmap_to_binary(heatmap)
@@ -149,26 +155,36 @@ def manage_predictions():
                     "image": float(relative_importances[0]),
                     **{
                         name: float(importance)
-                        for name, importance in zip(feature_names, relative_importances[1:])
+                        for name, importance in zip(
+                            feature_names, relative_importances[1:]
+                        )
                     },
                 }
-            valid_jobs=[jobs_batch[i] for i in valid_indices]
-            valid_predictions=predictions
+            valid_jobs = [jobs_batch[i] for i in valid_indices]
+            valid_predictions = predictions
             if valid_jobs:
                 # Update the requests table in the database with the results
                 update_requests_in_db(
-                    abs_db_path, valid_jobs, valid_predictions, lesion_type_encoder, model_version
+                    abs_db_path,
+                    valid_jobs,
+                    valid_predictions,
+                    lesion_type_encoder,
+                    model_version,
                 )
             # Log failed predictions
             failed_indices = set(range(len(jobs_batch))) - set(valid_indices)
             if failed_indices:
-                failed_job_ids = [jobs_batch[i].parameters["request_id"] for i in failed_indices]
+                failed_job_ids = [
+                    jobs_batch[i].parameters["request_id"] for i in failed_indices
+                ]
                 print(f"Failed to process jobs with IDs: {failed_job_ids}")
         except Exception as e:
             print(f"Error during prediction processing: {e}")
             continue
 
+
 ############################### HELPER FUNCTIONS ###############################
+
 
 def process_predictions(model, resized_images, tabular_features):
     try:
@@ -179,35 +195,35 @@ def process_predictions(model, resized_images, tabular_features):
         return predictions, valid_indices
     except Exception as e:
         print(f"Batch prediction failed: {e}. Falling back to individual processing...")
-        
+
         # If batch prediction fails, process each image individually
         # throwing out failed predictions
         predictions = []
         valid_indices = []
-        
+
         for i in range(len(resized_images)):
             try:
                 # Retrieve single image and tabular input
                 image_input = np.expand_dims(resized_images[i], axis=0)
                 tabular_input = np.expand_dims(tabular_features[i], axis=0)
-                
+
                 # Perform the prediction
                 pred = model.predict([image_input, tabular_input])
-                
+
                 # Store successful prediction and its index
                 # so that the rest of the function can find it
                 predictions.append(pred[0])
                 valid_indices.append(i)
-                
+
             except Exception as individual_error:
                 print(f"Failed to process image {i}: {individual_error}")
                 continue
-        
-        # Convert predictions list back to numpy array 
+
+        # Convert predictions list back to numpy array
         # to match the original shape
         if predictions:
             predictions = np.array(predictions)
-            
+
         # Return the predictions and valid indices
         return predictions, valid_indices
 
