@@ -100,66 +100,116 @@ def manage_predictions():
             jobs_batch, tabular_scaler, localization_encoder
         )
 
-        # Run inference on the prepared batch
-        predictions = model.predict([resized_images, tabular_features])
+        try:
+            predictions,valid_indices = process_predictions(model, resized_images, tabular_features)
 
-        for i, job in enumerate(jobs_batch):
-            predicted_class_index = np.argmax(predictions[i])
+            for batch_idx, original_idx in enumerate(valid_indices):
+                job = jobs_batch[original_idx]
+                prediction = predictions[batch_idx]                
+                predicted_class_index = np.argmax(prediction)
 
-            # Prepare single-sample inputs for Grad-CAM
-            image_input = np.expand_dims(resized_images[i], axis=0)
-            tabular_input = np.expand_dims(tabular_features[i], axis=0)
+                # Prepare single-sample inputs for Grad-CAM
+                image_input = np.expand_dims(resized_images[original_idx], axis=0)
+                tabular_input = np.expand_dims(tabular_features[original_idx], axis=0)
 
-            # Compute grad cam for the image
-            heatmap = compute_grad_cam(
-                model,
-                [image_input, tabular_input],
-                predicted_class_index,
-                original_image_shape=(
-                    224,
-                    224,
-                ),
-            )
+                # Compute grad cam for the image
+                heatmap = compute_grad_cam(
+                    model,
+                    [image_input, tabular_input],
+                    predicted_class_index,
+                    original_image_shape=(
+                        224,
+                        224,
+                    ),
+                )
 
-            # We can calculate the importance of the image
-            # by taking the mean activation value for each pixel
-            image_importance = np.mean(heatmap[0])
+                # We can calculate the importance of the image
+                # by taking the mean activation value for each pixel
+                image_importance = np.mean(heatmap[0])
 
-            # Compute feature importance for tabular data
-            tabular_importances = compute_tabular_importance(
-                model, [image_input, tabular_input], predicted_class_index
-            )
+                # Compute feature importance for tabular data
+                tabular_importances = compute_tabular_importance(
+                    model, [image_input, tabular_input], predicted_class_index
+                )
 
-            # Combine all importance values
-            all_importances = np.concatenate([[image_importance], tabular_importances])
+                # Combine all importance values
+                all_importances = np.concatenate([[image_importance], tabular_importances])
 
-            # Calculate relative percentages
-            # we dont care about direction only magnitude
-            total_importance = np.sum(np.abs(all_importances))
-            relative_importances = (np.abs(all_importances) / total_importance) * 100
+                # Calculate relative percentages
+                # we dont care about direction only magnitude
+                total_importance = np.sum(np.abs(all_importances))
+                relative_importances = (np.abs(all_importances) / total_importance) * 100
 
-            # Encode heatmap as binary
-            job.heatmap_binary = encode_heatmap_to_binary(heatmap)
-            print("Heat map is processed.")
+                # Encode heatmap as binary
+                job.heatmap_binary = encode_heatmap_to_binary(heatmap)
+                print("Heat map is processed.")
 
-            # Map importance values to feature names
-            job.feature_impact = {
-                "image": float(relative_importances[0]),
-                **{
-                    name: float(importance)
-                    for name, importance in zip(feature_names, relative_importances[1:])
-                },
-            }
-
-        # Update the requests table in the database with the results
-        update_requests_in_db(
-            abs_db_path, jobs_batch, predictions, lesion_type_encoder, model_version
-        )
-
-        ### END OF LOOP
-
+                # Map importance values to feature names
+                job.feature_impact = {
+                    "image": float(relative_importances[0]),
+                    **{
+                        name: float(importance)
+                        for name, importance in zip(feature_names, relative_importances[1:])
+                    },
+                }
+            valid_jobs=[jobs_batch[i] for i in valid_indices]
+            valid_predictions=predictions
+            if valid_jobs:
+                # Update the requests table in the database with the results
+                update_requests_in_db(
+                    abs_db_path, valid_jobs, valid_predictions, lesion_type_encoder, model_version
+                )
+            # Log failed predictions
+            failed_indices = set(range(len(jobs_batch))) - set(valid_indices)
+            if failed_indices:
+                failed_job_ids = [jobs_batch[i].parameters["request_id"] for i in failed_indices]
+                print(f"Failed to process jobs with IDs: {failed_job_ids}")
+        except Exception as e:
+            print(f"Error during prediction processing: {e}")
+            continue
 
 ############################### HELPER FUNCTIONS ###############################
+
+def process_predictions(model, resized_images, tabular_features):
+    try:
+        # First we try to perform predictions on the entire batch
+        predictions = model.predict([resized_images, tabular_features])
+        # If success then the indices remain the same
+        valid_indices = list(range(len(resized_images)))
+        return predictions, valid_indices
+    except Exception as e:
+        print(f"Batch prediction failed: {e}. Falling back to individual processing...")
+        
+        # If batch prediction fails, process each image individually
+        # throwing out failed predictions
+        predictions = []
+        valid_indices = []
+        
+        for i in range(len(resized_images)):
+            try:
+                # Retrieve single image and tabular input
+                image_input = np.expand_dims(resized_images[i], axis=0)
+                tabular_input = np.expand_dims(tabular_features[i], axis=0)
+                
+                # Perform the prediction
+                pred = model.predict([image_input, tabular_input])
+                
+                # Store successful prediction and its index
+                # so that the rest of the function can find it
+                predictions.append(pred[0])
+                valid_indices.append(i)
+                
+            except Exception as individual_error:
+                print(f"Failed to process image {i}: {individual_error}")
+                continue
+        
+        # Convert predictions list back to numpy array 
+        # to match the original shape
+        if predictions:
+            predictions = np.array(predictions)
+            
+        # Return the predictions and valid indices
+        return predictions, valid_indices
 
 
 def start_prediction_manager():
