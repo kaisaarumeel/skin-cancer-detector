@@ -18,14 +18,8 @@ def main():
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
-    # Ensure that the setup is only run once
-    # It should not be executed in the reloader
-    # We should only run it if we pass runserver
-    django.setup()
-    if os.environ.get("RUN_MAIN") != "true" and "runserver" in sys.argv:
-        from setup import setup
 
-        setup.setup()
+    django.setup()
 
     # Start the server
     execute_from_command_line(sys.argv)
