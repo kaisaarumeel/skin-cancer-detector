@@ -14,17 +14,17 @@ This document tracks all project tasks, assignees, and the status per every week
   - [Wrapping up the project:](#wrapping-up-the-project)
 
 
-<!-- NOTE: use <br> to separate cell text into multiple lines -->
 
 
 ## Week 1 _(Nov 4 - Nov 10)_:
-| Task                                        | Responsible | Deadline | Delivered | Integrated | Notes |
-| :------------------------------------------ | :---------: | :------: | :-------: | :--------: | :---: |
-| Write concepts for project ideas            | All Members |  7 Nov   |    Yes    |    Yes     |   -   |
-| Research data files for ideas pitch         | All members |  7 Nov   |    Yes    |    Yes     |   -   |
-| Create presentation slides                  | All Members |  7 Nov   |    Yes    |    Yes     |   -   |
-| Set up attendance and meeting notes journal |    Kaisa    |  7 Nov   |    Yes    |    Yes     |   -   |
-
+| Task                                             | Responsible  | Deadline | Delivered | Integrated | Notes |
+| :----------------------------------------------- | :----------: | :------: | :-------: | :--------: | :---: |
+| Write concepts for project ideas                 | All Members  |  7 Nov   |    Yes    |    Yes     |   -   |
+| Research data files for ideas pitch              | All members  |  7 Nov   |    Yes    |    Yes     |   -   |
+| Create presentation slides                       | All Members  |  7 Nov   |    Yes    |    Yes     |   -   |
+| Set up attendance and meeting notes journal      |    Kaisa     |  7 Nov   |    Yes    |    Yes     |   -   |
+| Write user stories                               | All members  |  7 Nov   |    Yes    |    Yes     |   -   |
+| Create public Github respository with data files | Konstantinos |  7 Nov   |    Yes    |    Yes     |   -   |
 
 
 ## Week 2 _(Nov 11 - Nov 17)_:
@@ -125,14 +125,14 @@ This document tracks all project tasks, assignees, and the status per every week
 ## Wrapping up the project:
 | Task                                                                                                           | Responsible  | Deadline | Delivered | Integrated | Notes |
 | :------------------------------------------------------------------------------------------------------------- | :----------: | :------: | :-------: | :--------: | :---: |
-| [Section 1 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/70)                    |     Erik     |  3 Jan   |
-| [Section 2 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/65)                    | Konstantinos |  3 Jan   |
-| [Section 3 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/64)                    |  Alexander   |  3 Jan   |
-| [Section 4 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/66)                    |    Arvin     |  3 Jan   |
-| [Section 5 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/67)                    |    Kaisa     |  3 Jan   |
-| [Section 6 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/68)                    |  Everybody   |  3 Jan   |
-| [Section 7 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/69)                    |     Amir     |  3 Jan   |
+| [Section 1 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/70)                    |     Erik     |  26 Dec  |
+| [Section 2 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/65)                    | Konstantinos |  26 Dec  |
+| [Section 3 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/64)                    |  Alexander   |  26 Dec  |
+| [Section 4 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/66)                    |    Arvin     |  26 Dec  |
+| [Section 5 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/67)                    |    Kaisa     |  26 Dec  |
+| [Section 6 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/68)                    |  Everybody   |  26 Dec  |
+| [Section 7 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/69)                    |     Amir     |  26 Dec  |
 | [Fix Ordering of README Headings](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/74)              |     Erik     |  23 Dec  |    yes    |    yes     |
 | [Fix Bug With Foreign Keys In Requests Schema](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/75) |     Erik     |  23 Dec  |    yes    |    yes     |
-| [UI finishing touches](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/78)                         | Konstantinos |  3 Jan   |
+| [UI finishing touches](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/78)                         |   Everyone   |  3 Jan   |
 
