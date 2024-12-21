@@ -136,7 +136,9 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
     "http://localhost:5173",
+    "http://localhost:5174",
     "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174",
     "http://164.92.176.222",  # Production - public IP address
 ]
 CSRF_COOKIE_NAME = "csrftoken"
@@ -156,6 +158,7 @@ if not DEBUG:
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://localhost:5174",
     "http://127.0.0.1:5173",
     "http://164.92.176.222",  # Production - public IP address
 ]
