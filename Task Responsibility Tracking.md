@@ -11,6 +11,7 @@ This document tracks all project tasks, assignees, and the status per every week
   - [Week 4 _(Nov 25 - Dec 1)_:](#week-4-nov-25---dec-1)
   - [Week 5 _(Dec 2 - Dec 8)_:](#week-5-dec-2---dec-8)
   - [Week 6 _(Dec 9 - Dec 15)_:](#week-6-dec-9---dec-15)
+  - [Wrapping up the project:](#wrapping-up-the-project)
 
 
 <!-- NOTE: use <br> to separate cell text into multiple lines -->
@@ -105,32 +106,33 @@ This document tracks all project tasks, assignees, and the status per every week
 
 
 ## Week 6 _(Dec 9 - Dec 15)_:
-| Task                                                                                                                  |    Responsible     | Deadline | Delivered | Integrated |            Notes            |
-| :-------------------------------------------------------------------------------------------------------------------- | :----------------: | :------: | :-------: | :--------: | :-------------------------: |
-| [Dockerfile](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/53)                                          | Konstantinos, Erik |  12 Dec  |           |            | Carried over from last week |
-| [Cloud deployment](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/54)                                    | Erik, Konstantinos |  12 Dec  |           |            | Carried over from last week |
-| [Explainable AI (backend)](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/48)                            |    Amir, Arvin     |  11 Dec  |           |            | Carried over from last week |
-| [Fix admin page responsiveness](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/61)                       |       Kaisa        |  13 Dec  |
+| Task                                                                                                                  |    Responsible     | Deadline | Delivered | Integrated |                            Notes                             |
+| :-------------------------------------------------------------------------------------------------------------------- | :----------------: | :------: | :-------: | :--------: | :----------------------------------------------------------: |
+| [Dockerfile](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/53)                                          | Konstantinos, Erik |  12 Dec  |    yes    |    yes     |                 Carried over from last week                  |
+| [Cloud deployment](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/54)                                    | Erik, Konstantinos |  12 Dec  |    yes    |    yes     |                 Carried over from last week                  |
+| [Explainable AI (backend)](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/48)                            |        Amir        |  11 Dec  |    yes    |    yes     | Carried over from last week, Had to be finished by Alexander |
+| [Fix admin page responsiveness](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/61)                       |       Kaisa        |  13 Dec  |    yes    |    yes     |
 | [Fix feature impact responsiveness](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/62)                   |       Kaisa        |  11 Dec  |    yes    |    yes     |
-| [Return number of datapoints](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/63)                         |        Amir        |  13 Dec  |
-| [Section 3 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/64)                           |     Alexander      |  15 Dec  |
-| [Section 2 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/65)                           |    Konstantinos    |  15 Dec  |
-| [Section 4 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/66)                           |       Arvin        |  15 Dec  |
-| [Section 5 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/67)                           |       Kaisa        |  15 Dec  |
-| [Section 7 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/69)                           |        Amir        |  15 Dec  |
-| [Section 1 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/70)                           |        Erik        |  15 Dec  |
-| [Delete pending jobs](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/72)                                 |       Arvin        |  13 Dec  |
-| [Enforce 3 channel images on create request endpoint](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/64) |        Erik        |  13 Dec  |
+| [Return number of datapoints](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/63)                         |        Amir        |  13 Dec  |    yes    |    yes     |
+| [Delete pending jobs](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/72)                                 |       Arvin        |  13 Dec  |    yes    |    yes     |
+| [Enforce 3 channel images on create request endpoint](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/73) |        Erik        |  13 Dec  |    yes    |    yes     |
+| [Image filtration on input](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/76)                           |     Alexander      |  13 Dec  |    yes    |    yes     |
+| [Create validation check in prediction manager](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/77)       |     Alexander      |  13 Dec  |    yes    |    yes     |
 
 
 
 
+## Wrapping up the project:
+| Task                                                                                                           | Responsible  | Deadline | Delivered | Integrated | Notes |
+| :------------------------------------------------------------------------------------------------------------- | :----------: | :------: | :-------: | :--------: | :---: |
+| [Section 1 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/70)                    |     Erik     |  3 Jan   |
+| [Section 2 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/65)                    | Konstantinos |  3 Jan   |
+| [Section 3 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/64)                    |  Alexander   |  3 Jan   |
+| [Section 4 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/66)                    |    Arvin     |  3 Jan   |
+| [Section 5 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/67)                    |    Kaisa     |  3 Jan   |
+| [Section 6 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/68)                    |  Everybody   |  3 Jan   |
+| [Section 7 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/69)                    |     Amir     |  3 Jan   |
+| [Fix Ordering of README Headings](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/74)              |     Erik     |  23 Dec  |    yes    |    yes     |
+| [Fix Bug With Foreign Keys In Requests Schema](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/75) |     Erik     |  23 Dec  |    yes    |    yes     |
+| [UI finishing touches](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/78)                         | Konstantinos |  3 Jan   |
 
-<!--
-
-## Week 7 ???:
-| Task | Responsible | Deadline | Delivered | Integrated | Notes |
-| :--- | :---------: | :------: | :-------: | :--------: | :---: |
-
-
--->
