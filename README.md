@@ -111,9 +111,16 @@ deactivate
     source venv/bin/activate
     ```
 4. Install the required dependencies:
+   
+   on Linux:
     ```bash
     pip install -r requirements.txt
     ```
+
+    on macOS:
+    ```bash
+    pip install -r requirements-mac.txt
+    ```   
 
 
 ### Windows WSL:

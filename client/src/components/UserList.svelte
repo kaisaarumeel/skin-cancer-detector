@@ -167,7 +167,7 @@
         {#if expandedUser === user.id}
           <div transition:slide class="mt-2 bg-gray-50 p-4 rounded-md">
             <p class="text-sm text-tertiary mb-2">
-              <strong>Requests:</strong>
+              <strong>Requests</strong>
             </p>
             {#if getUserRequests(user.name).length > 0}
               <ul>
