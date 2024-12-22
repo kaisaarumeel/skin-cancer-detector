@@ -22,7 +22,18 @@
 
   let chart: Chart | null = null;
   let dataReady = false;
-  let chartData: { type: string; percentage: number }[] = [];
+  let chartData: { type: string; percentage: number; malignant: boolean }[] = [];
+
+  // Mapping of lesion types to their benign or malignant classification
+  const LESION_TYPE_CLASSIFICATION = {
+    nv: false, // Melanocytic nevi (benign)
+    bkl: false, // Benign keratosis-like lesions (benign)
+    df: false, // Dermatofibroma (benign)
+    vasc: false, // Vascular lesions (benign)
+    mel: true, // Melanoma (malignant)
+    bcc: true, // Basal cell carcinoma (malignant)
+    akiec: true, // Actinic keratoses and intraepithelial carcinoma (malignant)
+  };
 
   function processRequestData(currentRequests: UserRequest[]) {
     // Count the number of each lesion type
@@ -44,11 +55,11 @@
     });
 
     // Convert the count to percentage distribution
-    console.log(total);
     const percentages = Array.from(formattedMap.entries()).map(
       ([type, count]) => ({
         type,
         percentage: (count / total) * 100,
+        malignant: LESION_TYPE_CLASSIFICATION[type as keyof typeof LESION_TYPE_CLASSIFICATION] || false,
       }),
     );
 
@@ -73,8 +84,12 @@
             label: "Distribution",
             // just give the percentage data
             data: chartData.map((item) => item.percentage),
-            backgroundColor: "rgba(183, 169, 212, 0.8)",
-            borderColor: "rgba(183, 169, 212, 1)",
+            backgroundColor: chartData.map((item) =>
+              item.malignant ? "rgba(252, 165, 165, 0.8)" : "rgba(209, 250, 229, 0.8)"
+            ),
+            borderColor: chartData.map((item) =>
+              item.malignant ? "rgba(255, 99, 132, 1)" : "rgba(75, 192, 192, 1)"
+            ),
             borderWidth: 1,
           },
         ],
