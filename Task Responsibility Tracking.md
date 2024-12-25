@@ -125,14 +125,14 @@ This document tracks all project tasks, assignees, and the status per every week
 ## Wrapping up the project:
 | Task                                                                                                           | Responsible  | Deadline | Delivered | Integrated | Notes |
 | :------------------------------------------------------------------------------------------------------------- | :----------: | :------: | :-------: | :--------: | :---: |
-| [Section 1 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/70)                    |     Erik     |  26 Dec  |
-| [Section 2 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/65)                    | Konstantinos |  26 Dec  |
-| [Section 3 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/64)                    |  Alexander   |  26 Dec  |
-| [Section 4 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/66)                    |    Arvin     |  26 Dec  |
-| [Section 5 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/67)                    |    Kaisa     |  26 Dec  |
-| [Section 6 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/68)                    |  Everybody   |  26 Dec  |
-| [Section 7 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/69)                    |     Amir     |  26 Dec  |
+| [Section 1 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/70)                    |     Erik     |  26 Dec  |    yes    |    yes     |
+| [Section 2 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/65)                    | Konstantinos |  26 Dec  |    yes    |    yes     |
+| [Section 3 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/64)                    |  Alexander   |  26 Dec  |    yes    |    yes     |
+| [Section 4 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/66)                    |    Arvin     |  26 Dec  |    yes    |    yes     |
+| [Section 5 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/67)                    |    Kaisa     |  26 Dec  |    yes    |    yes     |
+| [Section 6 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/68)                    |  Everybody   |  26 Dec  |    yes    |    yes     |
+| [Section 7 of final report](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/69)                    |     Amir     |  26 Dec  |    yes    |    yes     |
 | [Fix Ordering of README Headings](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/74)              |     Erik     |  23 Dec  |    yes    |    yes     |
 | [Fix Bug With Foreign Keys In Requests Schema](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/75) |     Erik     |  23 Dec  |    yes    |    yes     |
-| [UI finishing touches](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/78)                         |   Everyone   |  3 Jan   |
+| [UI finishing touches](https://git.chalmers.se/courses/dit826/2024/group6/-/issues/78)                         |   Everyone   |  3 Jan   |    yes    |    yes     |
 
