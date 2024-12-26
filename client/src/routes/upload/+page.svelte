@@ -2,25 +2,31 @@
   import TopBar from "../../components/TopBar.svelte";
   import Guide from "../../components/Guide.svelte";
   import { goto } from '$app/navigation';
-  import { routeGuard } from '../../routeGuard';  // Import the route guard
+  import { routeGuard } from '../../routeGuard';
   import { onMount } from "svelte";
-  import { API } from '../../api'; // Import the API instance
+  import { API } from '../../api';
   import { isAxiosError } from "axios";
   import { getCSRFToken } from "../../stores/csrfStore";
 
-  // Check if the user is logged in when the page is loaded
   onMount(() => {
     routeGuard();
   });
-    
-  // Track the current step and visibility of the guide
+
   let currentStep = 1;
-  const totalSteps = 5; // Updated to match the number of steps in Guide
+  const totalSteps = 4;
+  let showGuide = true; // State to track the visibility of the guide
 
   function nextStep() {
     if (currentStep < totalSteps) {
-      currentStep++; // Increment currentStep
+      currentStep++;
+    } else {
+      showGuide = false; // Hide the guide when all steps are complete
     }
+  }
+
+  function showGuideAgain() {
+    showGuide = true; 
+    currentStep = 1; // Reset to the first step
   }
 
   let selectedFile: File | null = null;
@@ -109,7 +115,7 @@
       errorMessage = "No localization is selected.";
       return;
     }
-    
+
     try {
       const base64Image = await fileToBase64(selectedFile); // convert image to the base64 format
       const response = await API.post('/api/create-request/', {
@@ -169,8 +175,8 @@
 <div class="h-screen flex flex-col relative">
   <TopBar></TopBar>
 
-  <!-- Guide Component as an Overlay -->
-  {#if currentStep < totalSteps}
+  <!-- Guide Component -->
+  {#if showGuide}
     <div class="backdrop-blur-sm absolute top-0 left-0 w-full h-full bg-opacity-50 flex items-center justify-center">
       <Guide {currentStep} on:nextStep={nextStep}></Guide>
     </div>
@@ -236,8 +242,11 @@
           <span class="text-tertiary">{fileName}</span>
         </div>
       </form>
+      
+      <!-- Button to show the guide again -->
+      <button on:click={showGuideAgain} class="mt-4 text-tertiary underline">Show the steps again</button>
 
-      <button on:click={handleAnalyze} class="w-1/2 p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-10 hover:bg-secondary shadow-l">Analyze</button>
+      <button on:click={handleAnalyze} class="w-1/2 p-3 bg-primary text-white font-light rounded-md cursor-pointer mt-6 hover:bg-secondary shadow-l">Analyze</button>
 
       {#if errorMessage}
         <p class="text-red-500 text-sm mt-2 ">{errorMessage}</p>

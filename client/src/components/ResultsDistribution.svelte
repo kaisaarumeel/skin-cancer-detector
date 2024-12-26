@@ -9,6 +9,7 @@
     Tooltip,
   } from "chart.js";
   import { API } from "../api";
+  import { userRequests, type UserRequest } from '../stores/requestStore';
 
   // Register required chart components
   Chart.register(
@@ -21,17 +22,22 @@
 
   let chart: Chart | null = null;
   let dataReady = false;
-  let chartData: { type: string; percentage: number }[] = [];
+  let chartData: { type: string; percentage: number; malignant: boolean }[] = [];
 
-  interface Request {
-    lesion_type: string;
-  }
+  // Mapping of lesion types to their benign or malignant classification
+  const LESION_TYPE_CLASSIFICATION = {
+    nv: false, // Melanocytic nevi (benign)
+    bkl: false, // Benign keratosis-like lesions (benign)
+    df: false, // Dermatofibroma (benign)
+    vasc: false, // Vascular lesions (benign)
+    mel: true, // Melanoma (malignant)
+    bcc: true, // Basal cell carcinoma (malignant)
+    akiec: true, // Actinic keratoses and intraepithelial carcinoma (malignant)
+  };
 
-  let requests: Request[] = [];
-
-  function processRequestData(requests: Request[]) {
+  function processRequestData(currentRequests: UserRequest[]) {
     // Count the number of each lesion type
-    const distributionMap = requests.reduce((acc, request) => {
+    const distributionMap = currentRequests.reduce((acc, request) => {
       // Either set it to 1 or increment the count
       acc.set(request.lesion_type, (acc.get(request.lesion_type) || 0) + 1);
       return acc;
@@ -49,11 +55,11 @@
     });
 
     // Convert the count to percentage distribution
-    console.log(total);
     const percentages = Array.from(formattedMap.entries()).map(
       ([type, count]) => ({
         type,
         percentage: (count / total) * 100,
+        malignant: LESION_TYPE_CLASSIFICATION[type as keyof typeof LESION_TYPE_CLASSIFICATION] || false,
       }),
     );
 
@@ -78,8 +84,12 @@
             label: "Distribution",
             // just give the percentage data
             data: chartData.map((item) => item.percentage),
-            backgroundColor: "rgba(183, 169, 212, 0.8)",
-            borderColor: "rgba(183, 169, 212, 1)",
+            backgroundColor: chartData.map((item) =>
+              item.malignant ? "rgba(252, 165, 165, 0.8)" : "rgba(209, 250, 229, 0.8)"
+            ),
+            borderColor: chartData.map((item) =>
+              item.malignant ? "rgba(255, 99, 132, 1)" : "rgba(75, 192, 192, 1)"
+            ),
             borderWidth: 1,
           },
         ],
@@ -115,16 +125,23 @@
     });
   }
 
-  async function fetchAndDisplayData() {
+  async function fetchAndPopulateStore() {
     try {
-      // Retrieve all requests
       const response = await API.get("/api/get-all-requests/");
-      requests = response.data.requests;
-      chartData = processRequestData(requests);
-      dataReady = true;
+      const retrievedRequests = response.data.requests;
+      userRequests.set(retrievedRequests); // Populate the store
     } catch (err: unknown) {
       console.error("Error fetching request data:", err);
-      dataReady = false;
+    }
+  }
+
+  // Update the chart data when the store changes
+  $: {
+    const currentRequests = $userRequests;
+    chartData = processRequestData(currentRequests);
+    dataReady = chartData.length > 0;
+    if (dataReady) {
+      setTimeout(drawChart, 0);
     }
   }
 
@@ -134,8 +151,7 @@
   }
 
   onMount(async () => {
-    // Retrieve and display data
-    await fetchAndDisplayData();
+    await fetchAndPopulateStore();
   });
 </script>
 

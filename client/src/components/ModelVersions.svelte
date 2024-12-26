@@ -154,9 +154,12 @@
                                     {new Date(model.created_at * 1000).toLocaleDateString()}
                                 </span>
                             </div>
-                            {#if $activeModel && $activeModel.version === model.version}
-                                <span class="text-green-600 text-xs font-regular">(Current)</span>
-                            {/if}
+                            <div class="flex items-center space-x-2">
+                                {#if $activeModel && $activeModel.version === model.version}
+                                    <span class="text-green-500 text-xs font-regular"><strong>ACTIVE</strong></span>
+                                {/if}
+                                <span class="text-tertiary">{expandedModelVersion === model.version ? '▲' : '▼'}</span>
+                            </div>
                         </button>
                         
                         <!-- collapsible hyperparameter panel -->
