@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <rokanas@student.chalmers.se>
 from django.http import JsonResponse
 from django.views import View
 from django.core.exceptions import ObjectDoesNotExist

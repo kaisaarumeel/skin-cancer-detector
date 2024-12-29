@@ -1,3 +1,6 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
+# * Contributor: <elindstr@student.chalmers.se>
 import os
 import pickle
 import gc

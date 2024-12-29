@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <elindstr@student.chalmers.se>
 import sqlite3
 from pathlib import Path
 

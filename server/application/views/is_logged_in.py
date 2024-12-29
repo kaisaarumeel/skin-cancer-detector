@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <kaisa.arumeel@gmail.com>
 from django.http import JsonResponse
 from django.views import View
 

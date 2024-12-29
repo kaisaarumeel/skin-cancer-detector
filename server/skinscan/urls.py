@@ -1,3 +1,6 @@
+# Contributors:
+# * Contributor: <kaisa.arumeel@gmail.com>
+# * Contributor: <alexandersafstrom@proton.me>
 """
 URL configuration for SkinScan project.
 

@@ -1,4 +1,9 @@
 <script lang="ts">
+// Contributors:
+// * Contributor: <alexandersafstrom@proton.me>
+// * Contributor: <rokanas@student.chalmers.se>
+// * Contributor: <kaisa.arumeel@gmail.com>
+
   import { API } from "../api";
   import { onMount } from "svelte";
   import type { AxiosResponse, AxiosError } from "axios";

@@ -1,3 +1,8 @@
+# Contributors:
+# * Contributor: <arvinra@student.chalmers.se>
+# * Contributor: <elindstr@student.chalmers.se>
+# * Contributor: <kaisa.arumeel@gmail.com>
+# * Contributor: <alexandersafstrom@proton.me>
 import time
 import base64
 import numpy as np

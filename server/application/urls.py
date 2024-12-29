@@ -1,3 +1,11 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
+# * Contributor: <arvinra@student.chalmers.se>
+# * Contributor: <arvinrahimi78@gmail.com>
+# * Contributor: <rokanas@student.chalmers.se>
+# * Contributor: <kaisa.arumeel@gmail.com>
+# * Contributor: <amirpooya78@gmail.com>
+# * Contributor: <elindstr@student.chalmers.se>
 """
 URL configuration for SkinScan project.
 

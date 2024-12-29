@@ -1,3 +1,6 @@
+# Contributors:
+# * Contributor: <rokanas@student.chalmers.se>
+# * Contributor: <elindstr@student.chalmers.se>
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views import View

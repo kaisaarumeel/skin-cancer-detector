@@ -1,4 +1,9 @@
 <script lang="ts">
+// Contributors:
+// * Contributor: <kaisa.arumeel@gmail.com>
+// * Contributor: <rokanas@student.chalmers.se>
+// * Contributor: <alexandersafstrom@proton.me>
+
   import { API } from "../api";
   import type { AxiosResponse, AxiosError } from "axios";
   import { getCSRFToken } from '../stores/csrfStore'; // Import CSRF token

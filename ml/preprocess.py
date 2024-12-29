@@ -1,3 +1,6 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
+# * Contributor: <elindstr@student.chalmers.se>
 import pandas as pd
 import numpy as np
 import sqlite3

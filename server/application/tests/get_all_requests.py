@@ -1,3 +1,6 @@
+# Contributors:
+# * Contributor: <arvinrahimi78@gmail.com>
+# * Contributor: <elindstr@student.chalmers.se>
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User

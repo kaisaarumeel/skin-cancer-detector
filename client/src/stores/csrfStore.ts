@@ -1,3 +1,6 @@
+// Contributors:
+// * Contributor: <elindstr@student.chalmers.se>
+// * Contributor: <rokanas@student.chalmers.se>
 import { API } from '../api'; // Import the API instance
 
 // function to generate CSRF token, set to browser cookies and return it

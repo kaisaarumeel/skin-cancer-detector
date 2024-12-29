@@ -1,3 +1,6 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
+# * Contributor: <elindstr@student.chalmers.se>
 import os
 import numpy as np
 import matplotlib

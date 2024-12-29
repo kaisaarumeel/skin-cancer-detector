@@ -1,3 +1,6 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
+# * Contributor: <rokanas@student.chalmers.se>
 import os
 from pathlib import Path
 import time

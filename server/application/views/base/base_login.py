@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
 # base/base_login.py
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse

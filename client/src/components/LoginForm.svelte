@@ -1,4 +1,9 @@
 <script lang="ts">
+// Contributors:
+// * Contributor: <kaisa.arumeel@gmail.com>
+// * Contributor: <elindstr@student.chalmers.se>
+// * Contributor: <rokanas@student.chalmers.se>
+
   import { goto } from '$app/navigation';
   import { API } from '../api'; // Import the API instance
   import type { AxiosError } from 'axios'; // Import AxiosError type

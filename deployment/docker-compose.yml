@@ -1,3 +1,6 @@
+# Contributors:
+# * Contributor: <rokanas@student.chalmers.se>
+# * Contributor: <elindstr@student.chalmers.se>
 services:
     backend:
         image: registry.git.chalmers.se/courses/dit826/2024/group6/skinscan-backend:latest

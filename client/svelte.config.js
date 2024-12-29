@@ -1,3 +1,6 @@
+// Contributors:
+// * Contributor: <alexandersafstrom@proton.me>
+// * Contributor: <rokanas@student.chalmers.se>
 import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 

@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <elindstr@student.chalmers.se>
 import sqlite3
 
 # Path to SQLite database file

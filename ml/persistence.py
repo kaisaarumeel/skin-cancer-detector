@@ -1,3 +1,7 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
+# * Contributor: <kaisa.arumeel@gmail.com>
+# * Contributor: <elindstr@student.chalmers.se>
 import sqlite3
 import os
 import json

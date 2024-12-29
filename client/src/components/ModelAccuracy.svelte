@@ -1,4 +1,10 @@
 <script lang="ts">
+// Contributors:
+// * Contributor: <kaisa.arumeel@gmail.com>
+// * Contributor: <rokanas@student.chalmers.se>
+// * Contributor: <elindstr@student.chalmers.se>
+// * Contributor: <alexandersafstrom@proton.me>
+
   import { onMount, onDestroy } from "svelte";
   import { models, activeModel, type Model } from "../stores/modelStore";
   import { Chart, LineController, LineElement, PointElement, CategoryScale, LinearScale, Tooltip } from "chart.js";

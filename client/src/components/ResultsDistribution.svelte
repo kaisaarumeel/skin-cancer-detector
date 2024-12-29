@@ -1,4 +1,9 @@
 <script lang="ts">
+// Contributors:
+// * Contributor: <alexandersafstrom@proton.me>
+// * Contributor: <rokanas@student.chalmers.se>
+// * Contributor: <kaisa.arumeel@gmail.com>
+
   import { onMount } from "svelte";
   import {
     Chart,

@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <amirpooya78@gmail.com>
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password

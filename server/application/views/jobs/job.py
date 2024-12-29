@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
 class Job:
     # Initialize a Job object
     def __init__(self, job_id, start_time, parameters):

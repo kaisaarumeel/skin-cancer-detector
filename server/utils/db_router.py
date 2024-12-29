@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <elindstr@student.chalmers.se>
 from django.conf import settings
 from utils.db_lookup import get_secondary_db_name
 

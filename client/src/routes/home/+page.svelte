@@ -1,4 +1,7 @@
 <script>
+// Contributors:
+// * Contributor: <kaisa.arumeel@gmail.com>
+
   import LoginForm from "../../components/LoginForm.svelte";
   import SignupForm from "../../components/SignupForm.svelte";
   import { loggedInRedirect } from '../../routeGuard'; 

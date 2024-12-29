@@ -1,4 +1,7 @@
 <script>
+// Contributors:
+// * Contributor: <kaisa.arumeel@gmail.com>
+
     import { createEventDispatcher } from 'svelte';
     
     // Create an event dispatcher to notify the parent component

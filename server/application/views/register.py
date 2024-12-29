@@ -1,3 +1,7 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
+# * Contributor: <elindstr@student.chalmers.se>
+# * Contributor: <kaisa.arumeel@gmail.com>
 from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator

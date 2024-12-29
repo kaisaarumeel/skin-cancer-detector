@@ -1,4 +1,10 @@
 <script lang="ts">
+// Contributors:
+// * Contributor: <kaisa.arumeel@gmail.com>
+// * Contributor: <elindstr@student.chalmers.se>
+// * Contributor: <amirpooya78@gmail.com>
+// * Contributor: <alexandersafstrom@proton.me>
+
   import TopBar from "../../components/TopBar.svelte";
   import Guide from "../../components/Guide.svelte";
   import { goto } from '$app/navigation';

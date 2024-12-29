@@ -1,4 +1,8 @@
 <script>
+// Contributors:
+// * Contributor: <kaisa.arumeel@gmail.com>
+// * Contributor: <rokanas@student.chalmers.se>
+
     import { goto } from '$app/navigation';
     import { API } from '../api'; 
     import { getCSRFToken } from '../stores/csrfStore'; // Import CSRF token

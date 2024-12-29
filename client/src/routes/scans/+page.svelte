@@ -1,4 +1,10 @@
 <script lang="ts">
+// Contributors:
+// * Contributor: <kaisa.arumeel@gmail.com>
+// * Contributor: <alexandersafstrom@proton.me>
+// * Contributor: <rokanas@student.chalmers.se>
+// * Contributor: <elindstr@student.chalmers.se>
+
   import TopBar from "../../components/TopBar.svelte";
   import { goto, preloadCode } from "$app/navigation";
   import { API } from "../../api";

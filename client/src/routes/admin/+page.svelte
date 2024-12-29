@@ -1,4 +1,11 @@
 <script lang="ts">
+// Contributors:
+// * Contributor: <kaisa.arumeel@gmail.com>
+// * Contributor: <rokanas@student.chalmers.se>
+// * Contributor: <alexandersafstrom@proton.me>
+// * Contributor: <elindstr@student.chalmers.se>
+// * Contributor: <arvinra@student.chalmers.se>
+
     import { goto } from '$app/navigation';
     import UserList from '../../components/UserList.svelte';
     import AdminUpload from '../../components/AdminUpload.svelte';
