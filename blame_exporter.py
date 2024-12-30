@@ -67,13 +67,13 @@ def process_file(file):
 
     try:
         result = subprocess.run(
-            ['git', 'blame', '--line-porcelain', file], 
-            stdout=subprocess.PIPE, 
-            stderr=subprocess.PIPE, 
-            text=True, 
+            ["git", "blame", "--line-porcelain", file],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
             check=True,
-            encoding='utf-8',  # Specify the encoding
-            errors='ignore'    # Ignore invalid characters
+            encoding="utf-8",  # Specify the encoding
+            errors="ignore",  # Ignore invalid characters
         )
     except subprocess.CalledProcessError as e:
         print(f"Error processing file: {file}. Error: {e}")
@@ -81,13 +81,13 @@ def process_file(file):
 
     for line in result.stdout.splitlines():
         if line.startswith("author-mail "):
-            email = line.split('<')[1].split('>')[0]
+            email = line.split("<")[1].split(">")[0]
             file_contributors[email] += 1
             file_total += 1
             total_lines_per_email[email] += 1
 
     if file_total > 0:
-        with open(OUTPUT_FILE, 'a') as f:
+        with open(OUTPUT_FILE, "a") as f:
             f.write(f"\n### {file}\n")
             f.write("| Email | Lines | Percentage |\n")
             f.write("|--------|-------|------------|\n")
