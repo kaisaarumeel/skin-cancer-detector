@@ -1,3 +1,6 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
+# * Contributor: <rokanas@student.chalmers.se>
 import json
 from functools import wraps
 

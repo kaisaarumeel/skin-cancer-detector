@@ -1,3 +1,6 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
+# * Contributor: <kaisa.arumeel@gmail.com>
 import json
 
 from django.contrib.auth.hashers import check_password, make_password

@@ -1,3 +1,5 @@
+// Contributors:
+// * Contributor: <rokanas@student.chalmers.se>
 import { writable } from "svelte/store";
 
 export type Hyperparameters = {

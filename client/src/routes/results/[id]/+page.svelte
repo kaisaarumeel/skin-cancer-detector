@@ -1,4 +1,9 @@
 <script lang="ts">
+// Contributors:
+// * Contributor: <kaisa.arumeel@gmail.com>
+// * Contributor: <elindstr@student.chalmers.se>
+// * Contributor: <arvinra@student.chalmers.se>
+
   import { page } from '$app/stores';
   import { onMount, onDestroy } from "svelte";
   import { API } from "../../../api";

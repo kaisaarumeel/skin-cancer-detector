@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
 from django.test import TestCase
 
 # Use a symlinked ML module to trick Django

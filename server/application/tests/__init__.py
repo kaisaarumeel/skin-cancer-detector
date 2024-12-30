@@ -1,3 +1,10 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
+# * Contributor: <rokanas@student.chalmers.se>
+# * Contributor: <arvinrahimi78@gmail.com>
+# * Contributor: <arvinra@student.chalmers.se>
+# * Contributor: <elindstr@student.chalmers.se>
+# * Contributor: <kaisa.arumeel@gmail.com>
 from .authentication import AuthenticationTests
 from .models import ModelTests
 from .add_data import AddDataTests

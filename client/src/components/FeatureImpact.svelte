@@ -1,4 +1,8 @@
 <script lang="ts">
+// Contributors:
+// * Contributor: <alexandersafstrom@proton.me>
+// * Contributor: <kaisa.arumeel@gmail.com>
+
     import { onMount } from "svelte";
     import { API } from "../api";
     import colorscale_jet from "../media/colorscale_jet.jpg"

@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
 from tensorflow.keras.callbacks import Callback
 
 

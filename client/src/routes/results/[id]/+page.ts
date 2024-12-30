@@ -1,3 +1,6 @@
+// Contributors:
+// * Contributor: <kaisa.arumeel@gmail.com>
+// * Contributor: <elindstr@student.chalmers.se>
 import type { PageLoad } from './$types';
 
 export const prerender = false;

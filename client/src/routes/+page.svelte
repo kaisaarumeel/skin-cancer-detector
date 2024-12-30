@@ -1,4 +1,7 @@
 <script lang="ts">
+// Contributors:
+// * Contributor: <kaisa.arumeel@gmail.com>
+
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
   

@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <elindstr@student.chalmers.se>
 import tensorflow as tf
 import time
 

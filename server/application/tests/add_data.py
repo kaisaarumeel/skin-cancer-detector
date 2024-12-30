@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <rokanas@student.chalmers.se>
 import random
 import time
 import os

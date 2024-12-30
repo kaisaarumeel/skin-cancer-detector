@@ -1,3 +1,5 @@
+// Contributors:
+// * Contributor: <kaisa.arumeel@gmail.com>
 import { API } from "./api";
 import { goto } from '$app/navigation';
 import type { AxiosError } from 'axios';

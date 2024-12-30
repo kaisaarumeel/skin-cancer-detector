@@ -1,3 +1,5 @@
+// Contributors:
+// * Contributor: <alexandersafstrom@proton.me>
 interface Field {
     label: string;
     id: string;

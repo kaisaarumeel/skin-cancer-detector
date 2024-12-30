@@ -1,3 +1,8 @@
+# Contributors
+# rokanas@student.chalmers.se
+# alexandersafstrom@proton.me
+# elindstr@student.chalmers.se
+
 default:
   tags:
     - docker

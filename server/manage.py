@@ -1,3 +1,7 @@
+# Contributors:
+# * Contributor: <kaisa.arumeel@gmail.com>
+# * Contributor: <alexandersafstrom@proton.me>
+# * Contributor: <elindstr@student.chalmers.se>
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
 import os

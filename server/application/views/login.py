@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <rokanas@student.chalmers.se>
 # views/login.py
 from django.http import JsonResponse
 

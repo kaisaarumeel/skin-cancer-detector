@@ -1,3 +1,6 @@
+# Contributors:
+# * Contributor: <elindstr@student.chalmers.se>
+# * Contributor: <alexandersafstrom@proton.me>
 from django.apps import AppConfig
 
 

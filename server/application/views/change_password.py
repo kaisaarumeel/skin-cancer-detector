@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse

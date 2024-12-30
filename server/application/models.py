@@ -1,3 +1,10 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
+# * Contributor: <elindstr@student.chalmers.se>
+# * Contributor: <rokanas@student.chalmers.se>
+# * Contributor: <kaisa.arumeel@gmail.com>
+# * Contributor: <arvinra@student.chalmers.se>
+# * Contributor: <amirpooya78@gmail.com>
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 

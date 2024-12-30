@@ -1,3 +1,6 @@
+# Contributors:
+# * Contributor: <kaisa.arumeel@gmail.com>
+# * Contributor: <alexandersafstrom@proton.me>
 """
 ASGI config for SkinScan project.
 

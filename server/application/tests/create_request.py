@@ -1,3 +1,7 @@
+# Contributors:
+# * Contributor: <arvinrahimi78@gmail.com>
+# * Contributor: <elindstr@student.chalmers.se>
+# * Contributor: <arvinra@student.chalmers.se>
 import os
 import json
 import base64

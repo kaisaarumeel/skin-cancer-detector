@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
 import os
 import sys
 

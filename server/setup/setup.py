@@ -1,3 +1,6 @@
+# Contributors:
+# * Contributor: <elindstr@student.chalmers.se>
+# * Contributor: <alexandersafstrom@proton.me>
 from setup.admin import create_admin_user
 from setup.data import assert_or_get_training_data
 

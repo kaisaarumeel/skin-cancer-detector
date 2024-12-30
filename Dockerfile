@@ -1,3 +1,6 @@
+# Contributors:
+# * Contributor: <rokanas@student.chalmers.se>
+# * Contributor: <elindstr@student.chalmers.se>
 # base image for ML with CUDA
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 as backend
 

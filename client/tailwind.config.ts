@@ -1,3 +1,6 @@
+// Contributors:
+// * Contributor: <alexandersafstrom@proton.me>
+// * Contributor: <kaisa.arumeel@gmail.com>
 import type { Config } from 'tailwindcss';
 
 export default {

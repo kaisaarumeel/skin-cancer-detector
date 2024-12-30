@@ -1,3 +1,7 @@
+# Contributors:
+# * Contributor: <elindstr@student.chalmers.se>
+# * Contributor: <kaisa.arumeel@gmail.com>
+# * Contributor: <amirpooya78@gmail.com>
 import cv2
 import numpy as np
 

@@ -1,3 +1,7 @@
+# Contributors:
+# * Contributor: <kaisa.arumeel@gmail.com>
+# * Contributor: <rokanas@student.chalmers.se>
+# * Contributor: <elindstr@student.chalmers.se>
 """
 WSGI config for SkinScan project.
 

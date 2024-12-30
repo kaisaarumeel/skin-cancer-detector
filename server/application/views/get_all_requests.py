@@ -1,3 +1,6 @@
+# Contributors:
+# * Contributor: <arvinrahimi78@gmail.com>
+# * Contributor: <elindstr@student.chalmers.se>
 from django.http import JsonResponse
 from ..models import Requests
 from django.views import View

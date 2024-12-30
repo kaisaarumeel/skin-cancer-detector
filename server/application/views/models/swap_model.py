@@ -1,3 +1,6 @@
+# Contributors:
+# * Contributor: <rokanas@student.chalmers.se>
+# * Contributor: <elindstr@student.chalmers.se>
 from django.http import JsonResponse
 from django.views import View
 from django.db import transaction

@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <elindstr@student.chalmers.se>
 from django.conf import settings
 
 

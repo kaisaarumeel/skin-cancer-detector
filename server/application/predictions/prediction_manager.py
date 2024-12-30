@@ -1,3 +1,9 @@
+# Contributors:
+# * Contributor: <elindstr@student.chalmers.se>
+# * Contributor: <alexandersafstrom@proton.me>
+# * Contributor: <amirpooya78@gmail.com>
+# * Contributor: <arvinra@student.chalmers.se>
+# * Contributor: <kaisa.arumeel@gmail.com>
 import warnings
 import time
 import threading

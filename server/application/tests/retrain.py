@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <alexandersafstrom@proton.me>
 from django.test import TestCase, Client
 from django.urls import reverse
 from ..models import Users

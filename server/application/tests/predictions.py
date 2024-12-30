@@ -1,3 +1,7 @@
+# Contributors:
+# * Contributor: <kaisa.arumeel@gmail.com>
+# * Contributor: <elindstr@student.chalmers.se>
+# * Contributor: <alexandersafstrom@proton.me>
 from django.test import TestCase
 import numpy as np
 import cv2

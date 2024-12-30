@@ -1,3 +1,7 @@
+# Contributors:
+# * Contributor: <elindstr@student.chalmers.se>
+# * Contributor: <alexandersafstrom@proton.me>
+# * Contributor: <rokanas@student.chalmers.se>
 import os
 from pathlib import Path
 

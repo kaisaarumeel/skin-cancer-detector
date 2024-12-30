@@ -1,3 +1,8 @@
+# Contributors:
+# * Contributor: <arvinra@student.chalmers.se>
+# * Contributor: <elindstr@student.chalmers.se>
+# * Contributor: <alexandersafstrom@proton.me>
+# * Contributor: <kaisa.arumeel@gmail.com>
 import base64
 from django.http import JsonResponse
 from django.views import View

@@ -1,3 +1,6 @@
+# Contributors:
+# * Contributor: <elindstr@student.chalmers.se>
+# * Contributor: <arvinra@student.chalmers.se>
 from django.test import TransactionTestCase
 from application.models import Requests, Users
 from application.predictions.prediction_manager import (

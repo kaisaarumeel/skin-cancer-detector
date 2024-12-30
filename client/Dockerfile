@@ -1,3 +1,5 @@
+# Contributors:
+# * Contributor: <rokanas@student.chalmers.se>
 # build svelte client
 FROM node:22 as build
 WORKDIR /app

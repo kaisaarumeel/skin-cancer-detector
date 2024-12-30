@@ -1,3 +1,7 @@
+# Contributors:
+# * Contributor: <arvinra@student.chalmers.se>
+# * Contributor: <elindstr@student.chalmers.se>
+# * Contributor: <kaisa.arumeel@gmail.com>
 import time
 import threading
 from queue import Queue
