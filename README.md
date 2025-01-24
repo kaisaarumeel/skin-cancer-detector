@@ -1,10 +1,10 @@
 <h1>🩺🔬 SkinScan </h1>
 
-  <img src="https://github.com/user-attachments/assets/bba35aea-185e-40d7-97dc-414b16e213de" alt="SkinScan Overview" width="45%" align="right" style="margin-left: 15px;" />
 <p>
-<br><br>
+ <img src="https://github.com/user-attachments/assets/bba35aea-185e-40d7-97dc-414b16e213de" alt="SkinScan Overview" width="45%" align="right" style="margin-left: 15px;" />
   <strong>SkinScan</strong> is a skin cancer detector web application that allows users to upload images of their skin conditions. Our system uses a <strong>multi-class ML-model</strong> that analyses uploaded images, in conjunction with other features such as <strong>age</strong> and <strong>sex</strong>, to determine the probable type of condition and whether it is <strong>benign (noncancerous)</strong> or <strong>malignant (cancerous)</strong>.
 </p>
+<br><br>
 <br><br>
 
 <p>
