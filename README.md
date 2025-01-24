@@ -1,6 +1,35 @@
-<h1> SkinScan </h1>
+<h1>🩺🔬 SkinScan </h1>
 
-<h3> Table of Contents </h3>
+  <img src="https://github.com/user-attachments/assets/bba35aea-185e-40d7-97dc-414b16e213de" alt="SkinScan Overview" width="45%" align="right" style="margin-left: 15px;" />
+<p>
+<br><br>
+  <strong>SkinScan</strong> is a skin cancer detector web application that allows users to upload images of their skin conditions. Our system uses a <strong>multi-class ML-model</strong> that analyses uploaded images, in conjunction with other features such as <strong>age</strong> and <strong>sex</strong>, to determine the probable type of condition and whether it is <strong>benign (noncancerous)</strong> or <strong>malignant (cancerous)</strong>.
+</p>
+<br><br>
+<br><br>
+
+<p>
+  <img src="https://github.com/user-attachments/assets/bb5e108a-714e-43bf-b47e-e4cf3154b172" alt="AI Explainability Example" width="45%" align="left" style="margin-right: 15px;" />
+  For legal and ethical concerns, the aim of this system is not to provide any medical diagnosis but rather a <strong>recommendation</strong> on whether the user should seek out professional medical assistance. The goal is to <strong>minimise false negatives</strong> (i.e., optimise recall) while retaining acceptable overall <strong>model accuracy</strong>.🎯 This ensures users can trust the model’s predictions for <strong>benign conditions</strong>. The model slightly <strong>overrepresents malignant conditions</strong> to avoid missing true positives, as the risks of missing malignant conditions far outweigh the inconvenience of recommending medical advice for benign conditions.
+</p>
+<br><br>
+<p>
+  <img src="https://github.com/user-attachments/assets/cd0f23d9-6e0a-4af3-b8df-b345a3827904" alt="Admin Panel Overview" width="45%" align="right" style="margin-left: 15px;" />
+   To enhance <strong>transparency 🔍</strong> and build <strong>user trust 🤝</strong>, the results include <strong>AI explainability measures</strong>.🤖💡 These measures display a <strong>percentage score</strong> for each feature’s relative impact on the prediction, along with a <strong>heatmap overlay</strong> highlighting the areas of the input image that our ML model focused on during processing.
+</p>
+<br><br>
+<br><br>
+<br><br>
+
+<p>
+  <img src="https://github.com/user-attachments/assets/d66103b6-987c-4ff0-b980-a44b888c9be1" alt="Analytics Dashboard" width="45%" align="left" style="margin-right: 15px;" />
+  The system’s web application includes an <strong>admin panel UI</strong> for <strong>administrator users</strong>. This panel provides access to <strong>system analytics</strong>📊 and other functionalities, such as managing the <strong>ML-pipeline</strong> to train new models or replace the current active model used for running inference on user data. Administrators can view <strong>previous model versions</strong>, review their <strong>hyperparameters</strong>, and compare <strong>performance metrics</strong> across different versions using visual <strong>graphs</strong>. The <strong>admin panel</strong> also provides detailed insights into the <strong>usage</strong> and <strong>accuracy</strong> of the system, helping developers and healthcare professionals make informed improvements. This ensures the tool remains <strong>accurate</strong>, <strong>effective</strong>, and <strong>trustworthy</strong>.
+</p>
+
+
+
+
+<h3>📑 Table of Contents </h3>
 
 - [Svelte Web-app \[Frontend\]](#svelte-web-app-frontend)
 - [Running Django \[Backend\]](#running-django-backend)
@@ -22,6 +51,7 @@
     - [Step 2: Install CUDA Toolkit](#step-2-install-cuda-toolkit)
     - [Step 3: Install cuDNN](#step-3-install-cudnn)
     - [Step 4: Run Test Script to Verify GPU Utilization](#step-4-run-test-script-to-verify-gpu-utilization)
+- [Development team](#development-team)
 
 
 ## Svelte Web-app [Frontend]
@@ -305,4 +335,18 @@ Open `WSL` in terminal and navigate to the directory you saved the installer - r
 tf.debugging.set_log_device_placement(False)
 ```
 
+
 </details>
+
+## Development Team👩‍💻👨‍💻
+
+
+The project has been developed over the course of **8 weeks** by the following:
+
+- Kaisa Arumeel
+- Amirpooya Asadollahnejad   
+- Erik Lindstrand 
+- Arvin Rahimi  
+- Konstantinos Rokanas
+- Alexander Säfström
+
