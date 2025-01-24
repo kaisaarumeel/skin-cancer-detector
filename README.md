@@ -6,18 +6,16 @@
   <strong>SkinScan</strong> is a skin cancer detector web application that allows users to upload images of their skin conditions. Our system uses a <strong>multi-class ML-model</strong> that analyses uploaded images, in conjunction with other features such as <strong>age</strong> and <strong>sex</strong>, to determine the probable type of condition and whether it is <strong>benign (noncancerous)</strong> or <strong>malignant (cancerous)</strong>.
 </p>
 <br><br>
-<br><br>
 
 <p>
   <img src="https://github.com/user-attachments/assets/bb5e108a-714e-43bf-b47e-e4cf3154b172" alt="AI Explainability Example" width="45%" align="left" style="margin-right: 15px;" />
   For legal and ethical concerns, the aim of this system is not to provide any medical diagnosis but rather a <strong>recommendation</strong> on whether the user should seek out professional medical assistance. The goal is to <strong>minimise false negatives</strong> (i.e., optimise recall) while retaining acceptable overall <strong>model accuracy</strong>.🎯 This ensures users can trust the model’s predictions for <strong>benign conditions</strong>. The model slightly <strong>overrepresents malignant conditions</strong> to avoid missing true positives, as the risks of missing malignant conditions far outweigh the inconvenience of recommending medical advice for benign conditions.
 </p>
-<br><br>
+
 <p>
   <img src="https://github.com/user-attachments/assets/cd0f23d9-6e0a-4af3-b8df-b345a3827904" alt="Admin Panel Overview" width="45%" align="right" style="margin-left: 15px;" />
    To enhance <strong>transparency 🔍</strong> and build <strong>user trust 🤝</strong>, the results include <strong>AI explainability measures</strong>.🤖💡 These measures display a <strong>percentage score</strong> for each feature’s relative impact on the prediction, along with a <strong>heatmap overlay</strong> highlighting the areas of the input image that our ML model focused on during processing.
 </p>
-<br><br>
 <br><br>
 <br><br>
 
